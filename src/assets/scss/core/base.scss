@@ -10,6 +10,10 @@ body {
   & > #app {
     height: 100vh;
     width: inherit;
+
+    & .app__container {
+      height: inherit;
+    }
   }
 }
 
