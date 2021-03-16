@@ -1,10 +1,7 @@
 <template>
   <div id="app">
     <el-container class="app__container">
-      <el-aside>
-        aside
-      </el-aside>
-
+      <Navbar />
       <el-container>
         <el-main>
           <transition name="fade">
@@ -16,6 +13,13 @@
   </div>
 </template>
 
+<script>
+  import Navbar from "@/components/common/navbar/Navbar";
+  export default {
+    components: { Navbar },
+  };
+</script>
+
 <style lang="scss">
-  @import 'src/assets/scss/index.scss';
+  @import "src/assets/scss/index.scss";
 </style>

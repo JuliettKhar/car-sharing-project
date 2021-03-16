@@ -1,4 +1,8 @@
 .el-aside {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
   width: 64px !important;
   background: #151B1F
 }
