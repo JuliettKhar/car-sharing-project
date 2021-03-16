@@ -1,4 +1,4 @@
-# s-soft
+# car-sharing-project
 
 ## Project setup
 ```
@@ -17,6 +17,7 @@ npm run build
 
 ### Lints and fixes files
 ```
+check path in you ide to .eslintrc file
 npm run lint
 ```
 
