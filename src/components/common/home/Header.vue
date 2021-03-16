@@ -72,7 +72,6 @@
 
       & img {
         display: block;
-        margin-right: 8px;
       }
     }
   }
