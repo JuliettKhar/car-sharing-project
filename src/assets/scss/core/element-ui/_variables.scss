@@ -432,8 +432,8 @@ $--input-font-color: $--color-text-regular !default;
 $--input-width: 140px !default;
 /// height||Other|4
 $--input-height: 40px !default;
-$--input-border: $--border-base !default;
-$--input-border-color: $--border-color-base !default;
+$--input-border: transparent;
+$--input-border-color: transparent;
 /// borderRadius||Border|2
 $--input-border-radius: $--border-radius-base !default;
 $--input-border-color-hover: $--border-color-hover !default;
@@ -551,7 +551,7 @@ $--button-default-font-color: $--color-text-regular !default;
 /// color||Color|0
 $--button-default-background-color: $--color-white !default;
 /// color||Color|0
-$--button-default-border-color: $--border-color-base !default;
+$--button-default-border-color: transparent;
 
 /// color||Color|0
 $--button-disabled-font-color: $--color-text-placeholder !default;
@@ -567,25 +567,25 @@ $--button-primary-font-color: $--color-white !default;
 /// color||Color|0
 $--button-primary-background-color: $--color-primary !default;
 /// color||Color|0
-$--button-success-border-color: $--color-success !default;
+$--button-success-border-color: transparent;
 /// color||Color|0
 $--button-success-font-color: $--color-white !default;
 /// color||Color|0
 $--button-success-background-color: $--color-success !default;
 /// color||Color|0
-$--button-warning-border-color: $--color-warning !default;
+$--button-warning-border-color: transparent;
 /// color||Color|0
 $--button-warning-font-color: $--color-white !default;
 /// color||Color|0
 $--button-warning-background-color: $--color-warning !default;
 /// color||Color|0
-$--button-danger-border-color: $--color-danger !default;
+$--button-danger-border-color: transparent;
 /// color||Color|0
 $--button-danger-font-color: $--color-white !default;
 /// color||Color|0
 $--button-danger-background-color: $--color-danger !default;
 /// color||Color|0
-$--button-info-border-color: $--color-info !default;
+$--button-info-border-color: transparent;
 /// color||Color|0
 $--button-info-font-color: $--color-white !default;
 /// color||Color|0
