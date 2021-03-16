@@ -30,6 +30,7 @@ module.exports = {
         },
         prependData: `
            @import "@/assets/scss/core/mixins.scss";
+           @import "~@/assets/scss/core/variables.scss";
           `,
       },
     },
