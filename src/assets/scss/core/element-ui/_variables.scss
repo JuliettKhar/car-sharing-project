@@ -836,14 +836,14 @@ $--scrollbar-hover-background-color: rgba($--color-text-secondary, .5) !default;
 /* Carousel
 --------------------------*/
 /// fontSize||Font|1
-$--carousel-arrow-font-size: 12px !default;
+$--carousel-arrow-font-size: 30px;
 $--carousel-arrow-size: 36px !default;
-$--carousel-arrow-background: rgba(31, 45, 61, 0.11) !default;
-$--carousel-arrow-hover-background: rgba(31, 45, 61, 0.23) !default;
+$--carousel-arrow-background: transparent;
+$--carousel-arrow-hover-background: $green;
 /// width||Other|4
-$--carousel-indicator-width: 30px !default;
+$--carousel-indicator-width: 7px !default;
 /// height||Other|4
-$--carousel-indicator-height: 2px !default;
+$--carousel-indicator-height: 7px !default;
 $--carousel-indicator-padding-horizontal: 4px !default;
 $--carousel-indicator-padding-vertical: 12px !default;
 $--carousel-indicator-out-color: $--border-color-hover !default;

@@ -12,3 +12,46 @@
   padding: 0 !important;
   height: auto !important;
 }
+
+.el-carousel.el-carousel--horizontal {
+  height: 100% !important;
+}
+
+.el-carousel__container {
+   height: 100% !important;
+}
+
+.el-carousel__button {
+  border-radius: 20px !important;
+  opacity: 1;
+  background-color: $gray-light !important;
+}
+
+.el-carousel__indicator--horizontal.is-active button {
+  background: $green !important;
+}
+
+.el-carousel__arrow {
+  width: 64px !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  outline: none !important;
+
+  &:active {
+    outline: none !important;
+  }
+
+  &--left {
+    left: -1px !important;
+  }
+
+  &--right {
+    right: 0 !important;
+  }
+
+  &:hover {
+    background-color: rgba(14, 194, 97, .2) !important;
+    border-radius: 0 !important;
+    height: 100%;
+  }
+}
