@@ -7,7 +7,8 @@
         v-model="city"
         value-key="name"
         :fetch-suggestions="querySearch"
-        placeholder="Please Input"
+        placeholder="Начните вводить город"
+        clearable
         @select="handleSelect"
       ></el-autocomplete>
     </div>
@@ -25,10 +26,11 @@
         { name: "Москва", id: 2 },
         { name: "Краснодар", id: 3 },
       ];
-      const city = ref("Ульяновск");
+      const city = ref(localStorage.getItem("city") || "Ульяновск");
 
       function handleSelect(item) {
         city.value = item.name;
+        localStorage.setItem("city", item.name);
       }
 
       function createFilter(queryString) {
