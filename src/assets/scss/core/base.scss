@@ -6,10 +6,15 @@ body {
   overflow-x: hidden;
   height: 100vh;
   width: 100vw;
+  font-family: Roboto, sans-serif;
 
   & > #app {
     height: 100vh;
     width: inherit;
+
+    & .app__container {
+      height: inherit;
+    }
   }
 }
 

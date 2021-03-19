@@ -1,20 +1,20 @@
-const path = require('path');
+const path = require("path");
 
 module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src/'),
+        "@": path.resolve(__dirname, "src"),
       },
     },
   },
   chainWebpack: config => {
-    config.plugin('html').tap(args => {
+    config.plugin("html").tap(args => {
       args[0].meta = [
         {
-          name: 'viewport',
+          name: "viewport",
           content:
-            'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
+            "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0",
         },
       ];
       return args;
@@ -25,15 +25,16 @@ module.exports = {
     loaderOptions: {
       scss: {
         sassOptions: {
-          includePaths: [path.resolve(__dirname, 'src/scss/core/')],
+          includePaths: [path.resolve(__dirname, "src/scss/core/")],
           indentedSyntax: false,
         },
         prependData: `
-           @import "@/assets/scss/core/mixins.scss";
+           @import "~@/assets/scss/core/mixins.scss";
+           @import "~@/assets/scss/core/variables.scss";
           `,
       },
     },
   },
 
-  assetsDir: '@/assets/',
+  assetsDir: "@/assets/",
 };

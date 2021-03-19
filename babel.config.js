@@ -1,13 +1,14 @@
 module.exports = {
   presets: [
     [
-      "@babel/preset-env",
+      '@babel/preset-env',
       {
         targets: {
           chrome: 52,
-          browsers: ["last 2 versions", "safari 7"]
-        }
-      }
-    ]
-  ]
+          ie: 11,
+          browsers: ['last 4 versions', 'safari 7'],
+        },
+      },
+    ],
+  ],
 };

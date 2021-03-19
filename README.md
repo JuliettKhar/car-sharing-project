@@ -17,7 +17,7 @@ npm run build
 
 ### Lints and fixes files
 ```
-check path in your ide
+check path in you ide to .eslintrc file
 npm run lint
 ```
 
