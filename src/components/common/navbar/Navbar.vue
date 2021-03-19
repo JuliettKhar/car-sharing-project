@@ -13,46 +13,35 @@
     </a>
 
     <a role="button" class="navbar-lang" @click="toggleLang">
-      {{ currentLang }}
+      {{ displayedLang }}
     </a>
   </el-aside>
 </template>
 
 <script>
-  import { computed, ref, watchEffect } from "@vue/composition-api";
+  import { computed, ref } from "@vue/composition-api";
 
   export default {
     name: "Navbar",
     setup(props, { emit }) {
       const isToggleLang = ref(false);
-      const language = ref(isToggleLang.value ? "Eng" : "Ru");
-      const currentLang = computed({
-        get: () => localStorage.getItem("lang"),
-        set: val => localStorage.setItem("lang", val),
-      });
+      const language = computed(() => (isToggleLang.value ? "Eng" : "Ru"));
+      const currentLang = ref(localStorage.getItem("lang"));
+      const displayedLang = computed(() => currentLang.value || "Ru");
 
       function toggleLang() {
-        console.log(1);
         isToggleLang.value = !isToggleLang.value;
+        localStorage.setItem("lang", language.value);
         currentLang.value = language.value;
       }
-
-      /*
-       * watchEffect(() => {
-       *   isToggleLang.value = !isToggleLang.value;
-       *   currentLang.value = language.value;
-       * });
-       */
       function openBurger() {
         emit("open");
       }
 
       return {
+        displayedLang,
         toggleLang,
-        isToggleLang,
-        currentLang,
         openBurger,
-        language,
       };
     },
   };
