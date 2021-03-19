@@ -1,7 +1,7 @@
 <template>
   <el-carousel arrow="always" class="carousel">
     <el-carousel-item v-for="(slide, index) in slides" :key="index">
-      <img :src="`./images/${slide.name}.png`" alt="slide" />
+      <img :src="`images/${slide.name}.png`" alt="slide" />
       <div class="carousel__content">
         <p>{{ slide.title }}</p>
         <p>{{ slide.subtitle }}</p>
