@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <el-container class="app__container">
-      <Navbar />
+      <Navbar @open="openBurgerMenu" />
+      <NavbarBurgerMenu :isMenuOpen.sync="isMenuOpen" />
       <el-container>
         <el-main>
           <transition name="fade">
@@ -15,8 +16,23 @@
 
 <script>
   import Navbar from "@/components/common/navbar/Navbar";
+  import NavbarBurgerMenu from "@/components/common/navbar/NavbarBurgerMenu";
+  import { ref } from "@vue/composition-api";
+
   export default {
-    components: { Navbar },
+    components: { Navbar, NavbarBurgerMenu },
+    setup() {
+      const isMenuOpen = ref(false);
+
+      function openBurgerMenu() {
+        isMenuOpen.value = true;
+      }
+
+      return {
+        isMenuOpen,
+        openBurgerMenu,
+      };
+    },
   };
 </script>
 
