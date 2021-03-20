@@ -64,7 +64,7 @@
     & nav {
       display: flex;
       flex-direction: column;
-      padding-left: 128px;
+      padding: 0 0 0 128px;
       align-items: flex-start;
       box-sizing: border-box;
       height: 100%;
@@ -72,6 +72,18 @@
       background: #111518;
       max-width: calc(50% + 33px);
       width: calc(50% + 33px);
+
+      @include lg {
+        max-width: calc(60% + 33px);
+        width: calc(60% + 33px);
+      }
+
+      @include md-and-down {
+        padding: 90px 0 0 28px;
+        justify-content: flex-start;
+        width: 100%;
+        max-width: 100%;
+      }
     }
 
     & nav a {
@@ -79,6 +91,10 @@
       font-size: 32px;
       color: $white;
       margin-bottom: 10px;
+
+      @include md-and-down {
+        font-size: 22px;
+      }
 
       &:hover {
         color: $green;
@@ -94,6 +110,10 @@
     width: 32px;
     height: 32px;
     cursor: pointer;
+
+    @include md-and-down {
+      top: 20px;
+    }
 
     &:before,
     &:after {

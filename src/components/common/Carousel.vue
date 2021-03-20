@@ -1,7 +1,13 @@
 <template>
   <el-carousel arrow="always" class="carousel">
     <el-carousel-item v-for="(slide, index) in slides" :key="index">
-      <img :src="`images/${slide.name}.png`" alt="slide" />
+      <div
+        :style="{
+          background: `url(images/${slide.name}.png)`,
+          backgroundPosition: '50% 50%',
+          backgroundSize: 'cover',
+        }"
+      ></div>
       <div class="carousel__content">
         <p>{{ slide.title }}</p>
         <p>{{ slide.subtitle }}</p>
@@ -36,6 +42,12 @@
       text-align: left;
       width: 495px;
       max-width: 495px;
+      height: min-content;
+
+      @include lg {
+        width: 80%;
+        max-width: 282px;
+      }
 
       & img {
         filter: brightness(0.7);
@@ -49,12 +61,20 @@
           font-weight: 500;
           font-size: 40px;
           color: $white;
+
+          @include lg {
+            font-size: 32px;
+          }
         }
 
         &:nth-child(2) {
           margin-bottom: 32px;
           font-size: 24px;
           color: $gray-light;
+
+          @include lg {
+            font-size: 22px;
+          }
         }
       }
     }
@@ -81,6 +101,8 @@
     &__content-btn-insurance,
     &__content-btn-to,
     &__content-btn-gasoline {
+      width: 164px;
+      max-width: 164px;
       color: $white !important;
     }
   }

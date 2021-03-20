@@ -59,6 +59,11 @@
       height: 22px;
       cursor: pointer;
 
+      @include md-and-down {
+        margin-top: 25px;
+        height: 18px;
+      }
+
       & span {
         position: absolute;
         left: 50%;
@@ -69,6 +74,12 @@
         border: 1px solid $white;
         border-radius: 5px;
         background: #fff;
+
+        @include md-and-down {
+          height: 1px;
+          border: 1px solid $black;
+          background: $black;
+        }
 
         &:first-child {
           top: 0;
@@ -98,6 +109,10 @@
       color: $green;
       text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
       cursor: pointer;
+
+      @include md-and-down {
+        display: none;
+      }
 
       &:hover {
         color: $gray-light;
