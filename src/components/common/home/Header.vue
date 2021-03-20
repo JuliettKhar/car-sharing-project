@@ -2,7 +2,7 @@
   <el-header class="header">
     <p class="header__title">Need for drive</p>
     <div class="header-location">
-      <img src="images/point.svg" alt="point image" />
+      <img src="images/icons/point.svg" alt="point image" />
       <el-autocomplete
         v-model="city"
         value-key="name"
