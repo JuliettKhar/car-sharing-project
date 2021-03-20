@@ -27,6 +27,7 @@
 
       &:hover {
         color: $green;
+        transition: color 0.6s ease-in;
       }
     }
   }
