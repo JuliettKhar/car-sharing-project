@@ -1,8 +1,5 @@
 <template>
   <el-header class="header">
-    <div class="header__burger">
-      <Burger @open="openBurger" />
-    </div>
     <div class="header-content__wrapper">
       <p class="header__title">Need for drive</p>
       <div class="header-location">
@@ -22,13 +19,9 @@
 
 <script>
   import { ref } from "@vue/composition-api";
-  import Burger from "@/components/common/Burger";
 
   export default {
     name: "Header",
-    components: {
-      Burger,
-    },
     setup() {
       const cities = [
         { name: "Ульяновск", id: 1 },
