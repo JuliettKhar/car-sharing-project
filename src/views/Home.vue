@@ -69,6 +69,18 @@
       width: 50%;
       max-width: 50%;
       box-sizing: border-box;
+
+      @include lg {
+        padding: 32px 32px;
+        width: 60%;
+        max-width: 60%;
+      }
+
+      @include md-and-down {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+      }
     }
 
     &__main-content {
@@ -76,17 +88,33 @@
       flex: 1;
       align-items: center;
 
+      @include md-and-down {
+        align-items: flex-start;
+      }
+
       & > div {
         text-align: left;
+
+        @include md-and-down {
+          width: 100%;
+        }
       }
 
       & > div p {
         margin: 0;
 
+        @include md-and-down {
+          padding: 0 16px;
+        }
+
         &:first-child {
           font-weight: bold;
           font-size: 70px;
           color: $black;
+
+          @include md-and-down {
+            font-size: 32px;
+          }
         }
 
         &:nth-child(2) {
@@ -94,18 +122,27 @@
           font-weight: bold;
           font-size: 70px;
           color: $green;
+
+          @include md-and-down {
+            font-size: 32px;
+          }
         }
 
         &:nth-child(3) {
           margin: 0 0 60px 0;
           font-size: 26px;
           color: $gray;
+
+          @include md-and-down {
+            font-size: 18px;
+          }
         }
       }
     }
 
     &__main-content__button {
       width: 250px;
+      max-width: 250px;
       background: linear-gradient(
         90deg,
         $green 2.61%,
@@ -118,6 +155,11 @@
       font-size: 18px !important;
       line-height: 21px !important;
       outline: none;
+
+      @include md-and-down {
+        width: 100%;
+        max-width: 100%;
+      }
 
       &:active {
         background: linear-gradient(
@@ -152,6 +194,21 @@
     &__slider {
       width: 50%;
       max-width: 50%;
+
+      @include lg {
+        display: block;
+        width: 40%;
+        max-width: 40%;
+      }
+
+      @include md-and-down {
+        display: none;
+      }
     }
+  }
+
+  .el-button {
+    width: 100%;
+    border-radius: 0 !important;
   }
 </style>

@@ -5,6 +5,19 @@
       <router-link v-for="(page, index) in pages" :key="index" to="">
         {{ page }}
       </router-link>
+      <ul class="navbar-burger-menu__social">
+        <li class="navbar-burger-menu__social-item">
+          <a href="#">
+            <!--            <img src="images/icons/tg.svg" alt=""/>-->
+          </a>
+        </li>
+        <li class="navbar-burger-menu__social-item">
+          <a href="#"><img src="images/icons/fb.svg" alt=""/></a>
+        </li>
+        <li class="navbar-burger-menu__social-item">
+          <a href="#"><img src="images/icons/insta.svg" alt=""/></a>
+        </li>
+      </ul>
     </nav>
   </div>
 </template>
@@ -38,7 +51,7 @@
   .navbar-burger-menu.is-active {
     display: flex;
     position: absolute;
-    z-index: 3;
+    z-index: 11;
     left: 0;
     top: 0;
     align-items: center;
@@ -51,7 +64,7 @@
     & nav {
       display: flex;
       flex-direction: column;
-      padding-left: 128px;
+      padding: 0 0 0 128px;
       align-items: flex-start;
       box-sizing: border-box;
       height: 100%;
@@ -59,6 +72,18 @@
       background: #111518;
       max-width: calc(50% + 33px);
       width: calc(50% + 33px);
+
+      @include lg {
+        max-width: calc(60% + 33px);
+        width: calc(60% + 33px);
+      }
+
+      @include md-and-down {
+        padding: 90px 0 0 28px;
+        justify-content: flex-start;
+        width: 100%;
+        max-width: 100%;
+      }
     }
 
     & nav a {
@@ -67,38 +92,74 @@
       color: $white;
       margin-bottom: 10px;
 
+      @include md-and-down {
+        font-size: 22px;
+      }
+
       &:hover {
         color: $green;
+        transition: color 0.3s ease-in;
       }
     }
   }
 
   .navbar-burger-menu-close {
     position: absolute;
-    top: 32px;
+    top: 30px;
     left: 16px;
     width: 32px;
     height: 32px;
     cursor: pointer;
 
+    @include md-and-down {
+      top: 20px;
+    }
+
     &:before,
     &:after {
       position: absolute;
       content: "";
+      top: 50%;
+      left: 50%;
       width: 3px;
-      height: 16px;
+      height: 24px;
+      border-radius: 5px;
       background: $white;
-      transform: rotate(0);
+      transform: rotate(0deg);
     }
 
     &:before {
-      transform: rotate(45deg);
+      transform: translate(-50%, -50%) rotate(45deg);
       transition: rotate 0.3s ease;
     }
 
     &:after {
-      transform: rotate(-45deg);
+      transform: translate(-50%, -50%) rotate(-45deg);
       transition: rotate 0.3s ease;
+    }
+  }
+
+  .navbar-burger-menu__social {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    &-item {
+      margin: 45px 20px 0 0;
+      width: 32px;
+      height: 32px;
+
+      &:first-child a {
+        display: block;
+        width: 32px;
+        height: 32px;
+        background: url("../../../assets/icons/tg.svg");
+
+        &:hover {
+          fill: #0b934a;
+        }
+      }
     }
   }
 </style>
