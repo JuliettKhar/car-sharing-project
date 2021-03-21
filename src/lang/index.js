@@ -27,7 +27,7 @@ const getLocale = () => {
     localStorage
       .getItem("lang")
       .toLowerCase()
-      .slice(0, 2) || (navigator.language || "Ru").toLowerCase().slice(0, 2);
+      .slice(0, 2) || (navigator.language || "ru").toLowerCase().slice(0, 2);
   const locales = Object.keys(messages);
   for (const locale of locales) {
     if (language.indexOf(locale) > -1) {
@@ -36,7 +36,7 @@ const getLocale = () => {
   }
 
   // Default language
-  return "Ru";
+  return "ru";
 };
 
 const i18n = new VueI18n({
@@ -44,16 +44,10 @@ const i18n = new VueI18n({
     localStorage
       .getItem("lang")
       .toLowerCase()
-      .slice(0, 2) || "Ru",
+      .slice(0, 2) || "ru",
   fallbackLocale: getLocale(),
   messages,
 });
-console.log(
-  localStorage
-    .getItem("lang")
-    .toLowerCase()
-    .slice(0, 2) || "Ru",
-);
 
 const translate = key => i18n.t(key);
 
