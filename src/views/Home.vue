@@ -4,12 +4,12 @@
       <Header />
       <div class="home__main-content">
         <div>
-          <p class="">Каршеринг</p>
-          <p>Need for drive</p>
-          <p>Поминутная аренда авто твоего города</p>
-          <el-button class="home__main-content__button"
-            >Забронировать</el-button
-          >
+          <p class="">{{ translate("home.carsharing") }}</p>
+          <p>{{ translate("home.sectionTitle") }}</p>
+          <p>{{ translate("home.sectionDescription") }}</p>
+          <el-button class="home__main-content__button">
+            {{ translate("home.reserve") }}
+          </el-button>
         </div>
       </div>
       <Footer />
@@ -24,36 +24,37 @@
   import Header from "@/components/common/home/Header";
   import Footer from "@/components/common/home/Footer";
   import Carousel from "@/components/common/Carousel";
+  import { useI18n } from "@/lang";
 
   export default {
     name: "Home",
     components: { Header, Footer, Carousel },
     setup() {
+      const { translate } = useI18n();
       const slides = [
         {
           name: "parking",
-          title: "Бесплатная парковка",
-          subtitle:
-            "Оставляйте машину на платных городских парковках и разрешенных местах, не нарушая ПДД, а также в аэропортах.",
+          title: "home.slides.parking.title",
+          subtitle: "home.slides.parking.subtitle",
         },
         {
           name: "insurance",
-          title: "Страховка",
-          subtitle: "Полная страховка страховка автомобиля",
+          title: "home.slides.insurance.title",
+          subtitle: "home.slides.insurance.subtitle",
         },
         {
           name: "gasoline",
-          title: "Бензин",
-          subtitle: "Полный бак на любой заправке города за наш счёт.",
+          title: "home.slides.gasoline.title",
+          subtitle: "home.slides.gasoline.subtitle",
         },
         {
           name: "to",
-          title: "Обслуживание",
-          subtitle: "Автомобиль проходит еженедельное ТО",
+          title: "home.slides.to.title",
+          subtitle: "home.slides.to.subtitle",
         },
       ];
 
-      return { slides };
+      return { slides, translate };
     },
   };
 </script>

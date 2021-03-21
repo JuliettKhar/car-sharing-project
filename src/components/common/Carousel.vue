@@ -9,17 +9,19 @@
         }"
       ></div>
       <div class="carousel__content">
-        <p>{{ slide.title }}</p>
-        <p>{{ slide.subtitle }}</p>
-        <el-button :class="`carousel__content-btn-${slide.name}`"
-          >Подробнее</el-button
-        >
+        <p>{{ translate(slide.title) }}</p>
+        <p>{{ translate(slide.subtitle) }}</p>
+        <el-button :class="`carousel__content-btn-${slide.name}`">
+          {{ translate("home.slides.more") }}
+        </el-button>
       </div>
     </el-carousel-item>
   </el-carousel>
 </template>
 
 <script>
+  import { useI18n } from "@/lang";
+
   export default {
     name: "Carousel",
     props: {
@@ -27,6 +29,10 @@
         type: Array,
         default: () => [],
       },
+    },
+    setup() {
+      const { translate } = useI18n();
+      return { translate };
     },
   };
 </script>

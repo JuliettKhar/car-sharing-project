@@ -1,0 +1,40 @@
+{
+  "home": {
+    "carsharing": "Каршеринг!",
+    "sectionTitle": "Need for drive",
+    "sectionDescription": "Поминутная аренда авто твоего города",
+    "reserve": "Забронировать",
+    "slides": {
+      "parking": {
+        "title": "Бесплатная парковка",
+        "subtitle": "Оставляйте машину на платных городских парковках и разрешенных местах, не нарушая ПДД, а также в аэропортах."
+      },
+      "insurance": {
+        "title": "Страховка",
+        "subtitle": "Полная страховка страховка автомобиля"
+      },
+      "gasoline": {
+        "title": "Бензин",
+        "subtitle": "Полный бак на любой заправке города за наш счёт."
+      },
+      "to": {
+        "title": "Обслуживание",
+        "subtitle": "Автомобиль проходит еженедельное ТО"
+      },
+      "more": "Подробнее"
+    }
+  },
+  "header": {
+    "logo": "Need for drive",
+    "cityPlaceholder": "Начните вводить город",
+    "ulyanovsk": "Ulyanovsk",
+    "krasnodar": "Краснодар",
+    "moscow": "Москва"
+  },
+  "navbarBurgerMenu": {
+    "parking": "ПАРКОВКА",
+    "insurance": "СТРАХОВКА",
+    "gasoline": "БЕНЗИН",
+    "service": "ОБСЛУЖИВАНИЕ"
+  }
+}
