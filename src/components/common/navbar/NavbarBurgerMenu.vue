@@ -3,19 +3,17 @@
     <div class="navbar-burger-menu-close" @click="closeMenu"></div>
     <nav>
       <router-link v-for="(page, index) in pages" :key="index" to="">
-        {{ page }}
+        {{ translate(page) }}
       </router-link>
       <ul class="navbar-burger-menu__social">
         <li class="navbar-burger-menu__social-item">
-          <a href="#">
-            <!--            <img src="images/icons/tg.svg" alt=""/>-->
-          </a>
+          <a href="#"></a>
         </li>
         <li class="navbar-burger-menu__social-item">
-          <a href="#"><img src="images/icons/fb.svg" alt=""/></a>
+          <a href="#"></a>
         </li>
         <li class="navbar-burger-menu__social-item">
-          <a href="#"><img src="images/icons/insta.svg" alt=""/></a>
+          <a href="#"></a>
         </li>
       </ul>
     </nav>
@@ -23,6 +21,8 @@
 </template>
 
 <script>
+  import { useI18n } from "@/lang";
+
   export default {
     name: "NavbarBurgerMenu",
     props: {
@@ -32,13 +32,19 @@
       },
     },
     setup(props, { emit }) {
-      const pages = ["ПАРКОВКА", "СТРАХОВКА", "БЕНЗИН", "ОБСЛУЖИВАНИЕ"];
+      const { translate } = useI18n();
+      const pages = [
+        "navbarBurgerMenu.parking",
+        "navbarBurgerMenu.insurance",
+        "navbarBurgerMenu.gasoline",
+        "navbarBurgerMenu.service",
+      ];
 
       function closeMenu() {
         emit("update:isMenuOpen", false);
       }
 
-      return { pages, closeMenu };
+      return { pages, closeMenu, translate };
     },
   };
 </script>
@@ -150,15 +156,22 @@
       width: 32px;
       height: 32px;
 
-      &:first-child a {
+      & > a {
         display: block;
         width: 32px;
         height: 32px;
-        background: url("../../../assets/icons/tg.svg");
+      }
 
-        &:hover {
-          fill: #0b934a;
-        }
+      &:first-child a {
+        background: url("../../../assets/icons/tg.svg");
+      }
+
+      &:last-child a {
+        background: url("../../../assets/icons/insta.svg");
+      }
+
+      &:nth-child(2) a {
+        background: url("../../../assets/icons/fb.svg");
       }
     }
   }
