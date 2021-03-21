@@ -1,0 +1,40 @@
+{
+  "home": {
+    "carsharing": "Car sharing",
+    "sectionTitle": "Need for drive",
+    "sectionDescription": "Per-minute car rental in your city.",
+    "reserve": "Book now",
+    "slides": {
+      "parking": {
+        "title": "Free parking",
+        "subtitle": "Leave your car in paid city parking lots and permitted places, without violating traffic rules, as well as at airports."
+      },
+      "insurance": {
+        "title": "Insurance",
+        "subtitle": "Full insurance car insurance."
+      },
+      "gasoline": {
+        "title": "Petrol",
+        "subtitle": "A full tank at any gas station in the city at our expense."
+      },
+      "to": {
+        "title": "Service",
+        "subtitle": "The car undergoes weekly maintenance."
+      },
+      "more": "More details"
+    }
+  },
+  "header": {
+    "logo": "Need for drive",
+    "cityPlaceholder": "Start typing the city",
+    "ulyanovsk": "Ulyanovsk",
+    "krasnodar": "Krasnodar",
+    "moscow": "Moscow"
+  },
+  "navbarBurgerMenu": {
+    "parking": "PARKING",
+    "insurance": "INSURANCE",
+    "gasoline": "PETROL",
+    "service": "SERVICE"
+  }
+}

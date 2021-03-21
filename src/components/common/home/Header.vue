@@ -1,14 +1,16 @@
 <template>
   <el-header class="header">
     <div class="header-content__wrapper">
-      <p class="header__title">Need for drive</p>
+      <p class="header__title">
+        {{ translate("header.logo") }}
+      </p>
       <div class="header-location">
         <img src="images/icons/point.svg" alt="point image" />
         <el-autocomplete
           v-model="city"
           value-key="name"
           :fetch-suggestions="querySearch"
-          placeholder="Начните вводить город"
+          :placeholder="translate('header.cityPlaceholder')"
           clearable
           @select="handleSelect"
         ></el-autocomplete>
@@ -19,16 +21,20 @@
 
 <script>
   import { ref } from "@vue/composition-api";
+  import { useI18n } from "@/lang";
 
   export default {
     name: "Header",
     setup() {
+      const { translate } = useI18n();
       const cities = [
-        { name: "Ульяновск", id: 1 },
-        { name: "Москва", id: 2 },
-        { name: "Краснодар", id: 3 },
+        { name: translate("header.ulyanovsk"), id: 1 },
+        { name: translate("header.moscow"), id: 2 },
+        { name: translate("header.krasnodar"), id: 3 },
       ];
-      const city = ref(localStorage.getItem("city") || "Ульяновск");
+      const city = ref(
+        localStorage.getItem("city") || translate("header.ulyanovsk"),
+      );
       const isOpen = ref(false);
 
       function handleSelect(item) {
@@ -56,7 +62,14 @@
         cb(results);
       }
 
-      return { city, handleSelect, querySearch, openBurger, isOpen };
+      return {
+        city,
+        handleSelect,
+        querySearch,
+        openBurger,
+        isOpen,
+        translate,
+      };
     },
   };
 </script>
