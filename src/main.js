@@ -22,7 +22,7 @@ new Vue({
   created() {
     const { getLocale } = useI18n();
     i18n.locale = getLocale();
-    localStorage.setItem("lang", getLocale() === "Ru" ? "Ru" : "Eng");
+    localStorage.setItem("lang", getLocale() === "ru" ? "Ru" : "Eng");
   },
   store,
   render: h => h(App),
