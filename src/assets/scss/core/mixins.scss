@@ -27,3 +27,8 @@
     @content;
   }
 }
+
+@mixin container {
+  max-width: 1248px !important;
+  margin: 0 auto !important;
+}

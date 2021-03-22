@@ -1,6 +1,6 @@
 <template>
   <el-header class="header">
-    <div class="header-content__wrapper">
+    <div class="header-content__wrapper el-container">
       <p class="header__title">
         {{ translate("header.logo") }}
       </p>
@@ -79,6 +79,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 
     @include md-and-down {
       padding: 16px 16px 32px 16px !important;
@@ -121,5 +122,9 @@
 
   .el-autocomplete {
     max-width: 96px;
+  }
+
+  .el-container {
+    @include container;
   }
 </style>
