@@ -22,7 +22,7 @@
       flex-direction: column;
       align-items: flex-end;
       padding: 16px !important;
-      background: #151b1f;
+      background: $blue-dark;
     }
 
     &__copyrights {
