@@ -23,7 +23,7 @@
 <script>
   import Header from "@/components/common/home/Header";
   import Footer from "@/components/common/home/Footer";
-  import Carousel from "@/components/common/Carousel";
+  import Carousel from "@/components/common/home/Carousel";
   import { useI18n } from "@/lang";
   import { useRouter } from "@/router";
 

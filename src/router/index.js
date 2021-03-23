@@ -13,6 +13,7 @@ const routes = [
   {
     path: "/order",
     name: "Order",
+    redirect: { name: "Location" },
     /*
      * route level code-splitting
      * this generates a separate chunk (about.[hash].js) for this route
@@ -20,6 +21,35 @@ const routes = [
      */
     component: () =>
       import(/* webpackChunkName: "Order" */ "../views/OrderForm.vue"),
+    children: [
+      {
+        path: "location",
+        name: "Location",
+        meta: { title: "Местоположение" },
+        component: () =>
+          import(
+            /* webpackChunkName: "Location" */ "../components/common/order/Location.vue"
+          ),
+      },
+      {
+        path: "model",
+        name: "Model",
+        meta: { title: "Модель" },
+        // component: Home,
+      },
+      {
+        path: "extra",
+        name: "Extra",
+        meta: { title: "Дополнительно" },
+        // component: Home,
+      },
+      {
+        path: "amount",
+        name: "Amount",
+        meta: { title: "Итого" },
+        // component: Home,
+      },
+    ],
   },
 ];
 

@@ -2,13 +2,13 @@
   <div class="order-form">
     <Header />
     <div class="order-form__breadcrumb-wrapper">
-      <Breadcrumbs />
+      <Breadcrumbs :routes="breadcrumb" />
     </div>
     <div class="el-container">
       <div class="order-form__content">
-        content
+        <router-view></router-view>
       </div>
-      <div class="order-form__aside">
+      <aside class="order-form__aside">
         <p class="aside__order">Ваш заказ:</p>
         <div class="aside__location">
           <span>Пункт выдачи</span>
@@ -20,20 +20,32 @@
           <span>от 8 000 до 12 000 ₽</span>
         </div>
         <el-button disabled>Выбрать модель</el-button>
-      </div>
+      </aside>
     </div>
   </div>
 </template>
 
 <script>
   import Header from "@/components/common/home/Header";
-  import Breadcrumbs from "@/components/common/Breadcrumbs";
+  import Breadcrumbs from "@/components/common/order/Breadcrumbs";
+  import { useRouter } from "@/router";
+  import { computed } from "@vue/composition-api";
 
   export default {
     name: "OrderForm",
     components: {
       Header,
       Breadcrumbs,
+    },
+    setup() {
+      const { routes } = useRouter();
+      const breadcrumb = computed(
+        () =>
+          routes.filter(crumb => crumb.name.toLowerCase().includes("order"))[0]
+            .children,
+      );
+
+      return { routes, breadcrumb };
     },
   };
 </script>
@@ -83,7 +95,7 @@
   }
 
   .el-container {
-    @include container;
+    padding: 0 64px;
     width: 100%;
   }
 
@@ -99,7 +111,6 @@
     &__location {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       margin-bottom: 32px;
       width: 100%;
 
@@ -107,13 +118,15 @@
         &:first-child {
           font-size: 14px;
           color: $black;
+          text-align: left;
         }
         &:last-child {
           font-size: 14px;
           color: $gray;
+          text-align: right;
         }
         &:nth-child(2) {
-          border-bottom: 1px dotted $gray-light;
+          border-bottom: 2px dotted $gray-light;
           width: 74px;
         }
       }
