@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <el-container class="app__container">
-      <Navbar @open="openBurgerMenu" />
-      <NavbarBurgerMenu :isMenuOpen.sync="isMenuOpen" />
+      <navbar @open="openBurgerMenu" />
+      <navbar-burger-menu :isMenuOpen.sync="isMenuOpen" />
       <el-container>
         <el-main>
           <transition name="fade">
