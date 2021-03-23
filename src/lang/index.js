@@ -23,11 +23,10 @@ const messages = {
 };
 
 const getLocale = () => {
-  const language =
-    localStorage
-      .getItem("lang")
-      .toLowerCase()
-      .slice(0, 2) || (navigator.language || "ru").toLowerCase().slice(0, 2);
+  const lsLang = localStorage.getItem("lang");
+  const language = !lsLang
+    ? (navigator.language || "ru").toLowerCase().slice(0, 2)
+    : lsLang;
   const locales = Object.keys(messages);
   for (const locale of locales) {
     if (language.indexOf(locale) > -1) {
@@ -40,11 +39,7 @@ const getLocale = () => {
 };
 
 const i18n = new VueI18n({
-  locale:
-    localStorage
-      .getItem("lang")
-      .toLowerCase()
-      .slice(0, 2) || "ru",
+  locale: navigator.language.slice(0, 2) || "ru",
   fallbackLocale: getLocale(),
   messages,
 });

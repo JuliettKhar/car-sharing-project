@@ -87,19 +87,19 @@
 
     &__content-btn {
       &-parking {
-        background: linear-gradient(90deg, #13493f 0%, #0c7b1b 100%);
+        background: linear-gradient(90deg, $green-ocean 0%, $green-deep 100%);
       }
 
       &-insurance {
-        background: linear-gradient(90deg, #132949 0%, #0c7b67 100%);
+        background: linear-gradient(90deg, $blue 0%, $blue-green 100%);
       }
 
       &-gasoline {
-        background: linear-gradient(90deg, #493013 0%, #7b0c3b 100%);
+        background: linear-gradient(90deg, $brown 0%, $pink 100%);
       }
 
       &-to {
-        background: linear-gradient(90deg, #281349 0%, #720c7b 100%);
+        background: linear-gradient(90deg, $deep-blue 0%, $ultraviolet 100%);
       }
     }
 
