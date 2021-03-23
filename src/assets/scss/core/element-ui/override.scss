@@ -1,18 +1,5 @@
 .el-aside {
-  position: static;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  align-items: center;
   width: 64px !important;
-  height: 100%;
-  background: #151B1F;
-
-  @include md-and-down {
-    position: fixed;
-    height: 90px;
-    background: $white;
-  }
 }
 
 .el-header,
@@ -78,7 +65,7 @@
 }
 
 .el-input--suffix .el-input__inner {
-    padding-right: 10px !important;
+    padding-right: 0 !important;
 }
 
 .el-breadcrumb__inner {

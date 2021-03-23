@@ -1,5 +1,5 @@
 <template>
-  <el-aside>
+  <el-aside class="navbar-aside">
     <a
       role="button"
       class="navbar-burger"
@@ -12,38 +12,22 @@
       <span aria-hidden="true"></span>
     </a>
 
-    <a role="button" class="navbar-lang" @click="toggleLang">
-      {{ displayedLang }}
-    </a>
+    <navbar-lang-toggle />
   </el-aside>
 </template>
 
 <script>
-  import { computed, ref } from "@vue/composition-api";
-  import i18n from "@/lang";
+  import NavbarLangToggle from "@/components/common/navbar/NavbarLangToggle";
 
   export default {
     name: "Navbar",
+    components: { NavbarLangToggle },
     setup(props, { emit }) {
-      const currentLang = ref(localStorage.getItem("lang"));
-      const isToggleLang = ref(currentLang.value === "Eng" || false);
-      const language = computed(() => (isToggleLang.value ? "Eng" : "Ru"));
-      const displayedLang = computed(() => currentLang.value || "Ru");
-
-      function toggleLang() {
-        isToggleLang.value = !isToggleLang.value;
-
-        localStorage.setItem("lang", language.value);
-        i18n.locale = language.value.toLowerCase().slice(0, 2);
-        currentLang.value = language.value;
-      }
       function openBurger() {
         emit("open");
       }
 
       return {
-        displayedLang,
-        toggleLang,
         openBurger,
       };
     },
@@ -52,6 +36,23 @@
 
 <style scoped lang="scss">
   .navbar {
+    &-aside {
+      position: static;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      align-items: center;
+
+      height: 100%;
+      background: #151b1f;
+
+      @include md-and-down {
+        position: fixed;
+        height: 90px;
+        background: $white;
+      }
+    }
+
     &-burger {
       position: relative;
       display: flex;
@@ -76,7 +77,7 @@
         margin: 0 auto;
         border: 1px solid $white;
         border-radius: 5px;
-        background: #fff;
+        background: $white;
 
         @include md-and-down {
           height: 1px;

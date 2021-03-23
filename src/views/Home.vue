@@ -4,7 +4,7 @@
       <Header />
       <div class="home__main-content">
         <div>
-          <p class="">{{ translate("home.carsharing") }}</p>
+          <p>{{ translate("home.carsharing") }}</p>
           <p>{{ translate("home.sectionTitle") }}</p>
           <p>{{ translate("home.sectionDescription") }}</p>
           <el-button class="home__main-content__button" @click="makeOrder">
@@ -15,7 +15,7 @@
       <Footer />
     </div>
     <div class="home__slider">
-      <Carousel :slides="slides" />
+      <carousel :slides="slides" />
     </div>
   </section>
 </template>
@@ -171,29 +171,33 @@
       &:active {
         background: linear-gradient(
           90deg,
-          #076432 2.61%,
-          #013c27 112.6%
+          $light-green 2.61%,
+          $green-darker 112.6%
         ) !important;
       }
 
       &:hover {
         background: linear-gradient(
           90deg,
-          #0b934a 2.61%,
-          #026e47 112.6%
+          $green-grass 2.61%,
+          $green-dark 112.6%
         ) !important;
       }
 
       &:disabled {
         background: $gray-light;
-        background: linear-gradient(90deg, #0b934a 2.61%, #026e47 112.6%);
+        background: linear-gradient(
+          90deg,
+          $green-grass 2.61%,
+          $green-dark 112.6%
+        );
       }
 
       &:focus {
         background: linear-gradient(
           90deg,
-          #0b934a 2.61%,
-          #026e47 112.6%
+          $green-grass 2.61%,
+          $green-dark 112.6%
         ) !important;
       }
     }

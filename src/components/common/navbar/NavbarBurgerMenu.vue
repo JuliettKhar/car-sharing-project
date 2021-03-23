@@ -17,11 +17,13 @@
         </li>
       </ul>
     </nav>
+    <navbar-lang-toggle />
   </div>
 </template>
 
 <script>
   import { useI18n } from "@/lang";
+  import NavbarLangToggle from "@/components/common/navbar/NavbarLangToggle";
 
   export default {
     name: "NavbarBurgerMenu",
@@ -31,6 +33,7 @@
         default: false,
       },
     },
+    components: { NavbarLangToggle },
     setup(props, { emit }) {
       const { translate } = useI18n();
       const pages = [
@@ -75,7 +78,7 @@
       box-sizing: border-box;
       height: 100%;
       justify-content: center;
-      background: #111518;
+      background: $blue-darker;
       max-width: calc(50% + 33px);
       width: calc(50% + 33px);
 

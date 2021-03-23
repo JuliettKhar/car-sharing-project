@@ -37,27 +37,23 @@
       );
       const isOpen = ref(false);
 
-      function handleSelect(item) {
-        city.value = item.name;
-        localStorage.setItem("city", item.name);
+      function handleSelect({ name }) {
+        city.value = name;
+        localStorage.setItem("city", name);
       }
 
       function openBurger() {
         isOpen.value = true;
       }
 
-      function createFilter(queryString) {
-        return link => {
-          return (
-            link.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-          );
-        };
+      function createFilter(name, queryString) {
+        return name.toLowerCase().includes(queryString.toLowerCase());
       }
 
       function querySearch(queryString, cb) {
         const links = cities;
         const results = queryString
-          ? links.filter(createFilter(queryString))
+          ? links.filter(({ name }) => createFilter(name, queryString))
           : links;
         cb(results);
       }
@@ -121,7 +117,7 @@
   }
 
   .el-autocomplete {
-    max-width: 96px;
+    max-width: 120px;
   }
 
   .el-container {
