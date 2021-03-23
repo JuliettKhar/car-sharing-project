@@ -45,11 +45,16 @@
       text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
       cursor: pointer;
 
-      @include md {
+      @include xl {
+        display: none;
+      }
+
+      @include lg-and-down {
         display: none;
       }
 
       @include sm {
+        display: block;
         position: absolute;
         left: 26px;
         bottom: 0;
