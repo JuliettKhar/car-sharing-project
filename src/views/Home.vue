@@ -7,7 +7,7 @@
           <p>{{ translate("home.carsharing") }}</p>
           <p>{{ translate("home.sectionTitle") }}</p>
           <p>{{ translate("home.sectionDescription") }}</p>
-          <el-button class="home__main-content__button">
+          <el-button class="home__main-content__button" @click="makeOrder">
             {{ translate("home.reserve") }}
           </el-button>
         </div>
@@ -23,14 +23,16 @@
 <script>
   import Header from "@/components/common/home/Header";
   import Footer from "@/components/common/home/Footer";
-  import Carousel from "@/components/common/Carousel";
+  import Carousel from "@/components/common/home/Carousel";
   import { useI18n } from "@/lang";
+  import { useRouter } from "@/router";
 
   export default {
     name: "Home",
     components: { Header, Footer, Carousel },
     setup() {
       const { translate } = useI18n();
+      const { router } = useRouter();
       const slides = [
         {
           name: "parking",
@@ -54,7 +56,11 @@
         },
       ];
 
-      return { slides, translate };
+      function makeOrder() {
+        router.push({ name: "Order" });
+      }
+
+      return { slides, translate, makeOrder };
     },
   };
 </script>

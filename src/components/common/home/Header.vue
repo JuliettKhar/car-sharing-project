@@ -1,11 +1,13 @@
 <template>
   <el-header class="header">
-    <div class="header-content__wrapper">
+    <div
+      :class="['header-content__wrapper', hasOrderForm ? 'el-container' : '']"
+    >
       <p class="header__title">
         {{ translate("header.logo") }}
       </p>
       <div class="header-location">
-        <img src="images/icons/point.svg" alt="point image" />
+        <img src="/images/icons/point.svg" alt="point image" />
         <el-autocomplete
           v-model="city"
           value-key="name"
@@ -20,12 +22,12 @@
 </template>
 
 <script>
-  import { ref } from "@vue/composition-api";
+  import { computed, ref } from "@vue/composition-api";
   import { useI18n } from "@/lang";
 
   export default {
     name: "Header",
-    setup() {
+    setup(props, { root }) {
       const { translate } = useI18n();
       const cities = [
         { name: translate("header.ulyanovsk"), id: 1 },
@@ -36,6 +38,9 @@
         localStorage.getItem("city") || translate("header.ulyanovsk"),
       );
       const isOpen = ref(false);
+      const hasOrderForm = computed(
+        () => root.$route?.path.toLowerCase().includes("order") || false,
+      );
 
       function handleSelect({ name }) {
         city.value = name;
@@ -65,6 +70,7 @@
         openBurger,
         isOpen,
         translate,
+        hasOrderForm,
       };
     },
   };
@@ -75,6 +81,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 
     @include md-and-down {
       padding: 16px 16px 32px 16px !important;
@@ -117,5 +124,9 @@
 
   .el-autocomplete {
     max-width: 120px;
+  }
+
+  .el-container {
+    padding: 0 64px;
   }
 </style>

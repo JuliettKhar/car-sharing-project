@@ -67,3 +67,9 @@
 .el-input--suffix .el-input__inner {
     padding-right: 0 !important;
 }
+
+.el-autocomplete.autocomplete {
+    & div > input {
+      padding-right: 30px !important;
+    }
+  }
