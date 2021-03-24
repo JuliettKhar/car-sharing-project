@@ -35,7 +35,10 @@ const routes = [
         path: "model",
         name: "Model",
         meta: { title: "Модель" },
-        // component: Home,
+        component: () =>
+          import(
+            /* webpackChunkName: "Model" */ "../components/common/order/Model.vue"
+          ),
       },
       {
         path: "extra",

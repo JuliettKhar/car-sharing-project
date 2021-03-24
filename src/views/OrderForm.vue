@@ -97,6 +97,7 @@
   .el-container {
     padding: 0 64px;
     width: 100%;
+    overflow-y: auto;
   }
 
   .aside {

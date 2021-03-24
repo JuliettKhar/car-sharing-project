@@ -7,7 +7,7 @@
         {{ translate("header.logo") }}
       </p>
       <div class="header-location">
-        <img src="images/icons/point.svg" alt="point image" />
+        <img src="/images/icons/point.svg" alt="point image" />
         <el-autocomplete
           v-model="city"
           value-key="name"
