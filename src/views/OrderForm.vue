@@ -124,6 +124,7 @@
           font-size: 14px;
           color: $gray;
           text-align: right;
+          max-width: 120px;
         }
         &:nth-child(2) {
           border-bottom: 2px dotted $gray-light;

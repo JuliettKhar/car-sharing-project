@@ -4,11 +4,11 @@
       <navbar @open="openBurgerMenu" />
       <navbar-burger-menu :isMenuOpen.sync="isMenuOpen" />
       <el-container>
-        <el-main>
+        <main class="app__main">
           <transition name="fade">
             <router-view />
           </transition>
-        </el-main>
+        </main>
       </el-container>
     </el-container>
   </div>
