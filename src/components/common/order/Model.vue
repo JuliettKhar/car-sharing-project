@@ -1,15 +1,10 @@
 <template>
   <div class="model">
     <div class="model__filters">
-      <el-radio-group v-model="carFilter">
-        <el-radio
-          v-for="(model, index) in filterModel"
-          :key="index"
-          :label="model.value"
-        >
-          {{ model.title }}
-        </el-radio>
-      </el-radio-group>
+      <radio-group
+        :model-data.sync="carFilter"
+        :car-filter-data="filterModel"
+      />
     </div>
     <div class="model__cars">
       <div
@@ -28,9 +23,11 @@
 
 <script>
   import { ref } from "@vue/composition-api";
+  import RadioGroup from "@/components/common/order/common/RadioGroup";
 
   export default {
     name: "Model",
+    components: { RadioGroup },
     setup() {
       const filterModel = [
         { value: "all", title: "Все модели" },

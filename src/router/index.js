@@ -44,7 +44,10 @@ const routes = [
         path: "extra",
         name: "Extra",
         meta: { title: "Дополнительно" },
-        // component: Home,
+        component: () =>
+          import(
+            /* webpackChunkName: "Extra" */ "../components/common/order/Extra.vue"
+          ),
       },
       {
         path: "amount",
