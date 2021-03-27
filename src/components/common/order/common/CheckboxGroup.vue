@@ -5,7 +5,7 @@
       :key="index"
       :label="item"
     >
-      {{ item }}
+      {{ $translate(`checkboxGroup.${item}`) }}
     </el-checkbox>
   </el-checkbox-group>
 </template>
@@ -37,4 +37,23 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+  ::v-deep .el-checkbox__inner::after {
+    border: 2px solid #121212;
+    border-left: 0;
+    border-top: 0;
+    height: 9px;
+    left: 5px;
+    top: -3px;
+  }
+
+  .el-checkbox-group {
+    display: flex;
+    flex-direction: row;
+
+    @include sm {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

@@ -22,6 +22,7 @@
         localStorage.setItem("lang", language.value);
         i18n.locale = language.value.toLowerCase().slice(0, 2);
         currentLang.value = language.value;
+        localStorage.removeItem("city");
       }
 
       return { toggleLang, displayedLang };

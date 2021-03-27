@@ -1,10 +1,10 @@
 <template>
   <el-autocomplete
-    v-model="model"
+    v-model="city"
     value-key="name"
     class="autocomplete"
     :fetch-suggestions="querySearch"
-    :placeholder="select"
+    :placeholder="translate('autocomplete.placeholder')"
     @select="handleSelect"
   >
     <i
@@ -20,23 +20,24 @@
   import { useI18n } from "@/lang";
   import { ref } from "@vue/composition-api";
 
+  const { translate } = useI18n();
+
   export default {
     name: "Autocomplete",
     props: {
       model: {
         type: String,
-        default: "Начните вводить пункт ...",
+        default: "",
       },
     },
     setup() {
-      const { translate } = useI18n();
       const cities = [
-        { name: translate("header.ulyanovsk"), id: 1 },
-        { name: translate("header.moscow"), id: 2 },
-        { name: translate("header.krasnodar"), id: 3 },
+        { name: translate("cities.ulyanovsk"), id: 1 },
+        { name: translate("cities.moscow"), id: 2 },
+        { name: translate("cities.krasnodar"), id: 3 },
       ];
       const city = ref(
-        localStorage.getItem("city") || translate("header.ulyanovsk"),
+        localStorage.getItem("city") || translate("cities.ulyanovsk"),
       );
 
       return {

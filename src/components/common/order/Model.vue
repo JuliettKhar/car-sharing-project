@@ -29,11 +29,7 @@
     name: "Model",
     components: { RadioGroup },
     setup() {
-      const filterModel = [
-        { value: "all", title: "Все модели" },
-        { value: "economy", title: "Эконом" },
-        { value: "premium", title: "Премиум" },
-      ];
+      const filterModel = ["all", "economy", "premium"];
       const carFilter = ref("all");
       const isActiveCar = ref(0);
       const carImages = [
@@ -58,7 +54,6 @@
   .model {
     &__filters {
       display: flex;
-      margin-top: 34px;
     }
 
     &__cars {
@@ -70,6 +65,11 @@
       border: 1px solid $gray-light;
       max-width: 80%;
       box-sizing: border-box;
+
+      @include sm {
+        max-width: 100%;
+        margin: 30px 0 0 0;
+      }
 
       &-item {
         width: 50%;
@@ -110,6 +110,10 @@
           &:nth-child(2) {
             font-size: 14px;
             color: $gray;
+
+            @include sm {
+              font-size: 12px;
+            }
           }
         }
 

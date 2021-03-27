@@ -2,16 +2,18 @@
   <div class="location">
     <div class="location__selectors">
       <div class="location__selectors-city">
-        <span>Город</span>
-        <Autocomplete model="Ульяновск" />
+        <span>{{ $translate("orderForm.content.location.city") }}</span>
+        <Autocomplete :model="model" />
       </div>
       <div class="location__selectors-location">
-        <span>Пункт выдачи</span>
+        <span>{{ $translate("orderForm.content.location.location") }}</span>
         <Autocomplete />
       </div>
     </div>
     <div class="location__map">
-      <p class="map-title">Выбрать на карте:</p>
+      <p class="map-title">
+        {{ $translate("orderForm.content.location.map.title") }}
+      </p>
       <img src="/images/map.png" alt="" />
     </div>
   </div>
@@ -19,10 +21,19 @@
 
 <script>
   import Autocomplete from "@/components/common/order/common/Autocomplete";
+  import { ref } from "@vue/composition-api";
+  import { useI18n } from "@/lang";
+
   export default {
     name: "Location",
     components: {
       Autocomplete,
+    },
+    setup() {
+      const { translate } = useI18n();
+      const model = ref(translate("cities.ulyanovsk"));
+
+      return { model };
     },
   };
 </script>
@@ -32,7 +43,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-top: 32px;
 
     &__map {
       & img {
@@ -62,6 +72,10 @@
         font-weight: 300;
         font-size: 14px;
         color: $black;
+
+        @include sm {
+          text-align: left;
+        }
       }
     }
 

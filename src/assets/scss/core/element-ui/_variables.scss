@@ -155,16 +155,16 @@ $--icon-color-base: $--color-info !default;
 /// fontSize||Font|1
 $--checkbox-font-size: 14px !default;
 /// fontWeight||Font|1
-$--checkbox-font-weight: $--font-weight-primary !default;
+$--checkbox-font-weight: 300;
 /// color||Color|0
-$--checkbox-font-color: $--color-text-regular !default;
-$--checkbox-input-height: 14px !default;
-$--checkbox-input-width: 14px !default;
+$--checkbox-font-color: $gray;
+$--checkbox-input-height: 12px;
+$--checkbox-input-width: 12px;
 /// borderRadius||Border|2
 $--checkbox-border-radius: $--border-radius-small !default;
 /// color||Color|0
 $--checkbox-background-color: $--color-white !default;
-$--checkbox-input-border: $--border-base !default;
+$--checkbox-input-border: 1px solid $gray;
 
 /// color||Color|0
 $--checkbox-disabled-border-color: $--border-color-base !default;
@@ -176,13 +176,13 @@ $--checkbox-disabled-checked-input-border-color: $--border-color-base !default;
 $--checkbox-disabled-checked-icon-color: $--color-text-placeholder !default;
 
 /// color||Color|0
-$--checkbox-checked-font-color: $--color-primary !default;
-$--checkbox-checked-input-border-color: $--color-primary !default;
+$--checkbox-checked-font-color: $black;
+$--checkbox-checked-input-border-color: $green;
 /// color||Color|0
-$--checkbox-checked-background-color: $--color-primary !default;
-$--checkbox-checked-icon-color: $--fill-base !default;
+$--checkbox-checked-background-color: $white;
+$--checkbox-checked-icon-color: $black;
 
-$--checkbox-input-border-color-hover: $--color-primary !default;
+$--checkbox-input-border-color-hover: $green;
 /// height||Other|4
 $--checkbox-bordered-height: 40px !default;
 /// padding||Spacing|3
@@ -220,7 +220,7 @@ $--checkbox-button-checked-border-color: $--color-primary !default;
 /// fontSize||Font|1
 $--radio-font-size: $--font-size-base !default;
 /// fontWeight||Font|1
-$--radio-font-weight: $--font-weight-primary !default;
+$--radio-font-weight: 300;
 /// color||Color|0
 $--radio-font-color: $gray;
 $--radio-input-height: 14px !default;
@@ -816,9 +816,9 @@ $--datepicker-inrange-background-color: $--border-color-extra-light !default;
 /// color||Color|0
 $--datepicker-inrange-hover-background-color: $--border-color-extra-light !default;
 /// color||Color|0
-$--datepicker-active-color: $--color-primary !default;
+$--datepicker-active-color: $green;
 /// color||Color|0
-$--datepicker-hover-font-color: $--color-primary !default;
+$--datepicker-hover-font-color:$green;
 $--datepicker-cell-hover-color: #fff !default;
 
 /* Loading

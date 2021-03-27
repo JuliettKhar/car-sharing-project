@@ -25,7 +25,7 @@ const routes = [
       {
         path: "location",
         name: "Location",
-        meta: { title: "Местоположение" },
+        meta: { title: "location" },
         component: () =>
           import(
             /* webpackChunkName: "Location" */ "../components/common/order/Location.vue"
@@ -34,7 +34,7 @@ const routes = [
       {
         path: "model",
         name: "Model",
-        meta: { title: "Модель" },
+        meta: { title: "model" },
         component: () =>
           import(
             /* webpackChunkName: "Model" */ "../components/common/order/Model.vue"
@@ -43,7 +43,7 @@ const routes = [
       {
         path: "extra",
         name: "Extra",
-        meta: { title: "Дополнительно" },
+        meta: { title: "extra" },
         component: () =>
           import(
             /* webpackChunkName: "Extra" */ "../components/common/order/Extra.vue"
@@ -52,8 +52,11 @@ const routes = [
       {
         path: "amount",
         name: "Amount",
-        meta: { title: "Итого" },
-        // component: Home,
+        meta: { title: "amount" },
+        component: () =>
+          import(
+            /* webpackChunkName: "Amount" */ "../components/common/order/Amount.vue"
+          ),
       },
     ],
   },

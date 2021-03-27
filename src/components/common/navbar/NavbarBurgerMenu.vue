@@ -3,7 +3,7 @@
     <div class="navbar-burger-menu-close" @click="closeMenu"></div>
     <nav>
       <router-link v-for="(page, index) in pages" :key="index" to="">
-        {{ translate(page) }}
+        {{ $translate(page) }}
       </router-link>
       <ul class="navbar-burger-menu__social">
         <li class="navbar-burger-menu__social-item">
@@ -22,7 +22,6 @@
 </template>
 
 <script>
-  import { useI18n } from "@/lang";
   import NavbarLangToggle from "@/components/common/navbar/NavbarLangToggle";
 
   export default {
@@ -35,7 +34,6 @@
     },
     components: { NavbarLangToggle },
     setup(props, { emit }) {
-      const { translate } = useI18n();
       const pages = [
         "navbarBurgerMenu.parking",
         "navbarBurgerMenu.insurance",
@@ -47,7 +45,7 @@
         emit("update:isMenuOpen", false);
       }
 
-      return { pages, closeMenu, translate };
+      return { pages, closeMenu };
     },
   };
 </script>

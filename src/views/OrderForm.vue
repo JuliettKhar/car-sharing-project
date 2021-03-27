@@ -9,17 +9,19 @@
         <router-view></router-view>
       </div>
       <aside class="order-form__aside">
-        <p class="aside__order">Ваш заказ:</p>
+        <p class="aside__order">{{ $translate("orderForm.aside.order") }}</p>
         <div class="aside__location">
-          <span>Пункт выдачи</span>
+          <span>{{ $translate("orderForm.aside.location") }}</span>
           <span class=""></span>
-          <span>Ульяновск, Нариманова 42</span>
+          <span>{{ $translate("orderForm.aside.city") }}</span>
         </div>
         <div class="aside__total">
-          <span>Цена:</span>
-          <span>от 8 000 до 12 000 ₽</span>
+          <span>{{ $translate("orderForm.aside.price") }}</span>
+          <span>{{ $translate("orderForm.aside.amount") }}</span>
         </div>
-        <el-button disabled>Выбрать модель</el-button>
+        <el-button disabled>{{
+          $translate("orderForm.aside.chooseModel")
+        }}</el-button>
       </aside>
     </div>
   </div>
@@ -58,6 +60,7 @@
 
     &__breadcrumb-wrapper {
       position: relative;
+      margin-bottom: 34px;
 
       &:before,
       &:after {
@@ -81,6 +84,11 @@
     &__content {
       width: 70%;
       max-width: 70%;
+
+      @include sm {
+        width: 100%;
+        max-width: 100%;
+      }
     }
 
     &__aside {
@@ -91,6 +99,14 @@
       width: 30%;
       max-width: 30%;
       border-left: 1px solid $gray-light;
+
+      @include sm {
+        padding: 32px 0 32px 0;
+        width: 100%;
+        max-width: 100%;
+        border-left: none;
+        align-items: flex-start;
+      }
     }
   }
 
@@ -98,6 +114,12 @@
     padding: 0 64px;
     width: 100%;
     overflow-y: auto;
+    flex-wrap: nowrap;
+
+    @include sm {
+      flex-wrap: wrap;
+      padding: 0 30px;
+    }
   }
 
   .aside {
@@ -111,12 +133,20 @@
 
     &__location {
       display: flex;
+      flex-direction: row;
       justify-content: space-between;
       margin-bottom: 32px;
       width: 100%;
 
+      @include sm {
+        flex-wrap: wrap;
+        flex-direction: column;
+      }
+
       & span {
         &:first-child {
+          display: flex;
+          align-items: flex-end;
           font-size: 14px;
           color: $black;
           text-align: left;
@@ -126,10 +156,19 @@
           color: $gray;
           text-align: right;
           max-width: 120px;
+
+          @include sm {
+            text-align: left;
+          }
         }
         &:nth-child(2) {
+          display: inline-block;
           border-bottom: 2px dotted $gray-light;
           width: 74px;
+
+          @include sm {
+            display: none;
+          }
         }
       }
     }
@@ -139,11 +178,19 @@
       text-align: left;
       margin-bottom: 32px;
 
+      & span:first-child {
+        margin-right: 4px;
+      }
+
       & span {
         &:first-child,
         &:last-child {
           font-size: 16px;
           color: $black;
+
+          @include md-and-down {
+            font-size: 14px;
+          }
         }
 
         &:first-child {

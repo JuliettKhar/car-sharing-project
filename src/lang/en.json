@@ -26,15 +26,77 @@
   },
   "header": {
     "logo": "Need for drive",
-    "cityPlaceholder": "Typing the city",
-    "ulyanovsk": "Ulyanovsk",
-    "krasnodar": "Krasnodar",
-    "moscow": "Moscow"
+    "cityPlaceholder": "Typing the city"
   },
   "navbarBurgerMenu": {
     "parking": "PARKING",
     "insurance": "INSURANCE",
     "gasoline": "PETROL",
     "service": "SERVICE"
+  },
+  "orderForm": {
+    "aside": {
+      "order": "Your order:",
+      "location": "Pickup point",
+      "city": "Ulyanovsk, Narimanova 42",
+      "price": "Price:",
+      "amount": "от 8 000 до 12 000 ₽",
+      "chooseModel": "Select model"
+    },
+    "content": {
+      "location": {
+        "city": "City",
+        "location": "Pickup point",
+        "map": {
+          "title": "Select on the map:"
+        }
+      },
+      "extra": {
+        "color": "Color",
+        "date": "Lease date",
+        "from": "From",
+        "to": "To",
+        "tariff": "Rate",
+        "extraOpts": "Additional services",
+        "placeholder": "Enter date and time"
+      },
+      "amount": {
+        "model": "Hyndai, i30 N",
+        "number": "K 761 HA 73",
+        "fuel": "Fuel",
+        "fuelVal": "100",
+        "available": "Available from",
+        "availableTime": "12.06.2019 12:00"
+      }
+    }
+  },
+  "radioGroup": {
+    "all": "All models",
+    "economy": "Economy",
+    "premium": "Premium",
+    "any": "Any",
+    "red": "Red",
+    "blue": "Blue",
+    "minute": "Per minute, 7₽ / min",
+    "day": "For a day, 1999 ₽ / day"
+  },
+  "checkboxGroup": {
+    "full": "Full tank, 500p",
+    "child": "Baby chair, 200р",
+    "rightDrive": "Right hand drive, 1600р"
+  },
+  "breadcrumbs": {
+    "location": "Location",
+    "model": "Model",
+    "extra": "Extra",
+    "amount": "Amount"
+  },
+  "autocomplete": {
+    "placeholder": "Start typing an item ..."
+  },
+  "cities": {
+    "ulyanovsk": "Ulyanovsk",
+    "krasnodar": "Krasnodar",
+    "moscow": "Moscow"
   }
 }
