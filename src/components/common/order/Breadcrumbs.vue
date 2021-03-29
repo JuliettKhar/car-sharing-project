@@ -9,7 +9,7 @@
           getActiveLinkClass(route.name) ? 'is-link-active' : 'breadcrumbs',
         ]"
       >
-        {{ route.meta.title }}
+        {{ $translate(`breadcrumbs.${route.meta.title}`) }}
       </el-breadcrumb-item>
     </el-breadcrumb>
   </div>
@@ -39,11 +39,19 @@
     width: 100%;
     padding: 10px 0;
     box-sizing: border-box;
+
+    @include sm {
+      line-height: 20px;
+    }
   }
 
   .el-container {
     position: relative;
     padding: 0 64px;
+
+    @include sm {
+      padding: 0px 16px;
+    }
   }
 
   ::v-deep .breadcrumbs span,
@@ -55,7 +63,7 @@
   }
 
   ::v-deep .is-link-active span {
-    color: $green;
+    color: $green !important;
   }
 
   ::v-deep .el-breadcrumb__separator[class*="icon"] {

@@ -73,3 +73,22 @@
       padding-right: 30px !important;
     }
   }
+
+.el-radio__input.is-checked .el-radio__inner::after {
+  width: 6px;
+  height: 6px;
+}
+
+.el-date-table td.today span {
+    color: $green !important;
+  }
+
+.el-picker-panel__footer button {
+  color: $green;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $green;
+  }
+}

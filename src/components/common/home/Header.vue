@@ -7,7 +7,7 @@
         {{ translate("header.logo") }}
       </p>
       <div class="header-location">
-        <img src="images/icons/point.svg" alt="point image" />
+        <img src="/images/icons/point.svg" alt="point image" />
         <el-autocomplete
           v-model="city"
           value-key="name"
@@ -30,12 +30,12 @@
     setup(props, { root }) {
       const { translate } = useI18n();
       const cities = [
-        { name: translate("header.ulyanovsk"), id: 1 },
-        { name: translate("header.moscow"), id: 2 },
-        { name: translate("header.krasnodar"), id: 3 },
+        { name: translate("cities.ulyanovsk"), id: 1 },
+        { name: translate("cities.moscow"), id: 2 },
+        { name: translate("cities.krasnodar"), id: 3 },
       ];
       const city = ref(
-        localStorage.getItem("city") || translate("header.ulyanovsk"),
+        localStorage.getItem("city") || translate("cities.ulyanovsk"),
       );
       const isOpen = ref(false);
       const hasOrderForm = computed(

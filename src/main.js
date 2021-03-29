@@ -8,6 +8,8 @@ import { useI18n } from "@/lang";
 import ElementUI from "element-ui";
 import "./assets/scss/core/element-ui/_variables.scss";
 
+const { translate } = useI18n();
+
 Vue.use(VueCompositionAPI);
 
 Vue.use(ElementUI, {
@@ -15,11 +17,14 @@ Vue.use(ElementUI, {
 });
 
 Vue.config.productionTip = false;
+Vue.prototype.$translate = function(value) {
+  return translate(value);
+};
 
 new Vue({
   router,
   i18n,
-  created() {
+  mounted() {
     const { getLocale } = useI18n();
     i18n.locale = getLocale();
     localStorage.setItem("lang", getLocale() === "ru" ? "Ru" : "Eng");

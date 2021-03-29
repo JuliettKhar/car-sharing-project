@@ -9,13 +9,13 @@
         }"
       ></div>
       <div class="carousel__content">
-        <p>{{ translate(slide.title) }}</p>
-        <p>{{ translate(slide.subtitle) }}</p>
+        <p>{{ $translate(slide.title) }}</p>
+        <p>{{ $translate(slide.subtitle) }}</p>
         <el-button
           :class="`carousel__content-btn-${slide.name}`"
           @click="makeOrder"
         >
-          {{ translate("home.slides.more") }}
+          {{ $translate("home.slides.more") }}
         </el-button>
       </div>
     </el-carousel-item>
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-  import { useI18n } from "@/lang";
   import { useRouter } from "@/router";
 
   export default {
@@ -35,13 +34,12 @@
       },
     },
     setup() {
-      const { translate } = useI18n();
       const { router } = useRouter();
 
       function makeOrder() {
         router.push({ name: "Order" });
       }
-      return { translate, makeOrder };
+      return { makeOrder };
     },
   };
 </script>
