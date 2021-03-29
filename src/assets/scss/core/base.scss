@@ -14,8 +14,13 @@ body {
 
     & .app__container {
       height: inherit;
+      overflow-x: hidden;
     }
   }
+}
+
+.app__main {
+  width: 100%;
 }
 
 #app {

@@ -11,15 +11,54 @@ const routes = [
     component: Home,
   },
   {
-    path: "/about",
-    name: "About",
+    path: "/order",
+    name: "Order",
+    redirect: { name: "Location" },
     /*
      * route level code-splitting
      * this generates a separate chunk (about.[hash].js) for this route
      * which is lazy-loaded when the route is visited.
      */
-    // component: () =>
-    // import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () =>
+      import(/* webpackChunkName: "Order" */ "../views/OrderForm.vue"),
+    children: [
+      {
+        path: "location",
+        name: "Location",
+        meta: { title: "location" },
+        component: () =>
+          import(
+            /* webpackChunkName: "Location" */ "../components/common/order/Location.vue"
+          ),
+      },
+      {
+        path: "model",
+        name: "Model",
+        meta: { title: "model" },
+        component: () =>
+          import(
+            /* webpackChunkName: "Model" */ "../components/common/order/Model.vue"
+          ),
+      },
+      {
+        path: "extra",
+        name: "Extra",
+        meta: { title: "extra" },
+        component: () =>
+          import(
+            /* webpackChunkName: "Extra" */ "../components/common/order/Extra.vue"
+          ),
+      },
+      {
+        path: "amount",
+        name: "Amount",
+        meta: { title: "amount" },
+        component: () =>
+          import(
+            /* webpackChunkName: "Amount" */ "../components/common/order/Amount.vue"
+          ),
+      },
+    ],
   },
 ];
 
@@ -28,5 +67,12 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
+export const useRouter = () => {
+  return {
+    routes,
+    router,
+  };
+};
 
 export default router;

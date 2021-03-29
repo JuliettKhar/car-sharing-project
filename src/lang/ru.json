@@ -26,15 +26,77 @@
   },
   "header": {
     "logo": "Need for drive",
-    "cityPlaceholder": "Введите город",
-    "ulyanovsk": "Ulyanovsk",
-    "krasnodar": "Краснодар",
-    "moscow": "Москва"
+    "cityPlaceholder": "Введите город"
   },
   "navbarBurgerMenu": {
     "parking": "ПАРКОВКА",
     "insurance": "СТРАХОВКА",
     "gasoline": "БЕНЗИН",
     "service": "ОБСЛУЖИВАНИЕ"
+  },
+  "orderForm": {
+    "aside": {
+      "order": "Ваш заказ:",
+      "location": "Пункт выдачи",
+      "city": "Ульяновск, Нариманова 42",
+      "price": "Цена:",
+      "amount": "от 8 000 до 12 000 ₽",
+      "chooseModel": "Выбрать модель"
+    },
+    "content": {
+      "location": {
+        "city": "Город",
+        "location": "Пункт выдачи",
+        "map": {
+          "title": "Выбрать на карте:"
+        }
+      },
+      "extra": {
+        "color": "Цвет",
+        "date": "Дата аренды",
+        "from": "C",
+        "to": "По",
+        "tariff": "Тариф",
+        "extraOpts": "Доп услуги",
+        "placeholder": "Введите дату и время"
+      },
+      "amount": {
+        "model": "Hyndai, i30 N",
+        "number": "K 761 HA 73",
+        "fuel": "Топливо",
+        "fuelVal": "100",
+        "available": "Доступна c",
+        "availableTime": "12.06.2019 12:00"
+      }
+    }
+  },
+  "radioGroup": {
+    "all": "Все модели",
+    "economy": "Эконом",
+    "premium": "Премиум",
+    "any": "Любой",
+    "red": "Красный",
+    "blue": "Голубой",
+    "minute": "Поминутно, 7₽/мин",
+    "day": "На сутки, 1999 ₽/сутки"
+  },
+  "checkboxGroup": {
+    "full": "Полный бак, 500р",
+    "child": "Детское кресло, 200р",
+    "rightDrive": "Правый руль, 1600р"
+  },
+  "breadcrumbs": {
+    "location": "Местоположение",
+    "model": "Модель",
+    "extra": "Дополнительно",
+    "amount": "Итого"
+  },
+  "autocomplete": {
+    "placeholder": "Начните вводить пункт ..."
+  },
+    "cities": {
+    "ulyanovsk": "Ульяновск",
+    "krasnodar": "Краснодар",
+    "moscow": "Москва"
   }
 }
