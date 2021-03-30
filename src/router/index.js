@@ -60,6 +60,14 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/confirm-order",
+    name: "Confirm",
+    component: () =>
+      import(
+        /* webpackChunkName: "Confirm" */ "../components/common/order/ConfirmOrder.vue"
+      ),
+  },
 ];
 
 const router = new VueRouter({

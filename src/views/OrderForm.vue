@@ -2,27 +2,12 @@
   <div class="order-form">
     <Header />
     <div class="order-form__breadcrumb-wrapper">
-      <Breadcrumbs :routes="breadcrumb" />
+      <breadcrumbs :routes="breadcrumb" />
     </div>
     <div class="el-container">
       <div class="order-form__content">
         <router-view></router-view>
       </div>
-      <aside class="order-form__aside">
-        <p class="aside__order">{{ $translate("orderForm.aside.order") }}</p>
-        <div class="aside__location">
-          <span>{{ $translate("orderForm.aside.location") }}</span>
-          <span class=""></span>
-          <span>{{ $translate("orderForm.aside.city") }}</span>
-        </div>
-        <div class="aside__total">
-          <span>{{ $translate("orderForm.aside.price") }}</span>
-          <span>{{ $translate("orderForm.aside.amount") }}</span>
-        </div>
-        <el-button disabled>{{
-          $translate("orderForm.aside.chooseModel")
-        }}</el-button>
-      </aside>
     </div>
   </div>
 </template>
@@ -60,7 +45,10 @@
 
     &__breadcrumb-wrapper {
       position: relative;
-      margin-bottom: 34px;
+
+      @include sm {
+        margin-bottom: 0;
+      }
 
       &:before,
       &:after {
@@ -81,15 +69,14 @@
       }
     }
 
-    &__content {
-      width: 70%;
-      max-width: 70%;
+    //&__content {
+    //  width: 100%;
 
-      @include sm {
-        width: 100%;
-        max-width: 100%;
-      }
-    }
+    //@include sm {
+    //  width: 100%;
+    //  max-width: 100%;
+    //}
+    //}
 
     &__aside {
       display: flex;
@@ -122,81 +109,81 @@
     }
   }
 
-  .aside {
-    &__order {
-      display: inline-block;
-      margin: 0 0 26px 0;
-      font-weight: 500;
-      font-size: 18px;
-      color: $black;
-    }
-
-    &__location {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      margin-bottom: 32px;
-      width: 100%;
-
-      @include sm {
-        flex-wrap: wrap;
-        flex-direction: column;
-      }
-
-      & span {
-        &:first-child {
-          display: flex;
-          align-items: flex-end;
-          font-size: 14px;
-          color: $black;
-          text-align: left;
-        }
-        &:last-child {
-          font-size: 14px;
-          color: $gray;
-          text-align: right;
-          max-width: 120px;
-
-          @include sm {
-            text-align: left;
-          }
-        }
-        &:nth-child(2) {
-          display: inline-block;
-          border-bottom: 2px dotted $gray-light;
-          width: 74px;
-
-          @include sm {
-            display: none;
-          }
-        }
-      }
-    }
-
-    &__total {
-      width: 100%;
-      text-align: left;
-      margin-bottom: 32px;
-
-      & span:first-child {
-        margin-right: 4px;
-      }
-
-      & span {
-        &:first-child,
-        &:last-child {
-          font-size: 16px;
-          color: $black;
-
-          @include md-and-down {
-            font-size: 14px;
-          }
-        }
-
-        &:first-child {
-          font-weight: 500;
-        }
-      }
-    }
-  }
+  //.aside {
+  //  &__order {
+  //    display: inline-block;
+  //    margin: 0 0 26px 0;
+  //    font-weight: 500;
+  //    font-size: 18px;
+  //    color: $black;
+  //  }
+  //
+  //  &__location {
+  //    display: flex;
+  //    flex-direction: row;
+  //    justify-content: space-between;
+  //    margin-bottom: 32px;
+  //    width: 100%;
+  //
+  //    @include sm {
+  //      flex-wrap: wrap;
+  //      flex-direction: column;
+  //    }
+  //
+  //    & span {
+  //      &:first-child {
+  //        display: flex;
+  //        align-items: flex-end;
+  //        font-size: 14px;
+  //        color: $black;
+  //        text-align: left;
+  //      }
+  //      &:last-child {
+  //        font-size: 14px;
+  //        color: $gray;
+  //        text-align: right;
+  //        max-width: 120px;
+  //
+  //        @include sm {
+  //          text-align: left;
+  //        }
+  //      }
+  //      &:nth-child(2) {
+  //        display: inline-block;
+  //        border-bottom: 2px dotted $gray-light;
+  //        width: 74px;
+  //
+  //        @include sm {
+  //          display: none;
+  //        }
+  //      }
+  //    }
+  //  }
+  //
+  //  &__total {
+  //    width: 100%;
+  //    text-align: left;
+  //    margin-bottom: 32px;
+  //
+  //    & span:first-child {
+  //      margin-right: 4px;
+  //    }
+  //
+  //    & span {
+  //      &:first-child,
+  //      &:last-child {
+  //        font-size: 16px;
+  //        color: $black;
+  //
+  //        @include md-and-down {
+  //          font-size: 14px;
+  //        }
+  //      }
+  //
+  //      &:first-child {
+  //        font-weight: 500;
+  //      }
+  //    }
+  //  }
+  //}
 </style>

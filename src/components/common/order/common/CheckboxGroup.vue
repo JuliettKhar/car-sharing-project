@@ -39,7 +39,7 @@
 
 <style scoped lang="scss">
   ::v-deep .el-checkbox__inner::after {
-    border: 2px solid #121212;
+    border: 2px solid $black;
     border-left: 0;
     border-top: 0;
     height: 9px;
@@ -51,7 +51,7 @@
     display: flex;
     flex-direction: row;
 
-    @include sm {
+    @include md-and-down {
       flex-direction: column;
       align-items: flex-start;
     }

@@ -44,7 +44,7 @@
     display: flex;
     flex-direction: row;
 
-    @include sm {
+    @include md-and-down {
       flex-direction: column;
       align-items: flex-start;
     }
