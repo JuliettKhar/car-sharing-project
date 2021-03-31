@@ -96,10 +96,19 @@
       box-sizing: border-box;
 
       @include lg-and-down {
-        width: 100%;
-        max-width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         margin: 30px 0 0 0;
         border: none;
+      }
+
+      @include md-and-down {
+        grid-template-columns: 1fr;
+      }
+
+      @include sm {
+        max-width: 100%;
+        grid-template-columns: 1fr;
       }
 
       &-item {
