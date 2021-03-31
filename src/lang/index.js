@@ -24,7 +24,6 @@ const messages = {
 
 const getLocale = () => {
   const lsLang = localStorage.getItem("lang");
-  console.log(lsLang);
   const language = !lsLang
     ? (navigator.language || "ru").toLowerCase().slice(0, 2)
     : lsLang.toLowerCase().slice(0, 2);

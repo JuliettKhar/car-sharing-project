@@ -40,9 +40,18 @@
         localStorage.getItem("city") || translate("cities.ulyanovsk"),
       );
 
+      function querySearch() {}
+
+      function handleSelect() {}
+
+      function handleIconClick() {}
+
       return {
         city,
         translate,
+        querySearch,
+        handleSelect,
+        handleIconClick,
       };
     },
   };
