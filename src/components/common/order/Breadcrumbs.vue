@@ -50,7 +50,7 @@
     padding: 0 64px;
 
     @include sm {
-      padding: 0px 16px;
+      padding: 0 16px;
     }
   }
 
@@ -71,7 +71,7 @@
   }
 
   ::v-deep .el-breadcrumb__inner.is-link:hover {
-    color: #0ec261;
+    color: $green;
     font-weight: bold;
   }
 </style>

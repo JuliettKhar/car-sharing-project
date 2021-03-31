@@ -1,26 +1,50 @@
 <template>
   <div class="amount">
-    <div class="amount__info">
-      <p>{{ $translate("orderForm.content.amount.model") }}</p>
-      <p>{{ $translate("orderForm.content.amount.number") }}</p>
-      <p>
-        {{ $translate("orderForm.content.amount.fuel") }}
-        <span>{{ $translate("orderForm.content.amount.fuelVal") }}</span>
-      </p>
-      <p>
-        {{ $translate("orderForm.content.amount.available") }}
-        <span>{{ $translate("orderForm.content.amount.availableTime") }}</span>
-      </p>
+    <div class="amount__wrapper">
+      <div class="amount__info">
+        <p>{{ $translate("orderForm.content.amount.model") }}</p>
+        <p>{{ $translate("orderForm.content.amount.number") }}</p>
+        <p>
+          {{ $translate("orderForm.content.amount.fuel") }}
+          <span>{{ $translate("orderForm.content.amount.fuelVal") }}</span>
+        </p>
+        <p>
+          {{ $translate("orderForm.content.amount.available") }}
+          <span>{{
+            $translate("orderForm.content.amount.availableTime")
+          }}</span>
+        </p>
+      </div>
+      <div class="amount__info">
+        <img :src="`/images/i30n.png`" alt="" />
+      </div>
     </div>
-    <div class="amount__info">
-      <img :src="`/images/i30n.png`" alt="" />
-    </div>
+    <order-aside :order-items="orderItems" />
   </div>
 </template>
 
 <script>
+  import OrderAside from "@/components/common/order/OrderAside";
+  import { reactive } from "@vue/composition-api";
   export default {
     name: "Amount",
+    components: {
+      OrderAside,
+    },
+    setup() {
+      const orderItems = reactive({
+        city: "Ульяновск, Нариманова 42",
+        model: "Hyndai, i30 N",
+        color: "Голубой",
+        rent: "1д 2ч",
+        tariff: "На сутки",
+        tank: "Да",
+      });
+
+      return {
+        orderItems,
+      };
+    },
   };
 </script>
 
@@ -28,12 +52,26 @@
   .amount {
     display: flex;
     justify-content: space-between;
-    flex-direction: row;
-    max-width: 80%;
+    flex-wrap: nowrap;
+    height: 100%;
 
-    @include md-and-down {
-      flex-direction: column;
-      max-width: 100%;
+    @include sm {
+      flex-wrap: wrap;
+    }
+
+    &__wrapper {
+      justify-content: space-between;
+      max-width: 60%;
+      width: 60%;
+      display: flex;
+      padding-top: 32px;
+
+      @include sm {
+        width: 100%;
+        max-width: 100%;
+        flex-wrap: wrap;
+        padding-top: 20px;
+      }
     }
 
     &__info {

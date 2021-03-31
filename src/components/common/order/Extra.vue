@@ -1,67 +1,71 @@
 <template>
   <div class="extra">
-    <div class="extra__color">
-      <p>{{ $translate("orderForm.content.extra.color") }}</p>
-      <radio-group
-        :model-data.sync="extraState.colorFilter"
-        :car-filter-data="colorModel"
-      />
-    </div>
-    <div class="extra__picker">
-      <p>{{ $translate("orderForm.content.extra.date") }}</p>
-      <div>
-        <span>{{ $translate("orderForm.content.extra.from") }}</span>
-        <el-date-picker
-          v-model="extraState.pickerFromVal"
-          type="datetime"
-          editable
-          :clearable="true"
-          clear-icon="el-icon-close"
-          :placeholder="translate('orderForm.content.extra.placeholder')"
-          format="dd.MM.yyyy HH:mm"
-          value-format="dd-MM-yyyy HH:mm"
-        >
-        </el-date-picker>
+    <div class="extra__wrapper">
+      <div class="extra__color">
+        <p>{{ $translate("orderForm.content.extra.color") }}</p>
+        <radio-group
+          :model-data.sync="extraState.colorFilter"
+          :car-filter-data="colorModel"
+        />
       </div>
-      <div class="">
-        <span>{{ $translate("orderForm.content.extra.to") }}</span>
-        <el-date-picker
-          v-model="extraState.pickerToVal"
-          type="datetime"
-          editable
-          :clearable="true"
-          clear-icon="el-icon-close"
-          :placeholder="translate('orderForm.content.extra.placeholder')"
-        >
-        </el-date-picker>
+      <div class="extra__picker">
+        <p>{{ $translate("orderForm.content.extra.date") }}</p>
+        <div>
+          <span>{{ $translate("orderForm.content.extra.from") }}</span>
+          <el-date-picker
+            v-model="extraState.pickerFromVal"
+            type="datetime"
+            editable
+            :clearable="true"
+            clear-icon="el-icon-close"
+            :placeholder="translate('orderForm.content.extra.placeholder')"
+            format="dd.MM.yyyy HH:mm"
+            value-format="dd-MM-yyyy HH:mm"
+          >
+          </el-date-picker>
+        </div>
+        <div class="">
+          <span>{{ $translate("orderForm.content.extra.to") }}</span>
+          <el-date-picker
+            v-model="extraState.pickerToVal"
+            type="datetime"
+            editable
+            :clearable="true"
+            clear-icon="el-icon-close"
+            :placeholder="translate('orderForm.content.extra.placeholder')"
+          >
+          </el-date-picker>
+        </div>
+      </div>
+      <div class="extra__tariff">
+        <p>{{ $translate("orderForm.content.extra.tariff") }}</p>
+        <radio-group
+          :model-data.sync="extraState.tariffFilter"
+          :car-filter-data="tariffModel"
+        />
+      </div>
+      <div class="extra__options">
+        <p>{{ $translate("orderForm.content.extra.extraOpts") }}</p>
+        <checkbox-group
+          :checkbox-filter-data.sync="extraOptionsData"
+          :checkbox-model-data="extraState.extraOptions"
+        />
       </div>
     </div>
-    <div class="extra__tariff">
-      <p>{{ $translate("orderForm.content.extra.tariff") }}</p>
-      <radio-group
-        :model-data.sync="extraState.tariffFilter"
-        :car-filter-data="tariffModel"
-      />
-    </div>
-    <div class="extra__options">
-      <p>{{ $translate("orderForm.content.extra.extraOpts") }}</p>
-      <checkbox-group
-        :checkbox-filter-data.sync="extraOptionsData"
-        :checkbox-model-data="extraState.extraOptions"
-      />
-    </div>
+    <order-aside :order-items="extraState.orderItems" />
   </div>
 </template>
 
 <script>
-  import { reactive, ref } from "@vue/composition-api";
+  import { reactive } from "@vue/composition-api";
   import RadioGroup from "@/components/common/order/common/RadioGroup";
   import CheckboxGroup from "@/components/common/order/common/CheckboxGroup";
+  import OrderAside from "@/components/common/order/OrderAside";
   import { useI18n } from "@/lang";
 
   export default {
     name: "Extra",
-    components: { RadioGroup, CheckboxGroup },
+    components: { RadioGroup, CheckboxGroup, OrderAside },
     setup() {
       const { translate } = useI18n();
       const extraState = reactive({
@@ -70,6 +74,14 @@
         extraOptions: ["full"],
         pickerFromVal: "",
         pickerToVal: "",
+        orderItems: {
+          city: "Ульяновск, Нариманова 42",
+          model: "Hyndai, i30 N",
+          color: "Голубой",
+          rent: "1д 2ч",
+          tariff: "На сутки",
+          tank: "Да",
+        },
       });
       const colorModel = ["any", "red", "blue"];
       const tariffModel = ["minute", "day"];
@@ -88,6 +100,21 @@
 
 <style scoped lang="scss">
   .extra {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    height: 100%;
+
+    @include sm {
+      padding-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    &__wrapper {
+      padding-top: 32px;
+      width: 100%;
+    }
+
     &__color,
     &__picker,
     &__tariff,
