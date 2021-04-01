@@ -1,21 +1,28 @@
 <template>
   <div class="el-container">
-    <el-breadcrumb separator-class="el-icon-caret-right">
-      <el-breadcrumb-item
-        v-for="(route, index) in routes"
-        :key="index"
-        :to="{ name: route.name }"
-        :class="[
-          getActiveLinkClass(route.name) ? 'is-link-active' : 'breadcrumbs',
-        ]"
-      >
-        {{ $translate(`breadcrumbs.${route.meta.title}`) }}
-      </el-breadcrumb-item>
+    <el-breadcrumb v-if="isCrumbsVisible" separator-class="el-icon-caret-right">
+      <template v-for="(route, index) in routes">
+        <el-breadcrumb-item
+          v-if="route.meta.title"
+          :key="index"
+          :to="{ name: route.name }"
+          :class="[
+            getActiveLinkClass(route.name) ? 'is-link-active' : 'breadcrumbs',
+          ]"
+        >
+          {{ $translate(`breadcrumbs.${route.meta.title}`) }}
+        </el-breadcrumb-item>
+      </template>
     </el-breadcrumb>
+    <div v-else class="breadcrumbs-order">
+      <p>Заказ номер RU58491823</p>
+    </div>
   </div>
 </template>
 
 <script>
+  import { computed } from "@vue/composition-api";
+
   export default {
     name: "Breadcrumbs",
     props: {
@@ -25,11 +32,15 @@
       },
     },
     setup(props, { root }) {
+      const isCrumbsVisible = computed(
+        () => !root.$route.path.includes("confirm-order"),
+      );
+
       function getActiveLinkClass(name) {
         return root.$route.path.includes(name.toLowerCase());
       }
 
-      return { getActiveLinkClass };
+      return { getActiveLinkClass, isCrumbsVisible };
     },
   };
 </script>
@@ -73,5 +84,11 @@
   ::v-deep .el-breadcrumb__inner.is-link:hover {
     color: $green;
     font-weight: bold;
+  }
+
+  .breadcrumbs-order {
+    font-weight: bold;
+    font-size: 14px;
+    color: $black;
   }
 </style>

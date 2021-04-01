@@ -58,15 +58,16 @@ const routes = [
             /* webpackChunkName: "Amount" */ "../components/common/order/Amount.vue"
           ),
       },
+      {
+        path: "confirm-order",
+        name: "Confirm",
+        meta: { title: null },
+        component: () =>
+          import(
+            /* webpackChunkName: "Confirm" */ "../components/common/order/ConfirmOrder.vue"
+          ),
+      },
     ],
-  },
-  {
-    path: "/confirm-order",
-    name: "Confirm",
-    component: () =>
-      import(
-        /* webpackChunkName: "Confirm" */ "../components/common/order/ConfirmOrder.vue"
-      ),
   },
 ];
 

@@ -12,13 +12,19 @@
       <span>{{ $translate("orderForm.aside.price") }}</span>
       <span>{{ $translate("orderForm.aside.amount") }}</span>
     </div>
-    <el-button type="success">{{
-      $translate("orderForm.aside.chooseModel")
-    }}</el-button>
+    <el-button
+      type="success"
+      :class="[isFinishOrder ? 'aside__amount-finish-btn' : '']"
+      @click="getNextStep"
+    >
+      {{ $translate("orderForm.aside.chooseModel") }}</el-button
+    >
   </aside>
 </template>
 
 <script>
+  import { computed } from "@vue/composition-api";
+
   export default {
     name: "OrderAside",
     props: {
@@ -27,10 +33,23 @@
         default: () => ({}),
       },
     },
+    setup(props, { emit, root }) {
+      const isFinishOrder = computed(() =>
+        root.$route.path.includes("confirm-order"),
+      );
+      function getNextStep() {
+        emit("next");
+      }
+
+      return { getNextStep, isFinishOrder };
+    },
   };
 </script>
 
 <style scoped lang="scss">
+  .el-button--success {
+    border-radius: 8px !important;
+  }
   .order-form {
     display: flex;
     flex-direction: column;
@@ -115,20 +134,9 @@
         margin-right: 4px;
       }
 
-      & span {
-        &:first-child,
-        &:last-child {
-          font-size: 16px;
-          color: $black;
-
-          @include md-and-down {
-            font-size: 14px;
-          }
-        }
-
-        &:first-child {
-          font-weight: 500;
-        }
+      &-finish-btn {
+        background: linear-gradient(90deg, $brown 0%, $pink 100%);
+        border-radius: 8px !important;
       }
     }
   }
