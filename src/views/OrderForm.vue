@@ -1,6 +1,6 @@
 <template>
   <div class="order-form">
-    <Header />
+    <home-header />
     <div class="order-form__breadcrumb-wrapper">
       <breadcrumbs :routes="breadcrumb" />
     </div>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import Header from "@/components/common/home/Header";
+  import HomeHeader from "@/components/common/home/Header";
   import Breadcrumbs from "@/components/common/order/Breadcrumbs";
   import { useRouter } from "@/router";
   import { computed } from "@vue/composition-api";
@@ -21,7 +21,7 @@
   export default {
     name: "OrderForm",
     components: {
-      Header,
+      HomeHeader,
       Breadcrumbs,
     },
     setup() {
