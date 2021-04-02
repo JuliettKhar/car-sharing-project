@@ -1,7 +1,7 @@
 <template>
   <section class="home">
     <div class="home__main">
-      <Header />
+      <home-header />
       <div class="home__main-content">
         <div>
           <p>{{ $translate("home.carsharing") }}</p>
@@ -12,7 +12,7 @@
           </el-button>
         </div>
       </div>
-      <Footer />
+      <home-footer />
     </div>
     <div class="home__slider">
       <carousel :slides="slides" />
@@ -21,14 +21,14 @@
 </template>
 
 <script>
-  import Header from "@/components/common/home/Header";
-  import Footer from "@/components/common/home/Footer";
+  import HomeHeader from "@/components/common/home/Header";
+  import HomeFooter from "@/components/common/home/Footer";
   import Carousel from "@/components/common/home/Carousel";
   import { useRouter } from "@/router";
 
   export default {
     name: "Home",
-    components: { Header, Footer, Carousel },
+    components: { HomeHeader, HomeFooter, Carousel },
     setup() {
       const { router } = useRouter();
       const slides = [

@@ -1,57 +1,51 @@
 <template>
-  <div class="amount">
-    <amount-list-options :order-options="orderOptions" />
-    <order-aside :order-items="orderItems" @next="finishOrder" />
+  <div class="amount-options__wrapper">
+    <p v-if="title" class="amount-options__title">Ваш заказ подтверждён</p>
+    <div class="amount-options__info">
+      <p>{{ items.model }}</p>
+      <p>{{ items.number }}</p>
+      <p>
+        {{ $translate("orderForm.content.amount.fuel") }}
+        <span>{{ items.tank }}</span>
+      </p>
+      <p>
+        {{ $translate("orderForm.content.amount.available") }}
+        <span>{{ items.available }}</span>
+      </p>
+    </div>
+    <div class="amount__info">
+      <img :src="`/images/i30n.png`" alt="" />
+    </div>
   </div>
 </template>
 
 <script>
-  import OrderAside from "@/components/common/order/OrderAside";
-  import AmountListOptions from "@/components/common/order/common/AmountListOptions";
-  import { reactive } from "@vue/composition-api";
-  import { useRouter } from "@/router";
+  import { computed } from "@vue/composition-api";
 
   export default {
-    name: "Amount",
-    components: {
-      OrderAside,
-      AmountListOptions,
+    name: "AmountListOptions",
+    props: {
+      orderOptions: {
+        type: Object,
+        default: () => ({}),
+      },
+      title: {
+        type: Boolean,
+        required: false,
+      },
     },
-    setup() {
-      const orderItems = reactive({
-        city: "Ульяновск, Нариманова 42",
-        model: "Hyndai, i30 N",
-        color: "Голубой",
-        rent: "1д 2ч",
-        tariff: "На сутки",
-        tank: "Да",
-      });
-      const orderOptions = reactive({
-        model: "Hyndai, i30 N",
-        number: "K 761 HA 73",
-        tank: "100%",
-        available: "12.06.2019 12:00",
-      });
-      const { router } = useRouter();
+    setup(props) {
+      const items = computed(() => props.orderOptions);
 
-      function finishOrder() {
-        router.push({ name: "Confirm" });
-      }
-
-      return {
-        orderItems,
-        orderOptions,
-        finishOrder,
-      };
+      return { items };
     },
   };
 </script>
 
 <style scoped lang="scss">
-  .amount {
+  .amount-options {
     display: flex;
     justify-content: space-between;
-    flex-wrap: nowrap;
     height: 100%;
 
     @include sm {
@@ -59,17 +53,19 @@
     }
 
     &__wrapper {
+      position: relative;
       justify-content: space-between;
+      flex-wrap: wrap;
       max-width: 60%;
       width: 60%;
       display: flex;
-      padding-top: 32px;
+      padding-top: 64px;
 
-      @include sm {
+      @include md-and-down {
+        padding-top: 46px;
         width: 100%;
         max-width: 100%;
         flex-wrap: wrap;
-        padding-top: 20px;
       }
     }
 
@@ -118,6 +114,22 @@
         @include md-and-down {
           max-width: 90%;
         }
+      }
+    }
+
+    &__title {
+      height: min-content;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      text-align: left;
+      font-size: 24px;
+      color: $black;
+      margin: 24px 0 0 0;
+
+      @include md-and-down {
+        font-size: 20px;
+        top: -14px;
       }
     }
   }
