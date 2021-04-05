@@ -1,3 +1,4 @@
+import "regenerator-runtime/runtime.js";
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";

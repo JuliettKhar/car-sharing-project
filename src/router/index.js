@@ -28,7 +28,7 @@ const routes = [
         meta: { title: "location" },
         component: () =>
           import(
-            /* webpackChunkName: "Location" */ "../components/common/order/Location.vue"
+            /* webpackChunkName: "Location" */ "../components/common/order/common/Location.vue"
           ),
       },
       {

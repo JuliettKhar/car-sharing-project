@@ -3,6 +3,15 @@ const path = require("path");
 module.exports = {
   publicPath:
     process.env.NODE_ENV === "production" ? "/car-sharing-project/" : "/",
+  devServer: {
+    proxy: {
+      "^/api": {
+        target: "http://api-factory.simbirsoft1.com",
+        ws: true,
+        secure: false,
+      },
+    },
+  },
   configureWebpack: {
     resolve: {
       alias: {

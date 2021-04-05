@@ -6,10 +6,7 @@ const axios = Axios.create({
   baseURL: process.env.VUE_APP_API_URL,
   headers: {
     "X-Api-Factory-Application-Id": process.env.VUE_APP_ID,
-    "Authorization": `Bearer ${process.env.VUE_APP_AUTH}`,
-    "common": {
-      "Content-Type": "application/json, text/plain, */*",
-    },
+    "Content-Type": "application/json",
   },
 });
 
@@ -41,6 +38,8 @@ axios.interceptors.response.use(
     } else {
       throw new Error(error);
     }
+
+    throw new Error(error);
   },
 );
 

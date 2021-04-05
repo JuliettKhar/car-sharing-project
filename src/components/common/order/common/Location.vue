@@ -25,8 +25,9 @@
 <script>
   import Autocomplete from "@/components/common/order/common/Autocomplete";
   import OrderAside from "@/components/common/order/OrderAside";
-  import { reactive, ref } from "@vue/composition-api";
+  import { onMounted, reactive, ref } from "@vue/composition-api";
   import { useI18n } from "@/lang";
+  import { getCars } from "@/api";
 
   export default {
     name: "Location",
@@ -40,6 +41,12 @@
       const orderItems = reactive({
         city: "Ульяновск, Нариманова 42",
       });
+
+      async function getLocationData() {
+        const res = await getCars();
+        console.log(res);
+      }
+      onMounted(() => getLocationData());
 
       return { model, OrderAside, orderItems };
     },
@@ -95,9 +102,6 @@
           text-align: left;
         }
       }
-    }
-
-    &__selectors-city {
     }
   }
 
