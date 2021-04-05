@@ -4,7 +4,10 @@
       <div class="location__selectors">
         <div class="location__selectors-city">
           <span>{{ $translate("orderForm.content.location.city") }}</span>
-          <Autocomplete :model="model" />
+          <Autocomplete
+            :city.sync="locationState.city"
+            :cities="locationState.cities"
+          />
         </div>
         <div class="location__selectors-location">
           <span>{{ $translate("orderForm.content.location.location") }}</span>
@@ -25,9 +28,15 @@
 <script>
   import Autocomplete from "@/components/common/order/common/Autocomplete";
   import OrderAside from "@/components/common/order/OrderAside";
-  import { onMounted, reactive, ref } from "@vue/composition-api";
+  import {
+    computed,
+    onMounted,
+    reactive,
+    ref,
+    watchEffect,
+  } from "@vue/composition-api";
   import { useI18n } from "@/lang";
-  import { getCars } from "@/api";
+  import { getCars, getCity } from "@/api";
 
   export default {
     name: "Location",
@@ -37,18 +46,27 @@
     },
     setup() {
       const { translate } = useI18n();
-      const model = ref(translate("cities.ulyanovsk"));
+      const locationState = reactive({
+        cities: [],
+        city: null,
+      });
       const orderItems = reactive({
         city: "Ульяновск, Нариманова 42",
       });
 
       async function getLocationData() {
-        const res = await getCars();
-        console.log(res);
+        const { data } = await getCity();
+        const currentCity =
+          localStorage.getItem("city") || translate("cities.ulyanovsk");
+
+        locationState.cities = data.data;
+        locationState.city = locationState.cities.filter(city =>
+          city.name.toLowerCase().includes(currentCity.toLowerCase()),
+        )[0];
       }
       onMounted(() => getLocationData());
 
-      return { model, OrderAside, orderItems };
+      return { OrderAside, locationState, orderItems };
     },
   };
 </script>
@@ -94,6 +112,7 @@
 
       span {
         margin-right: 10px;
+        line-height: 20px;
         font-weight: 300;
         font-size: 14px;
         color: $black;
