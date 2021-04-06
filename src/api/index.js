@@ -7,3 +7,7 @@ export function getCars() {
 export function getCity() {
   return axios.get("/api/db/city");
 }
+
+export function getPoints(id) {
+  return axios.get(`/api/db/point/${id}`);
+}

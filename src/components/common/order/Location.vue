@@ -4,10 +4,7 @@
       <div class="location__selectors">
         <div class="location__selectors-city">
           <span>{{ $translate("orderForm.content.location.city") }}</span>
-          <Autocomplete
-            :city.sync="locationState.city"
-            :cities="locationState.cities"
-          />
+          <Autocomplete :city.sync="city" :cities="cities" />
         </div>
         <div class="location__selectors-location">
           <span>{{ $translate("orderForm.content.location.location") }}</span>
@@ -18,7 +15,7 @@
         <p class="map-title">
           {{ $translate("orderForm.content.location.map.title") }}
         </p>
-        <img src="/images/map.png" alt="" />
+        <order-map />
       </div>
     </div>
     <order-aside :order-items="orderItems" />
@@ -28,45 +25,55 @@
 <script>
   import Autocomplete from "@/components/common/order/common/Autocomplete";
   import OrderAside from "@/components/common/order/OrderAside";
-  import {
-    computed,
-    onMounted,
-    reactive,
-    ref,
-    watchEffect,
-  } from "@vue/composition-api";
-  import { useI18n } from "@/lang";
-  import { getCars, getCity } from "@/api";
+  import OrderMap from "@/components/common/order/map/OrderMap";
+
+  import { computed, onMounted, reactive } from "@vue/composition-api";
+  import { getPoints, getCity } from "@/api";
+  import { useStore } from "@/store";
 
   export default {
     name: "Location",
     components: {
       OrderAside,
       Autocomplete,
+      OrderMap,
     },
     setup() {
-      const { translate } = useI18n();
-      const locationState = reactive({
-        cities: [],
-        city: null,
+      const { store } = useStore();
+
+      const cities = computed({
+        get: () => store.state.location.cities,
+        set: val => store.commit("location/SET_CITIES", val),
       });
+      const city = computed({
+        get: () => store.state.location.city,
+        set: val => store.commit("location/SET_CITY", val),
+      });
+
       const orderItems = reactive({
         city: "Ульяновск, Нариманова 42",
       });
 
+      async function getPointsByLocation(locationId) {
+        const { data } = await getPoints(locationId);
+        console.log(data);
+      }
+
       async function getLocationData() {
         const { data } = await getCity();
-        const currentCity =
-          localStorage.getItem("city") || translate("cities.ulyanovsk");
-
-        locationState.cities = data.data;
-        locationState.city = locationState.cities.filter(city =>
-          city.name.toLowerCase().includes(currentCity.toLowerCase()),
+        const city = data.data.filter(city =>
+          city.name
+            .toLowerCase()
+            .includes(localStorage.getItem("city").toLowerCase()),
         )[0];
+
+        cities.value = data.data;
+        await getPointsByLocation(city.id);
       }
+
       onMounted(() => getLocationData());
 
-      return { OrderAside, locationState, orderItems };
+      return { OrderAside, cities, city, orderItems };
     },
   };
 </script>
@@ -75,6 +82,7 @@
   .location {
     display: flex;
     justify-content: space-between;
+    height: 100%;
 
     @include sm {
       flex-wrap: wrap;
@@ -82,6 +90,7 @@
 
     &__wrapper {
       width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -89,9 +98,8 @@
     }
 
     &__map {
-      & img {
-        max-width: 100%;
-      }
+      height: 100%;
+      width: 100%;
 
       & p {
         font-weight: 300;

@@ -1,8 +1,17 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { location } from "@/store/modules/location";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  modules: {},
+const store = new Vuex.Store({
+  modules: {
+    location,
+  },
 });
+
+export const useStore = () => {
+  return { store };
+};
+
+export default store;

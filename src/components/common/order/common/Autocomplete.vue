@@ -1,19 +1,4 @@
 <template>
-  <!--  <el-autocomplete-->
-  <!--    v-model="model"-->
-  <!--    value-key="name"-->
-  <!--    class="autocomplete"-->
-  <!--    :fetch-suggestions="querySearch"-->
-  <!--    :placeholder="translate('autocomplete.placeholder')"-->
-  <!--    @select="handleSelect"-->
-  <!--  >-->
-  <!--    <i-->
-  <!--      slot="suffix"-->
-  <!--      class="el-icon-close el-input__icon"-->
-  <!--      @click="handleIconClick"-->
-  <!--    >-->
-  <!--    </i>-->
-  <!--  </el-autocomplete>-->
   <div class="autocomplete">
     <el-select
       v-model="model"
@@ -22,7 +7,7 @@
       reserve-keyword
       value-key="id"
       autocomplete="on"
-      placeholder="Please enter a keyword"
+      :placeholder="translate('autocomplete.placeholder')"
       :remote-method="remoteMethod"
       :loading="loading"
       @change="changeCity"
@@ -42,6 +27,7 @@
 <script>
   import { useI18n } from "@/lang";
   import { computed, onMounted, ref } from "@vue/composition-api";
+  import { useStore } from "@/store";
 
   const { translate } = useI18n();
 
@@ -58,6 +44,7 @@
       },
     },
     setup(props, { emit }) {
+      const { store } = useStore();
       const model = computed({
         get: () => props.city,
         set: val => changeCity(val),
@@ -76,18 +63,7 @@
         return name.toLowerCase().includes(queryString.toLowerCase());
       }
 
-      /*
-       * function querySearch(queryString, cb) {
-       *   const links = props.cities;
-       *   const results = queryString
-       *     ? links.filter(({ name }) => createFilter(name, queryString))
-       *     : links;
-       *   cb(results);
-       * }
-       */
-
       function remoteMethod(queryString) {
-        console.log(queryString);
         if (queryString !== "") {
           loading.value = true;
 
@@ -105,6 +81,7 @@
       function changeCity(item) {
         emit("update:city", item);
         localStorage.setItem("city", item.name);
+        store.commit("location/SET_CITY", item);
       }
 
       return {

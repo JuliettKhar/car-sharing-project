@@ -8,35 +8,47 @@
       </p>
       <div class="header-location">
         <img src="/images/icons/point.svg" alt="point image" />
-        <el-autocomplete
+        <el-select
           v-model="city"
-          value-key="name"
-          :fetch-suggestions="querySearch"
+          filterable
+          remote
+          reserve-keyword
+          value-key="id"
+          autocomplete="on"
           :placeholder="translate('header.cityPlaceholder')"
-          clearable
-          @select="handleSelect"
-        ></el-autocomplete>
+          :remote-method="querySearch"
+          @change="changeCity"
+        >
+          <el-option
+            v-for="city in cities"
+            :key="city.id"
+            :label="city.name"
+            :value="city"
+          >
+          </el-option>
+        </el-select>
       </div>
     </div>
   </el-header>
 </template>
 
 <script>
-  import { computed, ref } from "@vue/composition-api";
+  import { computed, onBeforeMount, ref } from "@vue/composition-api";
   import { useI18n } from "@/lang";
+  import { useStore } from "@/store";
+  import { getCity } from "@/api";
 
   export default {
     name: "Header",
     setup(props, { root }) {
+      const { store } = useStore();
       const { translate } = useI18n();
-      const cities = [
-        { name: translate("cities.ulyanovsk"), id: 1 },
-        { name: translate("cities.moscow"), id: 2 },
-        { name: translate("cities.krasnodar"), id: 3 },
-      ];
-      const city = ref(
-        localStorage.getItem("city") || translate("cities.ulyanovsk"),
-      );
+
+      const cities = computed(() => store.state.location.cities);
+      const city = computed({
+        get: () => store.state.location.city,
+        set: val => store.commit("location/SET_CITY", val),
+      });
       const isOpen = ref(false);
       const hasOrderForm = computed(
         () => root.$route?.path.toLowerCase().includes("order") || false,
@@ -45,6 +57,7 @@
       function handleSelect({ name }) {
         city.value = name;
         localStorage.setItem("city", name);
+        store.commit("location/SET_CITY", name);
       }
 
       function openBurger() {
@@ -56,21 +69,41 @@
       }
 
       function querySearch(queryString, cb) {
-        const links = cities;
+        const links = cities.value;
         const results = queryString
           ? links.filter(({ name }) => createFilter(name, queryString))
           : links;
         cb(results);
       }
 
+      async function getCitiesData() {
+        const { data } = await getCity();
+        const city = data.data.filter(city =>
+          city.name
+            .toLowerCase()
+            .includes(localStorage.getItem("city").toLowerCase()),
+        )[0];
+        store.commit("location/SET_CITIES", data.data);
+        store.commit("location/SET_CITY", city);
+      }
+
+      function changeCity(item) {
+        localStorage.setItem("city", item.name);
+        store.commit("location/SET_CITY", item);
+      }
+
+      onBeforeMount(() => getCitiesData());
+
       return {
         city,
+        cities,
         handleSelect,
         querySearch,
         openBurger,
         isOpen,
         translate,
         hasOrderForm,
+        changeCity,
       };
     },
   };
