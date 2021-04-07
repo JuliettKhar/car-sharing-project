@@ -23,7 +23,7 @@
           <img
             :src="car.thumbnail.path"
             :alt="car.name"
-            @error="e => (e.target.src = '/images/car-stub.png')"
+            @error="e => (e.target.src = 'images/car-stub.png')"
           />
         </div>
       </div>

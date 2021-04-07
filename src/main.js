@@ -27,8 +27,12 @@ new Vue({
   i18n,
   mounted() {
     const { getLocale } = useI18n();
+    const LSCity = localStorage.getItem("city");
+    const currCity = !LSCity ? "Ульяновск" : LSCity;
+
     i18n.locale = getLocale();
     localStorage.setItem("lang", getLocale() === "ru" ? "Ru" : "Eng");
+    localStorage.setItem("city", currCity);
   },
   store,
   render: h => h(App),

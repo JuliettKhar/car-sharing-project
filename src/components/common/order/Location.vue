@@ -61,10 +61,10 @@
 
       async function getLocationData() {
         const { data } = await getCity();
+        const LSCity = localStorage.getItem("city");
+        const currCity = !LSCity ? "Ульяновск" : LSCity;
         const city = data.data.filter(city =>
-          city.name
-            .toLowerCase()
-            .includes(localStorage.getItem("city").toLowerCase()),
+          city.name.toLowerCase().includes(currCity.toLowerCase()),
         )[0];
 
         cities.value = data.data;
