@@ -1,57 +1,97 @@
 <template>
-  <el-autocomplete
-    v-model="city"
-    value-key="name"
-    class="autocomplete"
-    :fetch-suggestions="querySearch"
-    :placeholder="translate('autocomplete.placeholder')"
-    @select="handleSelect"
-  >
-    <i
-      slot="suffix"
-      class="el-icon-close el-input__icon"
-      @click="handleIconClick"
+  <div class="autocomplete">
+    <el-select
+      v-model="model"
+      filterable
+      remote
+      reserve-keyword
+      value-key="id"
+      autocomplete="on"
+      :placeholder="translate('autocomplete.placeholder')"
+      :remote-method="remoteMethod"
+      :loading="loading"
+      @change="changeCity"
     >
-    </i>
-  </el-autocomplete>
+      <el-option
+        v-for="city in citiesModel"
+        :key="city.id"
+        :label="city.name"
+        :value="city"
+      >
+      </el-option>
+    </el-select>
+    <i class="el-icon-close el-input__icon" @click="handleIconClick"></i>
+  </div>
 </template>
 
 <script>
   import { useI18n } from "@/lang";
-  import { ref } from "@vue/composition-api";
+  import { computed, onMounted, ref } from "@vue/composition-api";
+  import { useStore } from "@/store";
 
   const { translate } = useI18n();
 
   export default {
     name: "Autocomplete",
     props: {
-      model: {
-        type: String,
-        default: "",
+      city: {
+        type: Object,
+        default: null,
+      },
+      cities: {
+        type: Array,
+        default: () => [],
       },
     },
-    setup() {
-      const cities = [
-        { name: translate("cities.ulyanovsk"), id: 1 },
-        { name: translate("cities.moscow"), id: 2 },
-        { name: translate("cities.krasnodar"), id: 3 },
-      ];
-      const city = ref(
-        localStorage.getItem("city") || translate("cities.ulyanovsk"),
-      );
+    setup(props, { emit }) {
+      const { store } = useStore();
+      const model = computed({
+        get: () => props.city,
+        set: val => changeCity(val),
+      });
+      const citiesModel = computed({
+        get: () => props.cities,
+        set: val => (props.cities = val),
+      });
+      const loading = ref(false);
 
-      function querySearch() {}
+      function handleIconClick() {
+        emit("update:city", null);
+      }
 
-      function handleSelect() {}
+      function createFilter(name, queryString) {
+        return name.toLowerCase().includes(queryString.toLowerCase());
+      }
 
-      function handleIconClick() {}
+      function remoteMethod(queryString) {
+        if (queryString !== "") {
+          loading.value = true;
+
+          setTimeout(() => {
+            loading.value = false;
+            citiesModel.value = props.cities.filter(({ name }) =>
+              createFilter(name, queryString),
+            );
+          }, 200);
+        } else {
+          citiesModel.value = [];
+        }
+      }
+
+      function changeCity(item) {
+        emit("update:city", item);
+        localStorage.setItem("city", item.name);
+        store.commit("location/SET_CITY", item);
+      }
 
       return {
-        city,
+        model,
         translate,
-        querySearch,
-        handleSelect,
         handleIconClick,
+        remoteMethod,
+        loading,
+        changeCity,
+        citiesModel,
       };
     },
   };
@@ -61,6 +101,7 @@
   .el-icon-close {
     text-align: right;
     color: $black;
+    cursor: pointer;
   }
 
   .el-autocomplete {
@@ -77,8 +118,8 @@
       height: 30px;
     }
 
-    ::v-deep &__inner {
-      height: 30px;
+    &__inner {
+      height: 20px;
       font-weight: 300;
       font-size: 14px;
       color: $black;
@@ -86,6 +127,31 @@
       &::placeholder {
         color: $gray;
       }
+    }
+  }
+
+  .el-select {
+    display: flex;
+    align-items: flex-end;
+    border-bottom: 1px solid #999999;
+    box-sizing: border-box;
+  }
+
+  .autocomplete {
+    display: flex;
+  }
+
+  ::v-deep .el-input__inner {
+    height: 20px;
+  }
+
+  ::v-deep .el-icon-close {
+    position: relative;
+
+    &:before {
+      position: absolute;
+      top: 6px;
+      left: -20px;
     }
   }
 </style>

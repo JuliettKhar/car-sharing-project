@@ -38,7 +38,7 @@
     "aside": {
       "order": "Your order:",
       "location": "Pickup point",
-      "city": "Ulyanovsk, Narimanova 42",
+      "city": "City",
       "price": "Price:",
       "amount": "от 8 000 до 12 000 ₽",
       "chooseModel": "Select model"
@@ -71,9 +71,11 @@
     }
   },
   "radioGroup": {
-    "all": "All models",
-    "economy": "Economy",
-    "premium": "Premium",
+    "Все модели": "All models",
+    "Эконом": "Economy",
+    "Премиум": "Premium",
+    "Спорт": " Sport",
+    "Супер эконом": "Super economy",
     "any": "Any",
     "red": "Red",
     "blue": "Blue",
