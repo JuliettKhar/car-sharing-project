@@ -8,6 +8,10 @@ export function getCity() {
   return axios.get("/api/db/city");
 }
 
-export function getPoints(id) {
-  return axios.get(`/api/db/point/${id}`);
+export function getPoints(cityId) {
+  return axios.get(`/api/db/point/${cityId}`);
+}
+
+export function getCategories() {
+  return axios.get("/api/db/category");
 }

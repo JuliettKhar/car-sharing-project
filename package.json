@@ -55,6 +55,5 @@
     "parserOptions": {
       "parser": "babel-eslint"
     }
-  },
-  "proxy": "http://api-factory.simbirsoft1.com"
+  }
 }
