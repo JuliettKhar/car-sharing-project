@@ -5,6 +5,7 @@
         <radio-group
           :model-data.sync="modelState.carFilter"
           :car-filter-data="modelState.filterModel"
+          @change="changeModel"
         />
       </div>
       <div class="model__cars">
@@ -15,11 +16,15 @@
             'model__cars-item',
             modelState.isActiveCar === index ? 'selected' : '',
           ]"
-          @click="isActiveCar = index"
+          @click="modelState.isActiveCar = index"
         >
-          <p>{{ car.title }}</p>
-          <p>{{ car.subtitle }}</p>
-          <img :src="`/images/${car.name}`" :alt="car.name" />
+          <p>{{ car.name }}</p>
+          <p>{{ car.priceMin }} - {{ car.priceMax }}</p>
+          <img
+            :src="car.thumbnail.path"
+            :alt="car.name"
+            @error="e => (e.target.src = '/images/car-stub.png')"
+          />
         </div>
       </div>
     </div>
@@ -28,40 +33,66 @@
 </template>
 
 <script>
-  import { reactive, ref } from "@vue/composition-api";
+  import { computed, onBeforeMount, reactive, ref } from "@vue/composition-api";
   import RadioGroup from "@/components/common/order/common/RadioGroup";
   import OrderAside from "@/components/common/order/OrderAside";
+  import { getCars, getCategories } from "@/api";
 
   export default {
     name: "Model",
     components: { RadioGroup, OrderAside },
     setup() {
-      const filterModel = ["all", "economy", "premium"];
-      const carFilter = ref("all");
       const modelState = reactive({
-        carFilter: "all",
-        filterModel: ["all", "economy", "premium"],
+        carFilter: "Все модели",
+        filterModel: ["Все модели"],
         orderItems: {
           city: "Ульяновск, Нариманова 42",
           model: "Hyndai, i30 N",
         },
         isActiveCar: 0,
       });
-      const isActiveCar = ref(0);
-      const carImages = [
-        {
-          name: "elantra.png",
-          title: "ELANTRA",
-          subtitle: "12 000 - 25 000 ₽",
-        },
-        { name: "i30n.png", title: "i30 N", subtitle: "10 000 - 32 000 ₽" },
-        { name: "creta.png", title: "CRETA", subtitle: "12 000 - 25 000 ₽" },
-        { name: "sonata.png", title: "SONATA", subtitle: "10 000 - 32 000 ₽" },
-        { name: "i30n.png", title: "i30 N", subtitle: "10 000 - 32 000 ₽" },
-        { name: "creta.png", title: "CRETA", subtitle: "12 000 - 25 000 ₽" },
-      ];
+      const images = ref([]);
+      const carImages = computed({
+        get: () => images.value,
+        set: val => (images.value = val),
+      });
 
-      return { carFilter, filterModel, carImages, isActiveCar, modelState };
+      async function getModelCategories() {
+        const { data } = await getCategories();
+        const categories = data.data.map(item => item.name);
+        modelState.filterModel.push(...categories);
+      }
+
+      async function getModelCars() {
+        const { data } = await getCars();
+        images.value = data.data;
+      }
+
+      function changeModel(label) {
+        const filtered = [...images.value];
+        carImages.value = filtered.filter(
+          model => model.categoryId.name === label,
+        );
+      }
+
+      onBeforeMount(() => Promise.all([getModelCars(), getModelCategories()]));
+
+      return {
+        carImages,
+        modelState,
+        images,
+        changeModel,
+      };
+    },
+    methods: {
+      /*
+       * changeModel(label) {
+       *   this.carImages = this.carImages.filter(model => model.categoryId.name);
+       *   console.log(
+       *     this.carImages.value.filter(model => model.categoryId.name === label),
+       *   );
+       * },
+       */
     },
   };
 </script>
@@ -184,7 +215,8 @@
           margin: 36px auto;
 
           @include lg-and-down {
-            width: auto;
+            max-width: 256px;
+            max-height: 116px;
             margin: 25px auto;
           }
         }

@@ -4,6 +4,7 @@
       v-for="(model, index) in carFilterData"
       :key="index"
       :label="translate(`radioGroup.${model}`)"
+      @change="changeValue"
     >
       {{ $translate(`radioGroup.${model}`) }}
     </el-radio>
@@ -26,15 +27,19 @@
         required: true,
       },
     },
-    setup(props, { emit }) {
+    setup(props) {
       const { translate } = useI18n();
       const model = ref(props.modelData);
 
-      function updateFilters(val) {
-        emit("update:modelData", val);
-      }
-
-      return { updateFilters, model, translate };
+      return { model, translate };
+    },
+    methods: {
+      changeValue(val) {
+        this.$emit("change", val);
+      },
+      updateFilters(val) {
+        this.$emit("update:modelData", val);
+      },
     },
   };
 </script>
