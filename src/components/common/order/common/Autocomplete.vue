@@ -13,11 +13,17 @@
       @change="changeCity"
     >
       <el-option
-        v-for="city in citiesModel"
-        :key="city.id"
-        :label="city.name"
-        :value="city"
+        v-for="item in citiesModel"
+        :key="item.id"
+        :label="item.name"
+        :value="item"
       >
+        <template v-if="hasAddress">
+          <span style="float: left; margin-right: 6px">{{ item.name }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">
+            {{ item.address }}
+          </span>
+        </template>
       </el-option>
     </el-select>
     <i class="el-icon-close el-input__icon" @click="handleIconClick"></i>
@@ -26,37 +32,41 @@
 
 <script>
   import { useI18n } from "@/lang";
-  import { computed, onMounted, ref } from "@vue/composition-api";
+  import { computed, ref } from "@vue/composition-api";
   import { useStore } from "@/store";
 
   const { translate } = useI18n();
+  const { store } = useStore();
 
   export default {
     name: "Autocomplete",
     props: {
-      city: {
+      item: {
         type: Object,
         default: null,
       },
-      cities: {
+      items: {
         type: Array,
         default: () => [],
       },
+      hasAddress: {
+        type: Boolean,
+        default: false,
+      },
     },
     setup(props, { emit }) {
-      const { store } = useStore();
       const model = computed({
-        get: () => props.city,
+        get: () => props.item,
         set: val => changeCity(val),
       });
       const citiesModel = computed({
-        get: () => props.cities,
-        set: val => (props.cities = val),
+        get: () => props.items,
+        set: val => (props.items = val),
       });
       const loading = ref(false);
 
       function handleIconClick() {
-        emit("update:city", null);
+        emit("update:item", null);
       }
 
       function createFilter(name, queryString) {
@@ -69,7 +79,7 @@
 
           setTimeout(() => {
             loading.value = false;
-            citiesModel.value = props.cities.filter(({ name }) =>
+            citiesModel.value = props.items.filter(({ name }) =>
               createFilter(name, queryString),
             );
           }, 200);
@@ -79,9 +89,8 @@
       }
 
       function changeCity(item) {
-        emit("update:city", item);
-        localStorage.setItem("city", item.name);
-        store.commit("location/SET_CITY", item);
+        emit("update:item", item);
+        emit("change", item);
       }
 
       return {

@@ -22,12 +22,10 @@
     name: "OrderMap",
     components: { yandexMap, ymapMarker },
     props: {
-      /*
-       * coords: {
-       *   type: Array,
-       *   default: () => [],
-       * },
-       */
+      coords: {
+        type: Array,
+        default: () => [],
+      },
     },
     setup() {
       const settings = {
@@ -36,11 +34,11 @@
         coordorder: "latlong",
         version: "2.1",
       };
-      const coords = [
-        [55.75, 37.5],
-        [55.75, 37.71],
-        [55.7, 37.7],
-      ];
+      // const coords = [
+      //   [55.75, 37.5],
+      //   [55.75, 37.71],
+      //   [55.7, 37.7],
+      // ];
       const markerIcon = {
         layout: "default#imageWithContent",
         imageHref: "./images/icons/map-point.svg",
@@ -50,7 +48,6 @@
 
       return {
         settings,
-        coords,
         markerIcon,
         controls,
       };

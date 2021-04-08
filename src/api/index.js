@@ -9,9 +9,17 @@ export function getCity() {
 }
 
 export function getPoints(cityId) {
-  return axios.get(`/api/db/point/${cityId}`);
+  return axios.get(`/api/db/point?cityId=${cityId}`);
 }
 
 export function getCategories() {
   return axios.get("/api/db/category");
+}
+
+export function createOrder(order) {
+  return axios.post("/api/db/order", { order });
+}
+
+export function updateOrder(order) {
+  return axios.put("/api/db/order", { order });
 }

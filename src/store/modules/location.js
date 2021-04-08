@@ -1,6 +1,6 @@
 const state = () => ({
   cities: [],
-  city: {},
+  city: null,
 });
 const mutations = {
   SET_CITIES(state, cities) {

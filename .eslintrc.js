@@ -31,7 +31,6 @@ module.exports = {
     'no-trailing-spaces': 'warn',
     'no-plusplus': 'warn',
     'new-cap': 'warn',
-    'multiline-comment-style': 'warn',
     'linebreak-style': 'warn',
     'jsx-quotes': ['warn', 'prefer-double'],
     'capitalized-comments': ['off', 'always'],
@@ -59,6 +58,7 @@ module.exports = {
         ],
         alphabetical: false
       }
-    ]
+    ],
+    "multiline-comment-style": "off"
   }
 }

@@ -15,6 +15,7 @@
     <el-button
       type="success"
       :class="[isFinishOrder ? 'aside__amount-finish-btn' : '']"
+      :disabled="isDisabled"
       @click="getNextStep"
     >
       {{ $translate("orderForm.aside.chooseModel") }}</el-button
@@ -31,6 +32,10 @@
       orderItems: {
         type: Object,
         default: () => ({}),
+      },
+      isDisabled: {
+        type: Boolean,
+        default: true,
       },
     },
     setup(props, { emit, root }) {
