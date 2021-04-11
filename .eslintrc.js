@@ -23,7 +23,6 @@ module.exports = {
     'radix': 'warn',
     'prefer-const': 'warn',
     'prefer-arrow-callback': 'warn',
-    'no-confusing-arrow': 'warn',
     'arrow-spacing': 'warn',
     'switch-colon-spacing': 'warn',
     'spaced-comment': 'warn',
@@ -54,11 +53,11 @@ module.exports = {
           'OTHER_DIRECTIVES',
           'OTHER_ATTR',
           'EVENTS',
-          'CONTENT'
         ],
         alphabetical: false
       }
     ],
-    "multiline-comment-style": "off"
+    "multiline-comment-style": "off",
+    "no-confusing-arrow":"off"
   }
 }

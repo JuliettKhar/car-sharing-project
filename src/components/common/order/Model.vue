@@ -28,7 +28,12 @@
         </div>
       </div>
     </div>
-    <order-aside :order-items="modelState.orderItems" />
+    <order-aside
+      :order-items="orderItems"
+      :is-disabled="isDisabledButton"
+      :price="priceRange"
+      @next="updateCurrentOrder"
+    />
   </div>
 </template>
 
@@ -36,26 +41,48 @@
   import { computed, onBeforeMount, reactive, ref } from "@vue/composition-api";
   import RadioGroup from "@/components/common/order/common/RadioGroup";
   import OrderAside from "@/components/common/order/OrderAside";
-  import { getCars, getCategories } from "@/api";
+  import { getCars, getCategories, updateOrder, getOrderById } from "@/api";
 
   export default {
     name: "Model",
     components: { RadioGroup, OrderAside },
-    setup() {
+    setup(props, { root }) {
       const modelState = reactive({
         carFilter: "Все модели",
         filterModel: ["Все модели"],
-        orderItems: {
-          city: "Ульяновск, Нариманова 42",
-          model: "Hyndai, i30 N",
-        },
         isActiveCar: 0,
       });
       const images = ref([]);
-      const carImages = computed({
-        get: () => images.value,
-        set: val => (images.value = val),
+      const imagesData = computed(() => images.value);
+      const carImages = ref(imagesData.value);
+      const selectedModelName = computed(
+        () => images.value[modelState.isActiveCar]?.name || "",
+      );
+      const selectedModel = computed(
+        () => images.value[modelState.isActiveCar],
+      );
+      const orderItems = ref({
+        city: "",
+        model: selectedModelName,
       });
+      const priceRange = computed(
+        () =>
+          `${selectedModel.value?.priceMin || 0} - ${selectedModel.value
+            ?.priceMax || 0}`,
+      );
+      const orderId = root.$route.query.id;
+      let currentOrder = {};
+
+      function changeModel(label) {
+        if (label === "Все модели") {
+          carImages.value = images.value;
+        } else {
+          carImages.value = images.value.filter(
+            model =>
+              model.categoryId.name.toLowerCase() === label.toLowerCase(),
+          );
+        }
+      }
 
       async function getModelCategories() {
         const { data } = await getCategories();
@@ -66,33 +93,71 @@
       async function getModelCars() {
         const { data } = await getCars();
         images.value = data.data;
+        await changeModel("Все модели");
       }
 
-      function changeModel(label) {
-        const filtered = [...images.value];
-        carImages.value = filtered.filter(
-          model => model.categoryId.name === label,
-        );
+      async function getOrderFromPreviousStep() {
+        const { data } = await getOrderById(orderId);
+        currentOrder = data.data;
+        orderItems.value.city = `${data.data.cityId.name}, ${data.data.pointId.address}`;
       }
 
-      onBeforeMount(() => Promise.all([getModelCars(), getModelCategories()]));
+      onBeforeMount(() =>
+        Promise.all([
+          getModelCars(),
+          getModelCategories(),
+          getOrderFromPreviousStep(),
+        ]),
+      );
 
       return {
         carImages,
         modelState,
         images,
         changeModel,
+        orderItems,
+        selectedModel,
+        priceRange,
+        orderId,
+        currentOrder,
       };
     },
+    computed: {
+      isDisabledButton() {
+        return (
+          Boolean(!this.orderItems.model || !this.orderItems.city) || false
+        );
+      },
+    },
     methods: {
-      /*
-       * changeModel(label) {
-       *   this.carImages = this.carImages.filter(model => model.categoryId.name);
-       *   console.log(
-       *     this.carImages.value.filter(model => model.categoryId.name === label),
-       *   );
-       * },
-       */
+      updateCurrentOrder() {
+        const {
+          orderStatusId,
+          cityId,
+          pointId,
+          id,
+          createdAt,
+        } = this.currentOrder;
+        const order = {
+          orderStatusId,
+          cityId,
+          pointId,
+          id,
+          createdAt,
+          carId: this.selectedModel.id,
+          color: "",
+          dateFrom: 0,
+          dateTo: 0,
+          rateId: {},
+          price: this.priceRange,
+          isFullTank: false,
+          isNeedChildChair: false,
+          isRightWheel: false,
+        };
+
+        updateOrder(this.orderId, order);
+        this.$router.push({ name: "Extra", query: { id: this.orderId } });
+      },
     },
   };
 </script>

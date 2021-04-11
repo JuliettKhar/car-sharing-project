@@ -3,13 +3,11 @@
     <el-select
       v-model="model"
       filterable
-      remote
       reserve-keyword
       value-key="id"
       autocomplete="on"
       :placeholder="translate('autocomplete.placeholder')"
-      :remote-method="remoteMethod"
-      :loading="loading"
+      no-data-text="Нет доступных локаций"
       @change="changeCity"
     >
       <el-option
@@ -32,7 +30,7 @@
 
 <script>
   import { useI18n } from "@/lang";
-  import { computed, ref } from "@vue/composition-api";
+  import { computed } from "@vue/composition-api";
   import { useStore } from "@/store";
 
   const { translate } = useI18n();
@@ -47,7 +45,7 @@
       },
       items: {
         type: Array,
-        default: () => [],
+        require: true,
       },
       hasAddress: {
         type: Boolean,
@@ -59,33 +57,11 @@
         get: () => props.item,
         set: val => changeCity(val),
       });
-      const citiesModel = computed({
-        get: () => props.items,
-        set: val => (props.items = val),
-      });
-      const loading = ref(false);
+      const citiesModel = computed(() => props.items);
 
       function handleIconClick() {
         emit("update:item", null);
-      }
-
-      function createFilter(name, queryString) {
-        return name.toLowerCase().includes(queryString.toLowerCase());
-      }
-
-      function remoteMethod(queryString) {
-        if (queryString !== "") {
-          loading.value = true;
-
-          setTimeout(() => {
-            loading.value = false;
-            citiesModel.value = props.items.filter(({ name }) =>
-              createFilter(name, queryString),
-            );
-          }, 200);
-        } else {
-          citiesModel.value = [];
-        }
+        emit("update:items", props.items);
       }
 
       function changeCity(item) {
@@ -97,8 +73,6 @@
         model,
         translate,
         handleIconClick,
-        remoteMethod,
-        loading,
         changeCity,
         citiesModel,
       };
@@ -162,5 +136,9 @@
       top: 6px;
       left: -20px;
     }
+  }
+
+  ::v-deep .el-icon-arrow-up:before {
+    display: none;
   }
 </style>

@@ -1,9 +1,10 @@
 <template>
-  <el-checkbox-group v-model="model">
+  <el-checkbox-group v-model="model" @change="updateFilters">
     <el-checkbox
       v-for="(item, index) in checkboxFilterData"
       :key="index"
       :label="item"
+      @change="changeValue(item, index)"
     >
       {{ $translate(`checkboxGroup.${item}`) }}
     </el-checkbox>
@@ -25,14 +26,18 @@
         required: true,
       },
     },
-    setup(props, { emit }) {
+    setup(props) {
       const model = ref(props.checkboxModelData);
 
-      function updateFilters(val) {
-        emit("update:checkboxModelData", val);
-      }
-
-      return { updateFilters, model };
+      return { model };
+    },
+    methods: {
+      changeValue(item, index) {
+        this.$emit("change", { item, index });
+      },
+      updateFilters(val) {
+        this.$emit("update:checkboxModelData", val);
+      },
     },
   };
 </script>

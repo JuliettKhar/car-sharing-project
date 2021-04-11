@@ -36,7 +36,7 @@ axios.interceptors.response.use(
   error => {
     if (error.response.status !== 404 && error.response.status !== 403) {
       Notification.error({
-        message: error.response.data.message,
+        message: error,
       });
     } else {
       throw new Error(error);

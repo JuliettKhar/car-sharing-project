@@ -2,7 +2,7 @@
   <aside class="order-form__aside">
     <p class="aside__order">{{ $translate("orderForm.aside.order") }}</p>
     <template v-for="(item, key) of orderItems">
-      <div :key="key" class="aside__item">
+      <div v-if="item" :key="key" class="aside__item">
         <span>{{ $translate(`orderForm.aside.${key}`) }}</span>
         <span></span>
         <span>{{ item }}</span>
@@ -10,7 +10,7 @@
     </template>
     <div class="aside__amount">
       <span>{{ $translate("orderForm.aside.price") }}</span>
-      <span>{{ $translate("orderForm.aside.amount") }}</span>
+      <span>{{ price }} ₽</span>
     </div>
     <el-button
       type="success"
@@ -36,6 +36,10 @@
       isDisabled: {
         type: Boolean,
         default: true,
+      },
+      price: {
+        type: String,
+        default: "0",
       },
     },
     setup(props, { emit, root }) {
@@ -104,6 +108,7 @@
         &:first-child {
           display: flex;
           align-items: flex-end;
+          margin-right: 6px;
           font-size: 14px;
           color: $black;
           text-align: left;

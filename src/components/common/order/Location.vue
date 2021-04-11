@@ -6,13 +6,18 @@
           <span>{{ $translate("orderForm.content.location.city") }}</span>
           <Autocomplete
             :item.sync="city"
-            :items="cities"
+            :items.sync="cities"
             @change="updateCity"
           />
         </div>
         <div class="location__selectors-location">
           <span>{{ $translate("orderForm.content.location.location") }}</span>
-          <Autocomplete :item.sync="street" :items="streets" hasAddress />
+          <Autocomplete
+            :item.sync="street"
+            :items.sync="streets"
+            hasAddress
+            @change="updateStreet"
+          />
         </div>
       </div>
       <div class="location__map">
@@ -25,7 +30,7 @@
     <order-aside
       :order-items="{ city: fullAddress }"
       :is-disabled="isDisabledButton"
-      @next="updateOrder"
+      @next="createNewOrder"
     />
   </div>
 </template>
@@ -34,8 +39,12 @@
   import Autocomplete from "@/components/common/order/common/Autocomplete";
   import OrderAside from "@/components/common/order/OrderAside";
   import OrderMap from "@/components/common/order/map/OrderMap";
+  import {
+    citiesLocations,
+    streetsLocations,
+  } from "@/components/common/order/map/coordinates";
 
-  import { computed, onMounted, reactive, ref } from "@vue/composition-api";
+  import { computed, onMounted, ref } from "@vue/composition-api";
   import { getCity, getPoints, createOrder } from "@/api";
   import { useStore } from "@/store";
 
@@ -47,8 +56,9 @@
       OrderMap,
     },
     setup() {
+      const locationsOfCities = citiesLocations();
+      const locationsOfStreets = streetsLocations();
       const { store } = useStore();
-
       const cities = computed({
         get: () => store.state.location.cities,
         set: val => store.commit("location/SET_CITIES", val),
@@ -60,33 +70,19 @@
       const streets = ref([]);
       const street = ref(null);
       const fullAddress = computed(
-        () => `${city.value?.name || ""}, ${street.value?.name || ""}`,
+        () => `${city.value?.name || ""}, ${street.value?.address || ""}`,
       );
-      const locationsOfCities = {
-        "5e26a128099b810b946c5d87": [54, 48],
-        "5ea07ad3099b810b946c6254": [54, 45],
-        "5ea07bae099b810b946c6271": [55, 49],
-        "5ea07c10099b810b946c627a": [51, 46],
-        "5ea07c3b099b810b946c627b": [45, 38],
-        "5f5a09329d3a610b850fd69d": [53, 55],
-        "5f686a3a9d3a610b850fda92": [52, 41],
-        "5f691cda9d3a610b850fdb20": [64, 40],
-        "5f691dd59d3a610b850fdb25": [55, 52],
-        "6005b8f9ad015e0bb6997778": [59, 30],
-        "6010606bad015e0bb6997dca": [54, 39],
-        "60114f64ad015e0bb6997e2c": [43, 131],
-        "60154906ad015e0bb6997ecb": [55, 61],
-        "6011452fad015e0bb6997e1d": [54, 48],
-        "5f69460d9d3a610b850fdb4d": [55, 52],
-      };
-      const mapCoords = computed(() => [
-        city.value?.coords || [],
-        [55.75, 37.5],
-      ]);
 
-      function updateCity(item) {
-        localStorage.setItem("city", item.name);
-        store.commit("location/SET_CITY", item);
+      const currLocation = ref([]);
+      const mapCoords = computed({
+        get: () => currLocation.value,
+        set: val => (currLocation.value = val),
+      });
+      const pointsLocations = cityId =>
+        locationsOfStreets[cityId] ? locationsOfStreets[cityId] : [];
+
+      function updateStreet() {
+        currLocation.value.push(locationsOfStreets[city.value.id].flat());
       }
 
       function getCityWithLocation(cities, currCity) {
@@ -106,19 +102,44 @@
         streets.value = data.data;
       }
 
+      async function updateCity(item) {
+        localStorage.setItem("city", item.name);
+        store.commit("location/SET_CITY", item);
+        street.value = null;
+        currLocation.value = [];
+        const streetsLocations = pointsLocations(item.id);
+        if (!streetsLocations.length) {
+          currLocation.value.push(locationsOfCities[item.id]);
+        } else {
+          streetsLocations.forEach(location =>
+            currLocation.value.push(location),
+          );
+        }
+        await getPointsByLocation(item.id);
+      }
+
       async function getLocationData() {
         const { data } = await getCity();
         const LSCity = localStorage.getItem("city");
         const currCity = !LSCity ? "Ульяновск" : LSCity;
         const citiesWithLocations = getCitiesWithLocation(data.data);
+        const cityWithLocation = getCityWithLocation(
+          citiesWithLocations,
+          currCity,
+        );
 
         cities.value = citiesWithLocations;
-        const city = getCityWithLocation(citiesWithLocations, currCity);
-        store.commit("location/SET_CITY", city);
-        await getPointsByLocation(city.id);
+        city.value = cityWithLocation;
+
+        await getPointsByLocation(cityWithLocation.id);
+        const streetsLocations = pointsLocations(cityWithLocation.id);
+        if (!streetsLocations.length) {
+          currLocation.value.push(cityWithLocation.coords);
+        }
+        streetsLocations.forEach(location => currLocation.value.push(location));
       }
 
-      onMounted(() => getLocationData());
+      onMounted(async () => await getLocationData());
 
       return {
         OrderAside,
@@ -129,6 +150,8 @@
         updateCity,
         fullAddress,
         mapCoords,
+        updateStreet,
+        currLocation,
       };
     },
     computed: {
@@ -137,9 +160,9 @@
       },
     },
     methods: {
-      updateOrder() {
+      async createNewOrder() {
         const order = {
-          orderStatusId: {},
+          orderStatusId: "607069ad2aed9a0b9b7e5530",
           cityId: this.city.id,
           pointId: this.street.id,
           carId: {},
@@ -153,7 +176,8 @@
           isRightWheel: false,
         };
 
-        createOrder(order);
+        const { data } = await createOrder(order);
+        await this.$router.push({ name: "Model", query: { id: data.data.id } });
       },
     },
   };

@@ -6,6 +6,7 @@
         <radio-group
           :model-data.sync="extraState.colorFilter"
           :car-filter-data="colorModel"
+          @change="selectColor"
         />
       </div>
       <div class="extra__picker">
@@ -13,26 +14,30 @@
         <div>
           <span>{{ $translate("orderForm.content.extra.from") }}</span>
           <el-date-picker
-            v-model="extraState.pickerFromVal"
+            v-model="extraState.from"
             type="datetime"
             editable
             :clearable="true"
             clear-icon="el-icon-close"
             :placeholder="translate('orderForm.content.extra.placeholder')"
-            format="dd.MM.yyyy HH:mm"
+            format="dd-MM-yyyy HH:mm"
             value-format="dd-MM-yyyy HH:mm"
+            @change="selectDateFrom"
           >
           </el-date-picker>
         </div>
-        <div class="">
+        <div>
           <span>{{ $translate("orderForm.content.extra.to") }}</span>
           <el-date-picker
-            v-model="extraState.pickerToVal"
+            v-model="extraState.to"
             type="datetime"
             editable
             :clearable="true"
             clear-icon="el-icon-close"
             :placeholder="translate('orderForm.content.extra.placeholder')"
+            format="dd-MM-yyyy HH:mm"
+            value-format="dd-MM-yyyy HH:mm"
+            @change="selectDateTo"
           >
           </el-date-picker>
         </div>
@@ -42,50 +47,80 @@
         <radio-group
           :model-data.sync="extraState.tariffFilter"
           :car-filter-data="tariffModel"
+          @change="addTariff"
         />
       </div>
       <div class="extra__options">
         <p>{{ $translate("orderForm.content.extra.extraOpts") }}</p>
         <checkbox-group
-          :checkbox-filter-data.sync="extraOptionsData"
-          :checkbox-model-data="extraState.extraOptions"
+          :checkbox-filter-data="extraOptionsData"
+          :checkbox-model-data.sync="extraState.extraOptions"
+          @change="addExtraOptions"
         />
       </div>
     </div>
-    <order-aside :order-items="extraState.orderItems" />
+    <order-aside
+      :order-items="orderItems"
+      :is-disabled="isDisabledButton"
+      :price="priceRange"
+    />
   </div>
 </template>
 
 <script>
-  import { reactive } from "@vue/composition-api";
+  import { computed, onMounted, reactive, ref } from "@vue/composition-api";
   import RadioGroup from "@/components/common/order/common/RadioGroup";
   import CheckboxGroup from "@/components/common/order/common/CheckboxGroup";
   import OrderAside from "@/components/common/order/OrderAside";
   import { useI18n } from "@/lang";
+  import { getOrderById } from "@/api";
+  import { formatDateDuration } from "@/utils/date-fns";
+  import formatDuration from "date-fns/formatDuration";
 
   export default {
     name: "Extra",
     components: { RadioGroup, CheckboxGroup, OrderAside },
-    setup() {
+    setup(props, { root }) {
       const { translate } = useI18n();
       const extraState = reactive({
-        colorFilter: "any",
-        tariffFilter: "day",
-        extraOptions: ["full"],
-        pickerFromVal: "",
-        pickerToVal: "",
-        orderItems: {
-          city: "Ульяновск, Нариманова 42",
-          model: "Hyndai, i30 N",
-          color: "Голубой",
-          rent: "1д 2ч",
-          tariff: "На сутки",
-          tank: "Да",
-        },
+        colorFilter: "",
+        tariffFilter: "",
+        extraOptions: [],
+        from: new Date(),
+        to: new Date(),
       });
-      const colorModel = ["any", "red", "blue"];
+      const dateRange = computed(() =>
+        formatDateDuration({ from: extraState.from, to: extraState.to }),
+      );
+      const orderItems = ref({
+        city: "",
+        model: "",
+        color: "",
+        rent: "",
+        tariff: "",
+        child: "",
+        rightDrive: "",
+        full: "",
+      });
+      const colorModel = ["any"];
       const tariffModel = ["minute", "day"];
       const extraOptionsData = ["full", "child", "rightDrive"];
+      const orderId = root.$route.query.id;
+      let currentOrder = {};
+      const priceRange = computed(
+        () => `${currentOrder?.priceMin || 0} - ${currentOrder?.priceMax || 0}`,
+      );
+
+      async function getOrderFromPreviousStep() {
+        const { data } = await getOrderById(orderId);
+        const { cityId, pointId, carId } = data.data;
+        currentOrder = data.data;
+        orderItems.value.city = `${cityId.name}, ${pointId.address}`;
+        orderItems.value.model = carId.name;
+        colorModel.push(...carId.colors);
+      }
+
+      onMounted(() => getOrderFromPreviousStep());
 
       return {
         extraState,
@@ -93,7 +128,40 @@
         tariffModel,
         extraOptionsData,
         translate,
+        orderItems,
+        priceRange,
       };
+    },
+    computed: {
+      isDisabledButton() {
+        return (
+          Boolean(!this.orderItems.model || !this.orderItems.city) || false
+        );
+      },
+    },
+    methods: {
+      selectColor(color) {
+        this.orderItems.color = color;
+      },
+      addExtraOptions({ item, index }) {
+        if (this.extraState.extraOptions[index]) {
+          this.orderItems[item] = "";
+        } else {
+          this.orderItems[item] = "Да";
+        }
+      },
+      addTariff(tariff) {
+        this.orderItems.tariff = tariff;
+      },
+      selectDateFrom() {
+        const date = formatDuration({
+          from: this.extraState.from,
+          to: this.extraState.to,
+        });
+        console.log(date);
+        // formatDuration(dateObj, { zero: true })
+      },
+      selectDateTo() {},
     },
   };
 </script>
