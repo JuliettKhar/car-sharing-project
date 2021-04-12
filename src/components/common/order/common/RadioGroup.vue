@@ -3,17 +3,16 @@
     <el-radio
       v-for="(model, index) in carFilterData"
       :key="index"
-      :label="translate(`radioGroup.${model}`)"
+      :label="model"
       @change="changeValue"
     >
-      {{ $translate(`radioGroup.${model}`) }}
+      {{ model }}
     </el-radio>
   </el-radio-group></template
 >
 
 <script>
   import { ref } from "@vue/composition-api";
-  import { useI18n } from "@/lang";
 
   export default {
     name: "RadioGroup",
@@ -28,10 +27,9 @@
       },
     },
     setup(props) {
-      const { translate } = useI18n();
       const model = ref(props.modelData);
 
-      return { model, translate };
+      return { model };
     },
     methods: {
       changeValue(val) {

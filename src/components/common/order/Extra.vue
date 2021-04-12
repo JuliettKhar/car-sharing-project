@@ -63,6 +63,7 @@
       :order-items="orderItems"
       :is-disabled="isDisabledButton"
       :price="priceRange"
+      @next="updateCurrentOrder"
     />
   </div>
 </template>
@@ -73,8 +74,7 @@
   import CheckboxGroup from "@/components/common/order/common/CheckboxGroup";
   import OrderAside from "@/components/common/order/OrderAside";
   import { useI18n } from "@/lang";
-  import { getOrderById } from "@/api";
-  import { formatDateDuration } from "@/utils/date-fns";
+  import { getOrderById, updateOrder } from "@/api";
   import formatDuration from "date-fns/formatDuration";
 
   export default {
@@ -88,10 +88,9 @@
         extraOptions: [],
         from: new Date(),
         to: new Date(),
+        priceMin: "",
+        priceMax: "",
       });
-      const dateRange = computed(() =>
-        formatDateDuration({ from: extraState.from, to: extraState.to }),
-      );
       const orderItems = ref({
         city: "",
         model: "",
@@ -102,22 +101,24 @@
         rightDrive: "",
         full: "",
       });
-      const colorModel = ["any"];
-      const tariffModel = ["minute", "day"];
+      const colorModel = ref(["Любой"]);
+      const tariffModel = ["На сутки, 1999 ₽/сутки", "Поминутно, 7₽/мин"];
       const extraOptionsData = ["full", "child", "rightDrive"];
       const orderId = root.$route.query.id;
-      let currentOrder = {};
+      const currentOrder = ref({});
       const priceRange = computed(
-        () => `${currentOrder?.priceMin || 0} - ${currentOrder?.priceMax || 0}`,
+        () => `${extraState.priceMin} - ${extraState.priceMax}`,
       );
 
       async function getOrderFromPreviousStep() {
         const { data } = await getOrderById(orderId);
         const { cityId, pointId, carId } = data.data;
-        currentOrder = data.data;
+        currentOrder.value = data.data;
+        extraState.priceMin = carId.priceMin;
+        extraState.priceMax = carId.priceMax;
         orderItems.value.city = `${cityId.name}, ${pointId.address}`;
         orderItems.value.model = carId.name;
-        colorModel.push(...carId.colors);
+        colorModel.value.push(...carId.colors);
       }
 
       onMounted(() => getOrderFromPreviousStep());
@@ -130,6 +131,8 @@
         translate,
         orderItems,
         priceRange,
+        currentOrder,
+        orderId,
       };
     },
     computed: {
@@ -162,6 +165,36 @@
         // formatDuration(dateObj, { zero: true })
       },
       selectDateTo() {},
+      updateCurrentOrder() {
+        const {
+          orderStatusId,
+          cityId,
+          pointId,
+          id,
+          createdAt,
+          carId,
+        } = this.currentOrder;
+        const order = {
+          orderStatusId,
+          cityId,
+          pointId,
+          id,
+          carId,
+          createdAt,
+          color: this.extraState.colorFilter,
+          dateFrom: +this.extraState.from,
+          dateTo: +this.extraState.to,
+          rateId: {},
+          price: this.priceRange,
+          isFullTank: this.extraState.extraOptions.includes("full"),
+          isNeedChildChair: this.extraState.extraOptions.includes("child"),
+          isRightWheel: this.extraState.extraOptions.includes("rightDrive"),
+        };
+        console.log(order);
+
+        updateOrder(this.orderId, order);
+        this.$router.push({ name: "Amount", query: { id } });
+      },
     },
   };
 </script>

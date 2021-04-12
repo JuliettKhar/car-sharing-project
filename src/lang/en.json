@@ -41,7 +41,11 @@
       "city": "City",
       "price": "Price:",
       "amount": "от 8 000 до 12 000 ₽",
-      "chooseModel": "Select model"
+      "chooseModel": "Select model",
+      "extra": "Extra",
+      "amountOptions": "Amount",
+      "buy": "Order",
+      "cancel": "Cancel"
     },
     "content": {
       "location": {

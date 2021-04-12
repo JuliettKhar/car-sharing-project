@@ -5,10 +5,11 @@
       <div v-if="item" :key="key" class="aside__item">
         <span>{{ $translate(`orderForm.aside.${key}`) }}</span>
         <span></span>
-        <span>{{ item }}</span>
+        <span v-if="key === 'rent'">{{ formatDateDuration(item) }}</span>
+        <span v-else>{{ item }}</span>
       </div>
     </template>
-    <div class="aside__amount">
+    <div v-if="price" class="aside__amount">
       <span>{{ $translate("orderForm.aside.price") }}</span>
       <span>{{ price }} ₽</span>
     </div>
@@ -18,13 +19,14 @@
       :disabled="isDisabled"
       @click="getNextStep"
     >
-      {{ $translate("orderForm.aside.chooseModel") }}</el-button
-    >
+      {{ $translate(`orderForm.aside.${getLocaleKey($route.name)}`) }}
+    </el-button>
   </aside>
 </template>
 
 <script>
   import { computed } from "@vue/composition-api";
+  import { formatDateDuration } from "@/utils/date-fns";
 
   export default {
     name: "OrderAside",
@@ -39,18 +41,27 @@
       },
       price: {
         type: String,
-        default: "0",
+        default: "",
       },
     },
     setup(props, { emit, root }) {
       const isFinishOrder = computed(() =>
         root.$route.path.includes("confirm-order"),
       );
+      const keys = {
+        location: "chooseModel",
+        model: "extra",
+        extra: "amountOptions",
+        amount: "buy",
+        confirm: "cancel",
+      };
+      const getLocaleKey = key => keys[key.toLowerCase()];
+
       function getNextStep() {
         emit("next");
       }
 
-      return { getNextStep, isFinishOrder };
+      return { getNextStep, isFinishOrder, formatDateDuration, getLocaleKey };
     },
   };
 </script>
