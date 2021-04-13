@@ -4,8 +4,9 @@
     <order-aside
       :order-items="orderItems"
       :is-disabled="false"
-      @next="finishOrder"
+      @next="confirmOrder"
     />
+    <AmountPopup :is-active.sync="popupIsActive" @accept="finishOrder" />
   </div>
 </template>
 
@@ -14,16 +15,17 @@
   import AmountListOptions from "@/components/common/order/common/AmountListOptions";
   import { onMounted, reactive, ref } from "@vue/composition-api";
   import { useRouter } from "@/router";
-  import { getOrderById } from "@/api";
+  import { getOrderById, updateOrder } from "@/api";
+  import AmountPopup from "@/components/common/order/common/AmountPopup";
 
   export default {
     name: "Amount",
     components: {
       OrderAside,
       AmountListOptions,
+      AmountPopup,
     },
     setup(props, { root }) {
-      const order = ref({});
       const orderItems = reactive({
         city: "",
         model: "",
@@ -41,8 +43,17 @@
 
       const { router } = useRouter();
       const orderId = root.$route.query.id;
+      const popupIsActive = ref(false);
+      const currentOrder = ref({});
 
       function finishOrder() {
+        updateOrder(orderId, {
+          ...currentOrder.value,
+          orderStatusId: {
+            name: "confirmed",
+            id: "5e26a1f0099b810b946c5d8b",
+          },
+        });
         router.push({ name: "Confirm", query: { id: orderId } });
       }
 
@@ -59,7 +70,8 @@
           isNeedChildChair,
           isRightWheel,
         } = data.data;
-        console.log(data.data);
+        currentOrder.value = data.data;
+
         orderItems.city = `${cityId.name}, ${pointId.address}`;
         orderItems.model = carId.name;
         orderItems.color = color;
@@ -83,7 +95,13 @@
         orderItems,
         orderOptions,
         finishOrder,
+        popupIsActive,
       };
+    },
+    methods: {
+      confirmOrder() {
+        this.popupIsActive = true;
+      },
     },
   };
 </script>

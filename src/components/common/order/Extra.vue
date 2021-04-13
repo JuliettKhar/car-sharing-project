@@ -161,8 +161,6 @@
           from: this.extraState.from,
           to: this.extraState.to,
         });
-        console.log(date);
-        // formatDuration(dateObj, { zero: true })
       },
       selectDateTo() {},
       updateCurrentOrder() {

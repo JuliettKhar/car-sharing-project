@@ -40,5 +40,15 @@ a {
 }
 
 .order-form__content {
-    width: 100%;
+  width: 100%;
+}
+
+.finish-btn {
+  color: $white !important;
+  background: linear-gradient(90deg, $brown 0%, $pink 100%) !important;
+  max-width: 177px !important;
+
+  @include sm {
+    margin-left: 0 !important;
+  }
 }
