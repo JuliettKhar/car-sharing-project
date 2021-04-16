@@ -21,7 +21,6 @@
             clear-icon="el-icon-close"
             :placeholder="translate('orderForm.content.extra.placeholder')"
             format="dd-MM-yyyy HH:mm"
-            value-format="dd-MM-yyyy HH:mm"
             @change="selectDateFrom"
           >
           </el-date-picker>
@@ -36,7 +35,6 @@
             clear-icon="el-icon-close"
             :placeholder="translate('orderForm.content.extra.placeholder')"
             format="dd-MM-yyyy HH:mm"
-            value-format="dd-MM-yyyy HH:mm"
             @change="selectDateTo"
           >
           </el-date-picker>
@@ -91,24 +89,31 @@
         priceMin: "",
         priceMax: "",
       });
+      const rent = computed(() => {
+        return {
+          to: extraState.to,
+          from: extraState.from,
+        };
+      });
       const orderItems = ref({
         city: "",
         model: "",
         color: "",
-        rent: "",
+        rent: rent,
         tariff: "",
         child: "",
         rightDrive: "",
         full: "",
       });
       const colorModel = ref(["Любой"]);
-      const tariffModel = ["На сутки, 1999 ₽/сутки", "Поминутно, 7₽/мин"];
+      const tariffModel = [
+        { name: "На сутки, 1999 ₽/сутки", value: "day" },
+        { name: "Поминутно, 7₽/мин", value: "minute" },
+      ];
       const extraOptionsData = ["full", "child", "rightDrive"];
       const orderId = root.$route.query.id;
       const currentOrder = ref({});
-      const priceRange = computed(
-        () => `${extraState.priceMin} - ${extraState.priceMax}`,
-      );
+      const priceRange = ref(extraState.priceMin);
 
       async function getOrderFromPreviousStep() {
         const { data } = await getOrderById(orderId);
@@ -154,15 +159,24 @@
         }
       },
       addTariff(tariff) {
-        this.orderItems.tariff = tariff;
+        this.orderItems.tariff = tariff.name;
+        this.priceRange = this.getPriceByTariff(
+          tariff.value,
+          this.extraState.priceMin,
+        );
       },
-      selectDateFrom() {
-        const date = formatDuration({
-          from: this.extraState.from,
-          to: this.extraState.to,
-        });
+      getPriceByTariff(tariff, rate) {
+        if (tariff === "day") {
+          return rate + 1999;
+        } else {
+          const amountDate =
+            new Date(this.extraState.to) - new Date(this.extraState.from);
+          const amountHours = Math.floor(+amountDate / 1000 / 60 / 60);
+          return amountHours * 7 * 60 + rate;
+        }
       },
       selectDateTo() {},
+      selectDateFrom() {},
       updateCurrentOrder() {
         const {
           orderStatusId,

@@ -3,10 +3,10 @@
     <el-radio
       v-for="(model, index) in carFilterData"
       :key="index"
-      :label="model"
-      @change="changeValue"
+      :label="model.name"
+      @change="changeValue(model)"
     >
-      {{ model }}
+      {{ model.name }}
     </el-radio>
   </el-radio-group></template
 >

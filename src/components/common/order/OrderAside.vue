@@ -5,7 +5,14 @@
       <div v-if="item" :key="key" class="aside__item">
         <span>{{ $translate(`orderForm.aside.${key}`) }}</span>
         <span></span>
-        <span v-if="key === 'rent'">{{ formatDateDuration(item) }}</span>
+        <span v-if="key === 'rent'">
+          {{
+            formatDistanceStrict(new Date(item.from), new Date(item.to), {
+              unit: "day",
+            })
+          }}
+          {{ new Date(item.to).getHours() - new Date(item.from).getHours() }}
+        </span>
         <span v-else>{{ item }}</span>
       </div>
     </template>
@@ -27,6 +34,9 @@
 <script>
   import { computed } from "@vue/composition-api";
   import { formatDateDuration } from "@/utils/date-fns";
+  import differenceInDays from "date-fns/formatDistance";
+  import differenceInHours from "date-fns/differenceInHours";
+  import formatDistanceStrict from "date-fns/formatDistanceStrict";
 
   export default {
     name: "OrderAside",
@@ -40,8 +50,8 @@
         default: true,
       },
       price: {
-        type: String,
-        default: "",
+        type: String | Number,
+        default: null,
       },
     },
     setup(props, { emit, root }) {
@@ -61,7 +71,15 @@
         emit("next");
       }
 
-      return { getNextStep, isFinishOrder, formatDateDuration, getLocaleKey };
+      return {
+        getNextStep,
+        isFinishOrder,
+        formatDateDuration,
+        getLocaleKey,
+        differenceInDays,
+        differenceInHours,
+        formatDistanceStrict,
+      };
     },
   };
 </script>
