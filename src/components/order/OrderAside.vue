@@ -2,23 +2,37 @@
   <aside class="order-form__aside">
     <p class="aside__order">{{ $translate("orderForm.aside.order") }}</p>
     <template v-for="(item, key) of orderItems">
-      <div :key="key" class="aside__item">
+      <div v-if="item" :key="key" class="aside__item">
         <span>{{ $translate(`orderForm.aside.${key}`) }}</span>
         <span></span>
-        <span>{{ item }}</span>
+        <span v-if="key === 'rent'">
+          <template v-if="getDaysCount(item.from, item.to)">
+            {{ getDaysCount(item.from, item.to) }} д
+          </template>
+          <template v-if="getHoursCount(item.from, item.to)">
+            {{ getHoursCount(item.from, item.to) }} ч
+          </template>
+        </span>
+        <span v-else>{{ item }}</span>
       </div>
     </template>
-    <div class="aside__amount">
+    <div v-if="price && !loading" class="aside__amount">
       <span>{{ $translate("orderForm.aside.price") }}</span>
-      <span>{{ $translate("orderForm.aside.amount") }}</span>
+      <span>{{ price }} ₽</span>
     </div>
+    <i
+      v-else-if="loading"
+      class="el-icon-loading"
+      style="margin: 10px auto"
+    ></i>
     <el-button
       type="success"
       :class="[isFinishOrder ? 'aside__amount-finish-btn' : '']"
+      :disabled="isDisabled"
       @click="getNextStep"
     >
-      {{ $translate("orderForm.aside.chooseModel") }}</el-button
-    >
+      {{ $translate(`orderForm.aside.${getLocaleKey($route.name)}`) }}
+    </el-button>
   </aside>
 </template>
 
@@ -32,16 +46,50 @@
         type: Object,
         default: () => ({}),
       },
+      isDisabled: {
+        type: Boolean,
+        default: true,
+      },
+      price: {
+        type: String | Number,
+        default: null,
+      },
+      loading: {
+        type: Boolean,
+        default: false,
+      },
     },
     setup(props, { emit, root }) {
       const isFinishOrder = computed(() =>
         root.$route.path.includes("confirm-order"),
       );
+      const keys = {
+        location: "chooseModel",
+        model: "extra",
+        extra: "amountOptions",
+        amount: "buy",
+        confirm: "cancel",
+      };
+      const getLocaleKey = key => keys[key.toLowerCase()];
+
       function getNextStep() {
-        emit("next");
+        !isFinishOrder.value ? emit("next") : emit("cancel");
       }
 
-      return { getNextStep, isFinishOrder };
+      return {
+        getNextStep,
+        isFinishOrder,
+        getLocaleKey,
+      };
+    },
+    methods: {
+      getDaysCount(from, to) {
+        const difference = new Date(to) - new Date(from);
+        return difference ? Math.floor(+difference / 1000 / 60 / 60 / 24) : 0;
+      },
+      getHoursCount(from, to) {
+        return new Date(to).getHours() - new Date(from).getHours();
+      },
     },
   };
 </script>
@@ -99,6 +147,7 @@
         &:first-child {
           display: flex;
           align-items: flex-end;
+          margin-right: 6px;
           font-size: 14px;
           color: $black;
           text-align: left;

@@ -23,7 +23,6 @@ module.exports = {
     'radix': 'warn',
     'prefer-const': 'warn',
     'prefer-arrow-callback': 'warn',
-    'no-confusing-arrow': 'warn',
     'arrow-spacing': 'warn',
     'switch-colon-spacing': 'warn',
     'spaced-comment': 'warn',
@@ -31,7 +30,6 @@ module.exports = {
     'no-trailing-spaces': 'warn',
     'no-plusplus': 'warn',
     'new-cap': 'warn',
-    'multiline-comment-style': 'warn',
     'linebreak-style': 'warn',
     'jsx-quotes': ['warn', 'prefer-double'],
     'capitalized-comments': ['off', 'always'],
@@ -55,10 +53,11 @@ module.exports = {
           'OTHER_DIRECTIVES',
           'OTHER_ATTR',
           'EVENTS',
-          'CONTENT'
         ],
         alphabetical: false
       }
-    ]
+    ],
+    "multiline-comment-style": "off",
+    "no-confusing-arrow":"off"
   }
 }

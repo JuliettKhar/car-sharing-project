@@ -28,7 +28,7 @@ const routes = [
         meta: { title: "location" },
         component: () =>
           import(
-            /* webpackChunkName: "Location" */ "../components/common/order/Location.vue"
+            /* webpackChunkName: "Location" */ "../components/order/Location.vue"
           ),
       },
       {
@@ -37,7 +37,7 @@ const routes = [
         meta: { title: "model" },
         component: () =>
           import(
-            /* webpackChunkName: "Model" */ "../components/common/order/Model.vue"
+            /* webpackChunkName: "Model" */ "../components/order/Model.vue"
           ),
       },
       {
@@ -46,7 +46,7 @@ const routes = [
         meta: { title: "extra" },
         component: () =>
           import(
-            /* webpackChunkName: "Extra" */ "../components/common/order/Extra.vue"
+            /* webpackChunkName: "Extra" */ "../components/order/Extra.vue"
           ),
       },
       {
@@ -55,7 +55,7 @@ const routes = [
         meta: { title: "amount" },
         component: () =>
           import(
-            /* webpackChunkName: "Amount" */ "../components/common/order/Amount.vue"
+            /* webpackChunkName: "Amount" */ "../components/order/Amount.vue"
           ),
       },
       {
@@ -64,7 +64,7 @@ const routes = [
         meta: { title: null },
         component: () =>
           import(
-            /* webpackChunkName: "Confirm" */ "../components/common/order/ConfirmOrder.vue"
+            /* webpackChunkName: "Confirm" */ "../components/order/ConfirmOrder.vue"
           ),
       },
     ],
