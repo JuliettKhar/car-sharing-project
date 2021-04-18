@@ -5,7 +5,6 @@
         <el-breadcrumb-item
           v-if="route.meta.title"
           :key="index"
-          :to="{ name: route.name }"
           :class="[
             getActiveLinkClass(route.name) ? 'is-link-active' : 'breadcrumbs',
           ]"
@@ -15,7 +14,7 @@
       </template>
     </el-breadcrumb>
     <div v-else class="breadcrumbs-order">
-      <p>Заказ номер RU58491823</p>
+      <p>Заказ номер {{ orderId }}</p>
     </div>
   </div>
 </template>
@@ -35,12 +34,13 @@
       const isCrumbsVisible = computed(
         () => !root.$route.path.includes("confirm-order"),
       );
+      const orderId = computed(() => root.$route.query.id);
 
       function getActiveLinkClass(name) {
         return root.$route.path.includes(name.toLowerCase());
       }
 
-      return { getActiveLinkClass, isCrumbsVisible };
+      return { getActiveLinkClass, isCrumbsVisible, orderId };
     },
   };
 </script>

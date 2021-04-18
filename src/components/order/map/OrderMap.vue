@@ -4,6 +4,7 @@
     :coords="coords"
     show-all-markers
     :controls="controls"
+    :zoom="1"
   >
     <ymap-marker
       v-for="(marker, index) in coords"
@@ -17,30 +18,29 @@
 
 <script>
   import { yandexMap, ymapMarker } from "vue-yandex-maps";
+  import { computed, ref } from "@vue/composition-api";
 
   export default {
     name: "OrderMap",
     components: { yandexMap, ymapMarker },
     props: {
-      /*
-       * coords: {
-       *   type: Array,
-       *   default: () => [],
-       * },
-       */
+      coords: {
+        type: Array,
+        default: () => [],
+      },
     },
-    setup() {
+    setup(props) {
       const settings = {
         apiKey: "9fdc1539-95c9-48be-b5fa-5a09fd7b6070",
         lang: "ru_RU",
         coordorder: "latlong",
         version: "2.1",
       };
-      const coords = [
-        [55.75, 37.5],
-        [55.75, 37.71],
-        [55.7, 37.7],
-      ];
+      // const initCoords = ref(props.coords);
+      // const mapCoords = computed({
+      //   get: () => initCoords.value,
+      //   set: val => (initCoords.value = val),
+      // });
       const markerIcon = {
         layout: "default#imageWithContent",
         imageHref: "./images/icons/map-point.svg",
@@ -50,9 +50,9 @@
 
       return {
         settings,
-        coords,
         markerIcon,
         controls,
+        // mapCoords,
       };
     },
   };

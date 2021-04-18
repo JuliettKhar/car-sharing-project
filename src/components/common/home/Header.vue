@@ -1,11 +1,14 @@
 <template>
   <el-header class="header">
     <div
-      :class="['header-content__wrapper', hasOrderForm ? 'el-container' : '']"
+      :class="[
+        'header-content__wrapper',
+        hasOrderForm ? 'el-container has-order-form' : '',
+      ]"
     >
-      <p class="header__title">
+      <router-link :to="{ name: 'Home' }" class="header__title">
         {{ translate("header.logo") }}
-      </p>
+      </router-link>
       <div class="header-location">
         <img src="images/icons/point.svg" alt="point image" />
         <el-select
@@ -161,5 +164,9 @@
 
   .el-container {
     padding: 0 64px;
+  }
+
+  .has-order-form {
+    padding: 32px 64px;
   }
 </style>

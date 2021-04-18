@@ -14,7 +14,7 @@
 
 <script>
   import HomeHeader from "@/components/common/home/Header";
-  import Breadcrumbs from "@/components/common/order/Breadcrumbs";
+  import Breadcrumbs from "@/components/order/Breadcrumbs";
   import { useRouter } from "@/router";
   import { computed } from "@vue/composition-api";
 

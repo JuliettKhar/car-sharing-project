@@ -3,21 +3,25 @@
     <el-select
       v-model="model"
       filterable
-      remote
       reserve-keyword
       value-key="id"
       autocomplete="on"
       :placeholder="translate('autocomplete.placeholder')"
-      :remote-method="remoteMethod"
-      :loading="loading"
+      no-data-text="Нет доступных локаций"
       @change="changeCity"
     >
       <el-option
-        v-for="city in citiesModel"
-        :key="city.id"
-        :label="city.name"
-        :value="city"
+        v-for="item in citiesModel"
+        :key="item.id"
+        :label="item.name"
+        :value="item"
       >
+        <template v-if="hasAddress">
+          <span style="float: left; margin-right: 6px">{{ item.name }}</span>
+          <span style="float: right; color: #8492a6; font-size: 13px">
+            {{ item.address }}
+          </span>
+        </template>
       </el-option>
     </el-select>
     <i class="el-icon-close el-input__icon" @click="handleIconClick"></i>
@@ -26,70 +30,49 @@
 
 <script>
   import { useI18n } from "@/lang";
-  import { computed, onMounted, ref } from "@vue/composition-api";
+  import { computed } from "@vue/composition-api";
   import { useStore } from "@/store";
 
   const { translate } = useI18n();
+  const { store } = useStore();
 
   export default {
     name: "Autocomplete",
     props: {
-      city: {
+      item: {
         type: Object,
         default: null,
       },
-      cities: {
+      items: {
         type: Array,
-        default: () => [],
+        require: true,
+      },
+      hasAddress: {
+        type: Boolean,
+        default: false,
       },
     },
     setup(props, { emit }) {
-      const { store } = useStore();
       const model = computed({
-        get: () => props.city,
+        get: () => props.item,
         set: val => changeCity(val),
       });
-      const citiesModel = computed({
-        get: () => props.cities,
-        set: val => (props.cities = val),
-      });
-      const loading = ref(false);
+      const citiesModel = computed(() => props.items);
 
       function handleIconClick() {
-        emit("update:city", null);
-      }
-
-      function createFilter(name, queryString) {
-        return name.toLowerCase().includes(queryString.toLowerCase());
-      }
-
-      function remoteMethod(queryString) {
-        if (queryString !== "") {
-          loading.value = true;
-
-          setTimeout(() => {
-            loading.value = false;
-            citiesModel.value = props.cities.filter(({ name }) =>
-              createFilter(name, queryString),
-            );
-          }, 200);
-        } else {
-          citiesModel.value = [];
-        }
+        emit("update:item", null);
+        emit("update:items", props.items);
       }
 
       function changeCity(item) {
-        emit("update:city", item);
-        localStorage.setItem("city", item.name);
-        store.commit("location/SET_CITY", item);
+        emit("update:item", item);
+        emit("change", item);
       }
 
       return {
         model,
         translate,
         handleIconClick,
-        remoteMethod,
-        loading,
         changeCity,
         citiesModel,
       };
@@ -153,5 +136,9 @@
       top: 6px;
       left: -20px;
     }
+  }
+
+  ::v-deep .el-icon-arrow-up:before {
+    display: none;
   }
 </style>
