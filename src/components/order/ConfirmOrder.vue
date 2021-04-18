@@ -1,15 +1,25 @@
 <template>
   <div class="confirm-order">
-    <amount-list-options :order-options="orderOptions" title />
-    <order-aside :order-items="orderItems" :is-disabled="false" />
+    <amount-list-options
+      title
+      :order-options="orderOptions"
+      :loading="isLoading"
+    />
+    <order-aside
+      :order-items="orderItems"
+      :is-disabled="false"
+      :loading="isLoading"
+      :price="finalPrice"
+      @cancel="cancelOrder"
+    />
   </div>
 </template>
 
 <script>
-  import OrderAside from "@/components/common/order/OrderAside";
-  import AmountListOptions from "@/components/common/order/common/AmountListOptions";
+  import OrderAside from "@/components/order/OrderAside";
+  import AmountListOptions from "@/components/order/common/AmountListOptions";
   import { onMounted, reactive, ref } from "@vue/composition-api";
-  import { getOrderById } from "@/api";
+  import { getOrderById, cancelOrderById } from "@/api";
 
   export default {
     name: "ConfirmOrder",
@@ -22,7 +32,7 @@
         city: "",
         model: "",
         color: "",
-        rent: 0,
+        rent: {},
         tariff: "",
         tank: "",
       });
@@ -33,8 +43,11 @@
         available: "",
       });
       const orderId = root.$route.query.id;
+      const isLoading = ref(true);
+      const finalPrice = ref(0);
 
       async function getOrderFromPreviousStep() {
+        // TODO: отрефакторить
         const { data } = await getOrderById(orderId);
         const {
           cityId,
@@ -46,6 +59,7 @@
           isFullTank,
           isNeedChildChair,
           isRightWheel,
+          price,
         } = data.data;
 
         orderItems.city = `${cityId.name}, ${pointId.address}`;
@@ -55,6 +69,10 @@
         orderItems.tank = isFullTank ? "Да" : "";
         orderItems.child = isNeedChildChair ? "Да" : "";
         orderItems.rightDrive = isRightWheel ? "Да" : "";
+        orderItems.rent = {
+          to: dateTo,
+          from: dateFrom,
+        };
         orderOptions.value.number = carId.number;
         orderOptions.value.tank = isFullTank ? "100%" : "";
         orderOptions.value.model = carId.name;
@@ -63,15 +81,31 @@
         ).toLocaleDateString()} ${new Date(dateFrom).getHours()}:${new Date(
           dateFrom,
         ).getMinutes()}`;
+        orderOptions.value.image = { ...carId.thumbnail, name: carId.name };
+        finalPrice.value = price;
       }
 
-      onMounted(() => getOrderFromPreviousStep());
+      onMounted(() =>
+        getOrderFromPreviousStep().then(() => (isLoading.value = false)),
+      );
 
       return {
         orderItems,
         orderOptions,
         orderId,
+        isLoading,
+        finalPrice,
       };
+    },
+    methods: {
+      async cancelOrder() {
+        try {
+          await cancelOrderById(this.orderId);
+          await this.$router.push({ name: "Home" });
+        } catch (e) {
+          console.log(e);
+        }
+      },
     },
   };
 </script>

@@ -1,21 +1,32 @@
 <template>
   <div class="amount-options__wrapper">
     <p v-if="title" class="amount-options__title">Ваш заказ подтверждён</p>
-    <div class="amount-options__info">
-      <p>{{ items.model }}</p>
-      <p>{{ items.number }}</p>
-      <p>
-        {{ $translate("orderForm.content.amount.fuel") }}
-        <span>{{ items.tank }}</span>
-      </p>
-      <p>
-        {{ $translate("orderForm.content.amount.available") }}
-        <span>{{ items.available }}</span>
-      </p>
-    </div>
-    <div class="amount__info">
-      <img :src="`/images/i30n.png`" alt="" />
-    </div>
+    <template v-if="!loading">
+      <div class="amount-options__info">
+        <p>{{ items.model }}</p>
+        <p>{{ items.number }}</p>
+        <p>
+          {{ $translate("orderForm.content.amount.fuel") }}
+          <span>{{ items.tank }}</span>
+        </p>
+        <p>
+          {{ $translate("orderForm.content.amount.available") }}
+          <span>{{ items.available }}</span>
+        </p>
+      </div>
+      <div class="amount__info">
+        <img
+          :src="items.image.path"
+          :alt="items.image.name"
+          @error="e => (e.target.src = 'images/car-stub.png')"
+        />
+      </div>
+    </template>
+    <i
+      v-else
+      class="el-icon-loading"
+      style="transform: translateX(-50%);position: absolute;left: 50%"
+    ></i>
   </div>
 </template>
 
@@ -32,6 +43,10 @@
       title: {
         type: Boolean,
         required: false,
+      },
+      loading: {
+        type: Boolean,
+        default: false,
       },
     },
     setup(props) {
@@ -130,6 +145,18 @@
       @include md-and-down {
         font-size: 20px;
         top: -14px;
+      }
+    }
+  }
+
+  .amount__info {
+    & img {
+      max-width: 256px;
+      max-height: 120px;
+
+      @include sm {
+        max-width: 100%;
+        max-height: 330px;
       }
     }
   }

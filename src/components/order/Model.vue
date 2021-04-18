@@ -9,29 +9,33 @@
         />
       </div>
       <div class="model__cars">
-        <div
-          v-for="(car, index) in carImages"
-          :key="index"
-          :class="[
-            'model__cars-item',
-            modelState.isActiveCar === index ? 'selected' : '',
-          ]"
-          @click="modelState.isActiveCar = index"
-        >
-          <p>{{ car.name }}</p>
-          <p>{{ car.priceMin }} - {{ car.priceMax }}</p>
-          <img
-            :src="car.thumbnail.path"
-            :alt="car.name"
-            @error="e => (e.target.src = 'images/car-stub.png')"
-          />
-        </div>
+        <template v-if="!modelState.isLoading">
+          <div
+            v-for="(car, index) in carImages"
+            :key="index"
+            :class="[
+              'model__cars-item',
+              modelState.isActiveCar === car.id ? 'selected' : '',
+            ]"
+            @click="modelState.isActiveCar = car.id"
+          >
+            <p>{{ car.name }}</p>
+            <p>{{ car.priceMin }} - {{ car.priceMax }}</p>
+            <img
+              :src="car.thumbnail.path"
+              :alt="car.name"
+              @error="e => (e.target.src = 'images/car-stub.png')"
+            />
+          </div>
+        </template>
+        <i v-else class="el-icon-loading"></i>
       </div>
     </div>
     <order-aside
       :order-items="orderItems"
       :is-disabled="isDisabledButton"
       :price="priceRange"
+      :loading="modelState.isLoading"
       @next="updateCurrentOrder"
     />
   </div>
@@ -39,8 +43,8 @@
 
 <script>
   import { computed, onBeforeMount, reactive, ref } from "@vue/composition-api";
-  import RadioGroup from "@/components/common/order/common/RadioGroup";
-  import OrderAside from "@/components/common/order/OrderAside";
+  import RadioGroup from "@/components/order/common/RadioGroup";
+  import OrderAside from "@/components/order/OrderAside";
   import { getCars, getCategories, updateOrder, getOrderById } from "@/api";
 
   export default {
@@ -48,66 +52,80 @@
     components: { RadioGroup, OrderAside },
     setup(props, { root }) {
       const modelState = reactive({
-        carFilter: "Все модели",
+        carFilter: "",
+        currentCarItem: {},
         filterModel: ["Все модели"],
-        isActiveCar: 0,
+        isActiveCar: "",
+        isLoading: true,
       });
       const images = ref([]);
       const imagesData = computed(() => images.value);
       const carImages = ref(imagesData.value);
-      const selectedModelName = computed(
-        () => images.value[modelState.isActiveCar]?.name || "",
-      );
+      const selectedModelName = computed(() => {
+        const car = images.value.filter(
+          item => item.id === modelState.isActiveCar,
+        )[0];
+        return car?.name || "";
+      });
       const selectedModel = computed(
-        () => images.value[modelState.isActiveCar],
+        () =>
+          images.value.filter(item => item.id === modelState.isActiveCar)[0] ||
+          {},
       );
       const orderItems = ref({
         city: "",
         model: selectedModelName,
       });
-      const priceRange = computed(
-        () =>
-          `${selectedModel.value?.priceMin || 0} - ${selectedModel.value
-            ?.priceMax || 0}`,
-      );
+      const priceRange = computed(() => {
+        const isPriceExist =
+          selectedModel.value?.priceMin && selectedModel.value?.priceMax;
+        return isPriceExist
+          ? `${selectedModel.value?.priceMin || 0} - ${selectedModel.value
+              ?.priceMax || 0}`
+          : 0;
+      });
       const orderId = root.$route.query.id;
-      let currentOrder = {};
+      const currentOrder = ref({});
 
-      function changeModel(label) {
-        if (label === "Все модели") {
+      function changeModel(item) {
+        if (item === "Все модели") {
           carImages.value = images.value;
         } else {
           carImages.value = images.value.filter(
-            model =>
-              model.categoryId.name.toLowerCase() === label.toLowerCase(),
+            model => model.categoryId.id === item.id,
           );
         }
       }
 
       async function getModelCategories() {
         const { data } = await getCategories();
-        const categories = data.data.map(item => item.name);
-        modelState.filterModel.push(...categories);
+        modelState.filterModel.push(...data.data);
       }
 
       async function getModelCars() {
         const { data } = await getCars();
         images.value = data.data;
-        await changeModel("Все модели");
+        await changeModel(modelState.currentCarItem);
       }
 
       async function getOrderFromPreviousStep() {
         const { data } = await getOrderById(orderId);
-        currentOrder = data.data;
-        orderItems.value.city = `${data.data.cityId.name}, ${data.data.pointId.address}`;
+        const { carId } = data.data;
+
+        currentOrder.value = data.data;
+        modelState.carFilter = carId?.categoryId.id || "Все модели";
+        modelState.currentCarItem = carId?.categoryId || "Все модели";
+        modelState.isActiveCar = carId?.id || "";
+        orderItems.value.city = `${data.data?.cityId.name || ""}, ${data.data
+          ?.pointId.address || ""}`;
       }
 
       onBeforeMount(() =>
         Promise.all([
+          getOrderFromPreviousStep(),
           getModelCars(),
           getModelCategories(),
-          getOrderFromPreviousStep(),
-        ]),
+        ]).then(() => (modelState.isLoading = false)),
       );
 
       return {
@@ -167,6 +185,7 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: nowrap;
+    height: 100vh;
 
     @include sm {
       flex-wrap: wrap;
@@ -190,6 +209,7 @@
       border: 1px solid $gray-light;
       max-width: 80%;
       box-sizing: border-box;
+      min-height: 40px;
 
       @include lg-and-down {
         display: grid;
@@ -278,10 +298,10 @@
 
         & img {
           margin: 36px auto;
+          max-width: 256px;
+          max-height: 116px;
 
           @include lg-and-down {
-            max-width: 256px;
-            max-height: 116px;
             margin: 25px auto;
           }
         }

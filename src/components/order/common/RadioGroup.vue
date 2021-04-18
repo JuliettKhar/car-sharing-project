@@ -1,18 +1,23 @@
 <template>
   <el-radio-group v-model="model" @change="updateFilters">
-    <el-radio
-      v-for="(model, index) in carFilterData"
-      :key="index"
-      :label="model.name"
-      @change="changeValue(model)"
-    >
-      {{ model.name }}
-    </el-radio>
-  </el-radio-group></template
->
+    <template v-for="(model, index) in carFilterData">
+      <el-radio
+        v-if="model.name"
+        :key="index"
+        :label="model.id"
+        @change="changeValue(model)"
+      >
+        {{ model.name }}
+      </el-radio>
+      <el-radio v-else :key="index" :label="model" @change="changeValue(model)">
+        {{ model }}
+      </el-radio>
+    </template>
+  </el-radio-group>
+</template>
 
 <script>
-  import { ref } from "@vue/composition-api";
+  import { ref, toRefs, watch } from "@vue/composition-api";
 
   export default {
     name: "RadioGroup",
@@ -22,12 +27,15 @@
         required: true,
       },
       modelData: {
-        type: String,
+        type: String | Object,
         required: true,
       },
     },
     setup(props) {
-      const model = ref(props.modelData);
+      const { modelData } = toRefs(props);
+      const model = ref("");
+
+      watch(modelData, val => (model.value = val));
 
       return { model };
     },

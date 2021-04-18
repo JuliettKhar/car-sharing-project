@@ -5,7 +5,6 @@
         <el-breadcrumb-item
           v-if="route.meta.title"
           :key="index"
-          :to="{ name: route.name }"
           :class="[
             getActiveLinkClass(route.name) ? 'is-link-active' : 'breadcrumbs',
           ]"

@@ -5,7 +5,7 @@
         <p>{{ $translate("orderForm.content.extra.color") }}</p>
         <radio-group
           :model-data.sync="extraState.colorFilter"
-          :car-filter-data="colorModel"
+          :car-filter-data="extraState.colorModel"
           @change="selectColor"
         />
       </div>
@@ -17,11 +17,11 @@
             v-model="extraState.from"
             type="datetime"
             editable
-            :clearable="true"
             clear-icon="el-icon-close"
+            :clearable="true"
             :placeholder="translate('orderForm.content.extra.placeholder')"
+            :picker-options="extraState.pickerOptionsFrom"
             format="dd-MM-yyyy HH:mm"
-            @change="selectDateFrom"
           >
           </el-date-picker>
         </div>
@@ -31,11 +31,11 @@
             v-model="extraState.to"
             type="datetime"
             editable
-            :clearable="true"
             clear-icon="el-icon-close"
+            :clearable="true"
+            :picker-options="extraState.pickerOptionsTo"
             :placeholder="translate('orderForm.content.extra.placeholder')"
             format="dd-MM-yyyy HH:mm"
-            @change="selectDateTo"
           >
           </el-date-picker>
         </div>
@@ -44,7 +44,7 @@
         <p>{{ $translate("orderForm.content.extra.tariff") }}</p>
         <radio-group
           :model-data.sync="extraState.tariffFilter"
-          :car-filter-data="tariffModel"
+          :car-filter-data="extraState.tariffModel"
           @change="addTariff"
         />
       </div>
@@ -61,6 +61,7 @@
       :order-items="orderItems"
       :is-disabled="isDisabledButton"
       :price="priceRange"
+      :loading="extraState.isLoading"
       @next="updateCurrentOrder"
     />
   </div>
@@ -68,12 +69,11 @@
 
 <script>
   import { computed, onMounted, reactive, ref } from "@vue/composition-api";
-  import RadioGroup from "@/components/common/order/common/RadioGroup";
-  import CheckboxGroup from "@/components/common/order/common/CheckboxGroup";
-  import OrderAside from "@/components/common/order/OrderAside";
+  import RadioGroup from "@/components/order/common/RadioGroup";
+  import CheckboxGroup from "@/components/order/common/CheckboxGroup";
+  import OrderAside from "@/components/order/OrderAside";
   import { useI18n } from "@/lang";
-  import { getOrderById, updateOrder } from "@/api";
-  import formatDuration from "date-fns/formatDuration";
+  import { getOrderById, updateOrder, getRate } from "@/api";
 
   export default {
     name: "Extra",
@@ -82,12 +82,27 @@
       const { translate } = useI18n();
       const extraState = reactive({
         colorFilter: "",
+        colorModel: [],
         tariffFilter: "",
+        tariffModel: [],
         extraOptions: [],
+        extraOptionsData: [],
         from: new Date(),
         to: new Date(),
         priceMin: "",
         priceMax: "",
+        extraPrice: 0,
+        pickerOptionsFrom: {
+          disabledDate: val => {
+            return val > new Date();
+          },
+        },
+        pickerOptionsTo: {
+          disabledDate: val => {
+            return val < new Date();
+          },
+        },
+        isLoading: true,
       });
       const rent = computed(() => {
         return {
@@ -105,32 +120,97 @@
         rightDrive: "",
         full: "",
       });
-      const colorModel = ref(["Любой"]);
       const tariffModel = [
         { name: "На сутки, 1999 ₽/сутки", value: "day" },
         { name: "Поминутно, 7₽/мин", value: "minute" },
       ];
-      const extraOptionsData = ["full", "child", "rightDrive"];
+      const extraOptionsData = [
+        { name: "full", value: 500 },
+        { name: "child", value: 200 },
+        { name: "rightDrive", value: 1600 },
+      ];
       const orderId = root.$route.query.id;
       const currentOrder = ref({});
-      const priceRange = ref(extraState.priceMin);
+      const priceRange = ref(0);
+
+      function getExtraOptions(options) {
+        const availableOptions = [];
+
+        options.forEach(item => {
+          if (item.isFullTank) {
+            availableOptions.push("full");
+          } else if (item.isNeedChildChair) {
+            availableOptions.push("child");
+          } else if (item.isRightWheel) {
+            availableOptions.push("rightDrive");
+          }
+        });
+
+        return availableOptions;
+      }
 
       async function getOrderFromPreviousStep() {
         const { data } = await getOrderById(orderId);
-        const { cityId, pointId, carId } = data.data;
+        const {
+          cityId,
+          pointId,
+          carId,
+          dateFrom,
+          dateTo,
+          color,
+          isFullTank,
+          isNeedChildChair,
+          isRightWheel,
+          rateId,
+        } = data.data;
         currentOrder.value = data.data;
         extraState.priceMin = carId.priceMin;
         extraState.priceMax = carId.priceMax;
+        extraState.to = dateTo ? dateTo : new Date();
+        extraState.from = dateFrom ? dateFrom : new Date();
+        extraState.colorFilter = color ? color : "Любой";
+        extraState.tariffFilter = rateId?.id || "";
+        extraState.extraOptions.push(
+          ...getExtraOptions([
+            { isFullTank },
+            { isNeedChildChair },
+            { isRightWheel },
+          ]),
+        );
+
         orderItems.value.city = `${cityId.name}, ${pointId.address}`;
         orderItems.value.model = carId.name;
-        colorModel.value.push(...carId.colors);
+        orderItems.value.color = color ? color : "Любой";
+        orderItems.value.tariff = rateId?.rateTypeId.name || "";
+        carId.colors.length
+          ? extraState.colorModel.push(...carId.colors)
+          : extraState.colorModel.push("Любой");
+        priceRange.value = carId.priceMin;
       }
 
-      onMounted(() => getOrderFromPreviousStep());
+      async function getRateList() {
+        const { data } = await getRate();
+        extraState.tariffModel = data.data.map(item => {
+          const { rateTypeId } = item;
+          const { id, unit, name } = rateTypeId;
+
+          return {
+            ...item,
+            rateTypeId: id,
+            name,
+            unit,
+          };
+        });
+      }
+
+      onMounted(() =>
+        Promise.all([getRateList(), getOrderFromPreviousStep()]).then(
+          () => (extraState.isLoading = false),
+        ),
+      );
 
       return {
         extraState,
-        colorModel,
         tariffModel,
         extraOptionsData,
         translate,
@@ -141,9 +221,32 @@
       };
     },
     computed: {
+      // TODO: отрефакторить
+      isRentAccepted() {
+        const toDay = new Date(this.extraState.to).getDate();
+        const toMonth = new Date(this.extraState.to).getMonth();
+        const toHours = new Date(this.extraState.to).getHours();
+        const toMinutes = new Date(this.extraState.to).getMinutes();
+
+        const fromDay = new Date(this.extraState.from).getDate();
+        const fromMonth = new Date(this.extraState.from).getMonth();
+        const fromHours = new Date(this.extraState.from).getHours();
+        const fromMinutes = new Date(this.extraState.from).getMinutes();
+
+        return (
+          toDay === fromDay &&
+          toMonth === fromMonth &&
+          toHours === fromHours &&
+          toMinutes === fromMinutes
+        );
+      },
       isDisabledButton() {
         return (
-          Boolean(!this.orderItems.model || !this.orderItems.city) || false
+          Boolean(
+            !this.orderItems.color ||
+              this.isRentAccepted ||
+              !this.orderItems.tariff,
+          ) || false
         );
       },
     },
@@ -151,33 +254,45 @@
       selectColor(color) {
         this.orderItems.color = color;
       },
-      addExtraOptions({ item, index }) {
-        if (this.extraState.extraOptions[index]) {
-          this.orderItems[item] = "";
+      addExtraOptions({ item }) {
+        if (this.orderItems[item.name]) {
+          this.orderItems[item.name] = "";
+          this.getPriceWithExtraOptions(-item.value);
         } else {
-          this.orderItems[item] = "Да";
+          this.orderItems[item.name] = "Да";
+          this.getPriceWithExtraOptions(item.value);
         }
+      },
+      getPriceWithExtraOptions(price) {
+        this.extraState.extraPrice += price;
+        this.priceRange += price;
       },
       addTariff(tariff) {
         this.orderItems.tariff = tariff.name;
-        this.priceRange = this.getPriceByTariff(
-          tariff.value,
-          this.extraState.priceMin,
-        );
+        this.priceRange =
+          this.getPriceByTariff(tariff, this.extraState.priceMin) +
+          this.extraState.extraPrice;
       },
       getPriceByTariff(tariff, rate) {
-        if (tariff === "day") {
-          return rate + 1999;
-        } else {
-          const amountDate =
-            new Date(this.extraState.to) - new Date(this.extraState.from);
-          const amountHours = Math.floor(+amountDate / 1000 / 60 / 60);
-          return amountHours * 7 * 60 + rate;
+        const difference =
+          new Date(this.extraState.to) - new Date(this.extraState.from);
+
+        if (tariff.unit === "сутки") {
+          const extraHours = difference
+            ? Math.floor((+difference / 1000 / 60 / 60 - 24) * 7 * 60)
+            : 0;
+
+          return rate + tariff.price + extraHours;
+        } else if (tariff.unit === "мин") {
+          return (
+            Math.floor(+difference / 1000 / 60 / 60) * tariff.price * 60 + rate
+          );
+        } else if (tariff.unit === "7 дней") {
+          return rate + tariff.price;
         }
       },
-      selectDateTo() {},
-      selectDateFrom() {},
       updateCurrentOrder() {
+        // TODO: отрефакторить
         const {
           orderStatusId,
           cityId,
@@ -196,13 +311,14 @@
           color: this.extraState.colorFilter,
           dateFrom: +this.extraState.from,
           dateTo: +this.extraState.to,
-          rateId: {},
+          rateId: this.extraState.tariffModel.filter(
+            model => model.id === this.extraState.tariffFilter,
+          )[0],
           price: this.priceRange,
           isFullTank: this.extraState.extraOptions.includes("full"),
           isNeedChildChair: this.extraState.extraOptions.includes("child"),
           isRightWheel: this.extraState.extraOptions.includes("rightDrive"),
         };
-        console.log(order);
 
         updateOrder(this.orderId, order);
         this.$router.push({ name: "Amount", query: { id } });

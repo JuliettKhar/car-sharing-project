@@ -1,4 +1,3 @@
-import qs from "qs";
 import Axios from "axios";
 import { Notification } from "element-ui";
 
@@ -15,15 +14,6 @@ const axios = Axios.create({
 
 axios.interceptors.request.use(
   config => {
-    /*
-     * config.paramsSerializer = params =>
-     *   qs.stringify(params, {
-     *     encode: false,
-     *     skipNulls: true,
-     *     arrayFormat: "repeat",
-     *   });
-     */
-
     return config;
   },
   error => {

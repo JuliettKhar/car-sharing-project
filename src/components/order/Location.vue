@@ -30,19 +30,21 @@
     <order-aside
       :order-items="{ city: fullAddress }"
       :is-disabled="isDisabledButton"
+      :loading="isLoading"
+      :price="null"
       @next="createNewOrder"
     />
   </div>
 </template>
 
 <script>
-  import Autocomplete from "@/components/common/order/common/Autocomplete";
-  import OrderAside from "@/components/common/order/OrderAside";
-  import OrderMap from "@/components/common/order/map/OrderMap";
+  import Autocomplete from "@/components/order/common/Autocomplete";
+  import OrderAside from "@/components/order/OrderAside";
+  import OrderMap from "@/components/order/map/OrderMap";
   import {
     citiesLocations,
     streetsLocations,
-  } from "@/components/common/order/map/coordinates";
+  } from "@/components/order/map/coordinates";
 
   import { computed, onMounted, ref } from "@vue/composition-api";
   import { getCity, getPoints, createOrder } from "@/api";
@@ -78,6 +80,7 @@
         get: () => currLocation.value,
         set: val => (currLocation.value = val),
       });
+      const isLoading = ref(true);
       const pointsLocations = cityId =>
         locationsOfStreets[cityId] ? locationsOfStreets[cityId] : [];
 
@@ -139,7 +142,10 @@
         streetsLocations.forEach(location => currLocation.value.push(location));
       }
 
-      onMounted(async () => await getLocationData());
+      onMounted(
+        async () =>
+          await getLocationData().then(() => (isLoading.value = false)),
+      );
 
       return {
         OrderAside,
@@ -152,6 +158,7 @@
         mapCoords,
         updateStreet,
         currLocation,
+        isLoading,
       };
     },
     computed: {

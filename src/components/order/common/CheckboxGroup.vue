@@ -1,18 +1,28 @@
 <template>
   <el-checkbox-group v-model="model" @change="updateFilters">
-    <el-checkbox
-      v-for="(item, index) in checkboxFilterData"
-      :key="index"
-      :label="item"
-      @change="changeValue(item, index)"
-    >
-      {{ $translate(`checkboxGroup.${item}`) }}
-    </el-checkbox>
+    <template v-for="(item, index) in checkboxFilterData">
+      <el-checkbox
+        v-if="item.name"
+        :key="index"
+        :label="item.name"
+        @change="changeValue(item, index)"
+      >
+        {{ $translate(`checkboxGroup.${item.name}`) }}
+      </el-checkbox>
+      <el-checkbox
+        v-else
+        :key="index"
+        :label="item"
+        @change="changeValue(item, index)"
+      >
+        {{ $translate(`checkboxGroup.${item}`) }}
+      </el-checkbox>
+    </template>
   </el-checkbox-group>
 </template>
 
 <script>
-  import { ref } from "@vue/composition-api";
+  import { ref, toRefs, watch } from "@vue/composition-api";
 
   export default {
     name: "CheckboxGroup",
@@ -27,7 +37,10 @@
       },
     },
     setup(props) {
-      const model = ref(props.checkboxModelData);
+      const { checkboxModelData } = toRefs(props);
+      const model = ref([]);
+
+      watch(checkboxModelData, val => (model.value = val));
 
       return { model };
     },

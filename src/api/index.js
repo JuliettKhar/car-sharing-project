@@ -31,3 +31,11 @@ export function updateOrder(orderId, order) {
 export function getOrderById(orderId) {
   return axios.get(`/api/db/order/${orderId}`);
 }
+
+export function cancelOrderById(orderId) {
+  return axios.put(`/api/db/orderStatus/${orderId}`);
+}
+
+export function getRate() {
+  return axios.get(`/api/db/rate`);
+}

@@ -6,20 +6,25 @@
         <span>{{ $translate(`orderForm.aside.${key}`) }}</span>
         <span></span>
         <span v-if="key === 'rent'">
-          {{
-            formatDistanceStrict(new Date(item.from), new Date(item.to), {
-              unit: "day",
-            })
-          }}
-          {{ new Date(item.to).getHours() - new Date(item.from).getHours() }}
+          <template v-if="getDaysCount(item.from, item.to)">
+            {{ getDaysCount(item.from, item.to) }} д
+          </template>
+          <template v-if="getHoursCount(item.from, item.to)">
+            {{ getHoursCount(item.from, item.to) }} ч
+          </template>
         </span>
         <span v-else>{{ item }}</span>
       </div>
     </template>
-    <div v-if="price" class="aside__amount">
+    <div v-if="price && !loading" class="aside__amount">
       <span>{{ $translate("orderForm.aside.price") }}</span>
       <span>{{ price }} ₽</span>
     </div>
+    <i
+      v-else-if="loading"
+      class="el-icon-loading"
+      style="margin: 10px auto"
+    ></i>
     <el-button
       type="success"
       :class="[isFinishOrder ? 'aside__amount-finish-btn' : '']"
@@ -33,10 +38,6 @@
 
 <script>
   import { computed } from "@vue/composition-api";
-  import { formatDateDuration } from "@/utils/date-fns";
-  import differenceInDays from "date-fns/formatDistance";
-  import differenceInHours from "date-fns/differenceInHours";
-  import formatDistanceStrict from "date-fns/formatDistanceStrict";
 
   export default {
     name: "OrderAside",
@@ -53,6 +54,10 @@
         type: String | Number,
         default: null,
       },
+      loading: {
+        type: Boolean,
+        default: false,
+      },
     },
     setup(props, { emit, root }) {
       const isFinishOrder = computed(() =>
@@ -68,18 +73,23 @@
       const getLocaleKey = key => keys[key.toLowerCase()];
 
       function getNextStep() {
-        emit("next");
+        !isFinishOrder.value ? emit("next") : emit("cancel");
       }
 
       return {
         getNextStep,
         isFinishOrder,
-        formatDateDuration,
         getLocaleKey,
-        differenceInDays,
-        differenceInHours,
-        formatDistanceStrict,
       };
+    },
+    methods: {
+      getDaysCount(from, to) {
+        const difference = new Date(to) - new Date(from);
+        return difference ? Math.floor(+difference / 1000 / 60 / 60 / 24) : 0;
+      },
+      getHoursCount(from, to) {
+        return new Date(to).getHours() - new Date(from).getHours();
+      },
     },
   };
 </script>
