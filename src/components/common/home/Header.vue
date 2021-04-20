@@ -18,6 +18,7 @@
           reserve-keyword
           value-key="id"
           autocomplete="on"
+          class="header-location__select"
           :placeholder="translate('header.cityPlaceholder')"
           :remote-method="querySearch"
           @change="changeCity"
@@ -143,6 +144,12 @@
       & img {
         display: block;
       }
+
+      &__select {
+        @include md-and-down {
+          max-width: 171px;
+        }
+      }
     }
 
     &-content__wrapper {
@@ -168,5 +175,9 @@
 
   .has-order-form {
     padding: 32px 64px;
+
+    @include md-and-down {
+      padding: 0;
+    }
   }
 </style>

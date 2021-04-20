@@ -207,6 +207,10 @@
       flex-direction: column;
       align-items: flex-start;
       padding-top: 32px;
+
+      @include md-and-down {
+        height: min-content;
+      }
     }
 
     &__map {
@@ -224,6 +228,10 @@
       flex-direction: column;
     }
 
+    &__selectors-city {
+      margin-bottom: 8px;
+    }
+
     &__selectors-city,
     &__selectors-location {
       display: flex;
@@ -236,6 +244,7 @@
         font-weight: 300;
         font-size: 14px;
         color: $black;
+        min-width: 50px;
 
         @include sm {
           text-align: left;
@@ -249,5 +258,10 @@
       margin-top: 50px;
       text-align: left;
     }
+  }
+
+  ::v-deep .el-input__inner {
+    width: 193px;
+    height: 30px;
   }
 </style>

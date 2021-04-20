@@ -9,26 +9,28 @@
         />
       </div>
       <div class="model__cars">
-        <template v-if="!modelState.isLoading">
-          <div
-            v-for="(car, index) in carImages"
-            :key="index"
-            :class="[
-              'model__cars-item',
-              modelState.isActiveCar === car.id ? 'selected' : '',
-            ]"
-            @click="modelState.isActiveCar = car.id"
-          >
-            <p>{{ car.name }}</p>
-            <p>{{ car.priceMin }} - {{ car.priceMax }}</p>
-            <img
-              :src="car.thumbnail.path"
-              :alt="car.name"
-              @error="e => (e.target.src = 'images/car-stub.png')"
-            />
-          </div>
-        </template>
-        <i v-else class="el-icon-loading"></i>
+        <div>
+          <template v-if="!modelState.isLoading">
+            <div
+              v-for="(car, index) in carImages"
+              :key="index"
+              :class="[
+                'model__cars-item',
+                modelState.isActiveCar === car.id ? 'selected' : '',
+              ]"
+              @click="modelState.isActiveCar = car.id"
+            >
+              <p>{{ car.name }}</p>
+              <p>{{ car.priceMin }} - {{ car.priceMax }}</p>
+              <img
+                :src="car.thumbnail.path"
+                :alt="car.name"
+                @error="e => (e.target.src = 'images/car-stub.png')"
+              />
+            </div>
+          </template>
+          <i v-else class="el-icon-loading"></i>
+        </div>
       </div>
     </div>
     <order-aside
@@ -185,7 +187,6 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: nowrap;
-    height: 100vh;
 
     @include sm {
       flex-wrap: wrap;
@@ -206,25 +207,47 @@
       justify-content: space-evenly;
       align-items: center;
       margin: 48px 0 0 0;
-      border: 1px solid $gray-light;
+      border-right: 1px solid $gray-light;
+      border-top: 1px solid $gray-light;
       max-width: 80%;
       box-sizing: border-box;
       min-height: 40px;
 
       @include lg-and-down {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        margin: 30px 0 0 0;
-        border: none;
+        border-top: none;
+        max-width: 100%;
       }
 
       @include md-and-down {
-        grid-template-columns: 1fr;
+        max-width: 100%;
+        border: none;
       }
 
-      @include sm {
-        max-width: 100%;
-        grid-template-columns: 1fr;
+      //@include sm {
+      //  border-right: 1px solid $gray-light;
+      //}
+
+      & > div {
+        display: inherit;
+        flex-wrap: inherit;
+        overflow-y: auto;
+        max-height: 760px;
+
+        @include lg-and-down {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          border: none;
+        }
+
+        @include md-and-down {
+          grid-template-columns: 1fr 1fr;
+          max-width: 100%;
+        }
+
+        @include sm {
+          max-width: 100%;
+          grid-template-columns: 1fr;
+        }
       }
 
       &-item {
