@@ -4,7 +4,7 @@
       <div class="location__selectors">
         <div class="location__selectors-city">
           <span>{{ $translate("orderForm.content.location.city") }}</span>
-          <Autocomplete
+          <autocomplete
             :item.sync="city"
             :items.sync="cities"
             @change="updateCity"
@@ -12,7 +12,7 @@
         </div>
         <div class="location__selectors-location">
           <span>{{ $translate("orderForm.content.location.location") }}</span>
-          <Autocomplete
+          <autocomplete
             :item.sync="street"
             :items.sync="streets"
             hasAddress

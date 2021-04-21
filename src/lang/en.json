@@ -45,7 +45,14 @@
       "extra": "Extra",
       "amountOptions": "Amount",
       "buy": "Order",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "model": "Model",
+      "color": "Color",
+      "child": "Child chair",
+      "rent": "Lease duration",
+      "rightDrive": "Right hand drive",
+      "tank": "Full fuel",
+      "tariff": "Tariff"
     },
     "content": {
       "location": {
@@ -70,8 +77,14 @@
         "fuel": "Fuel",
         "fuelVal": "100",
         "available": "Available from",
-        "availableTime": "12.06.2019 12:00"
-      }
+        "availableTime": "12.06.2019 12:00",
+        "popup": {
+          "confirm": "Confirm order",
+          "accept": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "orderConfirm": "Order Confirmed"
     }
   },
   "radioGroup": {
@@ -95,7 +108,8 @@
     "location": "Location",
     "model": "Model",
     "extra": "Extra",
-    "amount": "Amount"
+    "amount": "Amount",
+    "order": "Order number"
   },
   "autocomplete": {
     "placeholder": "Start typing an item ..."

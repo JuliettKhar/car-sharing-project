@@ -8,7 +8,7 @@
       :price="finalPrice"
       @next="confirmOrder"
     />
-    <AmountPopup :is-active.sync="popupIsActive" @accept="finishOrder" />
+    <amount-popup :is-active.sync="popupIsActive" @accept="finishOrder" />
   </div>
 </template>
 

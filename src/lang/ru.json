@@ -80,8 +80,14 @@
         "fuel": "Топливо",
         "fuelVal": "100",
         "available": "Доступна c",
-        "availableTime": "12.06.2019 12:00"
-      }
+        "availableTime": "12.06.2019 12:00",
+        "popup": {
+          "confirm": "Подтвердить заказ",
+          "accept": "Подтвердить",
+          "cancel": "Вернуться"
+        }
+      },
+      "orderConfirm": "Ваш заказ подтверждён"
     }
   },
   "radioGroup": {
@@ -105,7 +111,8 @@
     "location": "Местоположение",
     "model": "Модель",
     "extra": "Дополнительно",
-    "amount": "Итого"
+    "amount": "Итого",
+    "order": "Заказ номер"
   },
   "autocomplete": {
     "placeholder": "Начните вводить пункт ..."

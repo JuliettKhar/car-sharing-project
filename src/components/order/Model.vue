@@ -223,10 +223,6 @@
         border: none;
       }
 
-      //@include sm {
-      //  border-right: 1px solid $gray-light;
-      //}
-
       & > div {
         display: inherit;
         flex-wrap: inherit;
@@ -272,7 +268,7 @@
 
           @include lg-and-down {
             width: 100%;
-            border: 1px solid #eee;
+            border: 1px solid $gray-light;
           }
         }
 
@@ -282,7 +278,7 @@
 
           @include lg-and-down {
             width: 100%;
-            border: 1px solid #eee;
+            border: 1px solid $gray-light;
           }
         }
 

@@ -1,6 +1,8 @@
 <template>
   <div class="amount-options__wrapper">
-    <p v-if="title" class="amount-options__title">Ваш заказ подтверждён</p>
+    <p v-if="title" class="amount-options__title">
+      {{ $translate("orderForm.content.orderConfirm") }}
+    </p>
     <template v-if="!loading">
       <div class="amount-options__info">
         <p>{{ items.model }}</p>
