@@ -25,7 +25,7 @@ export function createOrder(order) {
 }
 
 export function updateOrder(orderId, order) {
-  return axios.put(`/api/db/order/${orderId}`, { ...order });
+  return axios.post(`/api/db/order/${orderId}`, { ...order });
 }
 
 export function getOrderById(orderId) {

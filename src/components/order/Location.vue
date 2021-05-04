@@ -49,6 +49,7 @@
   import { computed, onMounted, ref } from "@vue/composition-api";
   import { getCity, getPoints, createOrder } from "@/api";
   import { useStore } from "@/store";
+  import { useOrder } from "@/components/order/composables/useOrder";
 
   export default {
     name: "Location",
@@ -83,6 +84,10 @@
       const isLoading = ref(true);
       const pointsLocations = cityId =>
         locationsOfStreets[cityId] ? locationsOfStreets[cityId] : [];
+      const { configItems } = useOrder();
+      const isDisabledButton = computed(
+        () => Boolean(!street.value || !city.value) || false,
+      );
 
       function updateStreet() {
         currLocation.value.push(locationsOfStreets[city.value.id].flat());
@@ -142,6 +147,17 @@
         streetsLocations.forEach(location => currLocation.value.push(location));
       }
 
+      async function createNewOrder() {
+        const order = {
+          ...configItems.value,
+          cityId: city.value.id,
+          pointId: street.value.id,
+        };
+
+        const { data } = await createOrder(order);
+        await this.$router.push({ name: "Model", query: { id: data.data.id } });
+      }
+
       onMounted(
         async () =>
           await getLocationData().then(() => (isLoading.value = false)),
@@ -159,33 +175,9 @@
         updateStreet,
         currLocation,
         isLoading,
+        createNewOrder,
+        isDisabledButton,
       };
-    },
-    computed: {
-      isDisabledButton() {
-        return Boolean(!this.street || !this.city) || false;
-      },
-    },
-    methods: {
-      async createNewOrder() {
-        const order = {
-          orderStatusId: "607069ad2aed9a0b9b7e5530",
-          cityId: this.city.id,
-          pointId: this.street.id,
-          carId: {},
-          color: "",
-          dateFrom: 0,
-          dateTo: 0,
-          rateId: {},
-          price: 0,
-          isFullTank: false,
-          isNeedChildChair: false,
-          isRightWheel: false,
-        };
-
-        const { data } = await createOrder(order);
-        await this.$router.push({ name: "Model", query: { id: data.data.id } });
-      },
     },
   };
 </script>

@@ -48,6 +48,7 @@
   import RadioGroup from "@/components/order/common/RadioGroup";
   import OrderAside from "@/components/order/OrderAside";
   import { getCars, getCategories, updateOrder, getOrderById } from "@/api";
+  import { useOrder } from "@/components/order/composables/useOrder";
 
   export default {
     name: "Model",
@@ -88,6 +89,7 @@
       });
       const orderId = root.$route.query.id;
       const currentOrder = ref({});
+      const { configItems } = useOrder();
 
       function changeModel(item) {
         if (item === "Все модели") {
@@ -122,6 +124,21 @@
           ?.pointId.address || ""}`;
       }
 
+      function updateCurrentOrder() {
+        const { orderStatusId, cityId, pointId, id, createdAt } = currentOrder;
+        const order = {
+          id: orderId,
+          carId: selectedModel.value.id,
+          priceMin: selectedModel.value.priceMin,
+          priceMax: selectedModel.value.priceMax,
+        };
+
+        console.log(order);
+
+        updateOrder(orderId, order);
+        // this.$router.push({ name: "Extra", query: { id: orderId } });
+      }
+
       onBeforeMount(() =>
         Promise.all([
           getOrderFromPreviousStep(),
@@ -140,6 +157,7 @@
         priceRange,
         orderId,
         currentOrder,
+        updateCurrentOrder,
       };
     },
     computed: {
@@ -149,36 +167,25 @@
         );
       },
     },
-    methods: {
-      updateCurrentOrder() {
-        const {
-          orderStatusId,
-          cityId,
-          pointId,
-          id,
-          createdAt,
-        } = this.currentOrder;
-        const order = {
-          orderStatusId,
-          cityId,
-          pointId,
-          id,
-          createdAt,
-          carId: this.selectedModel.id,
-          color: "",
-          dateFrom: 0,
-          dateTo: 0,
-          rateId: {},
-          price: this.priceRange,
-          isFullTank: false,
-          isNeedChildChair: false,
-          isRightWheel: false,
-        };
-
-        updateOrder(this.orderId, order);
-        this.$router.push({ name: "Extra", query: { id: this.orderId } });
-      },
-    },
+    // methods: {
+    //   updateCurrentOrder() {
+    //     const {
+    //       orderStatusId,
+    //       cityId,
+    //       pointId,
+    //       id,
+    //       createdAt,
+    //     } = this.currentOrder;
+    //     const order = {
+    //       ...configItems.value,
+    //       carId: this.selectedModel.id,
+    //       price: this.priceRange,
+    //     };
+    //
+    //     updateOrder(this.orderId, order);
+    //     this.$router.push({ name: "Extra", query: { id: this.orderId } });
+    //   },
+    // },
   };
 </script>
 
