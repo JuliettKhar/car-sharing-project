@@ -44,122 +44,67 @@
 </template>
 
 <script>
-  import { computed, onBeforeMount, reactive, ref } from "@vue/composition-api";
+  import { onBeforeMount } from "@vue/composition-api";
   import RadioGroup from "@/components/order/common/RadioGroup";
   import OrderAside from "@/components/order/OrderAside";
-  import { getCars, getCategories, updateOrder, getOrderById } from "@/api";
   import { useOrder } from "@/components/order/composables/useOrder";
-  const { configItems, updateConfigFields } = useOrder();
   import { Notification } from "element-ui";
+  import { useModel } from "@/components/order/composables/useModel";
 
   export default {
     name: "Model",
     components: { RadioGroup, OrderAside },
     setup(props, { root }) {
-      const modelState = reactive({
-        carFilter: "",
-        currentCarItem: {},
-        filterModel: ["Все модели"],
-        isActiveCar: "",
-        isLoading: true,
-      });
-      const images = ref([]);
-      const imagesData = computed(() => images.value);
-      const carImages = ref(imagesData.value);
-      const selectedModelName = computed(() => {
-        const car = images.value.filter(
-          item => item.id === modelState.isActiveCar,
-        )[0];
-        return car?.name || "";
-      });
-      const selectedModel = computed(
-        () =>
-          images.value.filter(item => item.id === modelState.isActiveCar)[0] ||
-          {},
-      );
-      const orderItems = ref({
-        city: "",
-        model: selectedModelName,
-      });
-      const priceRange = computed(() => {
-        const isPriceExist =
-          selectedModel.value?.priceMin && selectedModel.value?.priceMax;
-        return isPriceExist
-          ? `${selectedModel.value?.priceMin || 0} - ${selectedModel.value
-              ?.priceMax || 0}`
-          : 0;
-      });
+      const {
+        configItems,
+        getOrderFromPreviousStep,
+        updatingCurrentOrder,
+      } = useOrder();
+      const {
+        modelState,
+        images,
+        carImages,
+        selectedModel,
+        orderItems,
+        priceRange,
+        changeModel,
+        getModelCategories,
+        getModelCars,
+      } = useModel();
       const orderId = root.$route.query.id;
 
-      function changeModel(item) {
-        if (item === "Все модели") {
-          carImages.value = images.value;
-        } else {
-          carImages.value = images.value.filter(
-            model => model.categoryId.id === item.id,
-          );
-        }
-      }
-
-      async function getModelCategories() {
+      async function getPreviousOrder() {
         try {
-          const { data } = await getCategories();
-          modelState.filterModel.push(...data.data);
-        } catch (e) {
-          Notification.error({ message: e });
-        }
-      }
-
-      async function getModelCars() {
-        try {
-          const { data } = await getCars();
-          images.value = data.data;
-          await changeModel(modelState.currentCarItem);
-        } catch (e) {
-          Notification.error({ message: e });
-        }
-      }
-
-      async function getOrderFromPreviousStep() {
-        try {
-          const { data } = await getOrderById(orderId);
-          const { carId } = data.data;
-          updateConfigFields(data.data);
-
-          modelState.carFilter = carId?.categoryId.id || "Все модели";
-          modelState.currentCarItem = carId?.categoryId || "Все модели";
-          modelState.isActiveCar = carId?.id || "";
-          orderItems.value.city = `${data.data?.cityId.name || ""}, ${data.data
-            ?.pointId.address || ""}`;
+          await getOrderFromPreviousStep(orderId);
+          modelState.carFilter =
+            configItems.value.carId?.categoryId?.id || "Все модели";
+          modelState.currentCarItem =
+            configItems.value.carId?.categoryId || "Все модели";
+          modelState.isActiveCar = configItems.value.carId?.id || "";
+          orderItems.value.city = `${configItems.value.cityId?.name ||
+            ""}, ${configItems.value.pointId?.address || ""}`;
         } catch (e) {
           Notification.error({ message: e });
         }
       }
 
       function updateCurrentOrder() {
-        const order = {
-          ...configItems.value,
-          carId: selectedModel.value.id,
-          priceMin: selectedModel.value.priceMin,
-          priceMax: selectedModel.value.priceMax,
-        };
-
-        try {
-          updateOrder(orderId, order);
-          this.$router.push({ name: "Extra", query: { id: orderId } });
-        } catch (e) {
-          Notification.error({ message: e });
-        }
+        updatingCurrentOrder(
+          {
+            carId: selectedModel.value.id,
+            priceMin: selectedModel.value.priceMin,
+            priceMax: selectedModel.value.priceMax,
+          },
+          orderId,
+          "Extra",
+        );
       }
 
       onBeforeMount(() =>
-        Promise.all([
-          getOrderFromPreviousStep(),
-          getModelCars(),
-          getModelCategories(),
-        ])
+        Promise.all([getPreviousOrder(), getModelCars(), getModelCategories()])
           .then(() => (modelState.isLoading = false))
-          .catch(e => Notification.error({ message: e })),
+          .catch(e => Notification.error({ message: e }))
+          .finally(() => (modelState.isLoading = false)),
       );
 
       return {

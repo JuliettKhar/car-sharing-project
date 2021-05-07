@@ -1,5 +1,5 @@
 import { ref } from "@vue/composition-api";
-import { createOrder } from "@/api";
+import { createOrder, getOrderById, updateOrder } from "@/api";
 import { useRouter } from "@/router";
 import { Notification } from "element-ui";
 
@@ -44,10 +44,35 @@ async function creationNewOrder(userData) {
   }
 }
 
+async function getOrderFromPreviousStep(orderId) {
+  try {
+    const { data } = await getOrderById(orderId);
+    updateConfigFields(data.data);
+  } catch (e) {
+    Notification.error({ message: e });
+  }
+}
+
+function updatingCurrentOrder(userData, id, routeName) {
+  const order = {
+    ...configItems.value,
+    ...userData,
+  };
+
+  try {
+    updateOrder(id, order);
+    router.push({ name: routeName, query: { id } });
+  } catch (e) {
+    Notification.error({ message: e });
+  }
+}
+
 export function useOrder() {
   return {
     configItems,
     updateConfigFields,
     creationNewOrder,
+    getOrderFromPreviousStep,
+    updatingCurrentOrder,
   };
 }

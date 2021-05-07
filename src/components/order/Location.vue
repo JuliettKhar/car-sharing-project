@@ -78,7 +78,12 @@
         creationNewOrder({ cityId: city.value.id, pointId: street.value.id });
       }
 
-      onMounted(() => getLocationData().then(() => (isLoading.value = false)));
+      onMounted(() =>
+        getLocationData()
+          .then(() => (isLoading.value = false))
+          .catch(e => Notification.error({ message: e }))
+          .finally(() => (isLoading.value = false)),
+      );
 
       return {
         cities,
