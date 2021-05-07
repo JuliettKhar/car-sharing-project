@@ -35,7 +35,7 @@
       const { modelData } = toRefs(props);
       const model = ref("");
 
-      watch(modelData, val => (model.value = val));
+      watch(modelData, val => (model.value = val), { immediate: true });
 
       return { model };
     },

@@ -40,7 +40,7 @@
       const { checkboxModelData } = toRefs(props);
       const model = ref([]);
 
-      watch(checkboxModelData, val => (model.value = val));
+      watch(checkboxModelData, val => (model.value = val), { immediate: true });
 
       return { model };
     },
