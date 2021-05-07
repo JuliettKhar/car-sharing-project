@@ -1,9 +1,13 @@
 <template>
   <div :class="['amountPopup', isActive ? 'amountPopup-is-active' : '']">
     <div class="amountPopup__wrapper">
-      <p>Подтвердить заказ</p>
-      <el-button class="accept-btn" @click="acceptClick">Подтвердить</el-button>
-      <el-button class="finish-btn" @click="cancelClick">Вернуться</el-button>
+      <p>{{ $translate("orderForm.content.amount.popup.confirm") }}</p>
+      <el-button class="accept-btn" @click="acceptClick">
+        {{ $translate("orderForm.content.amount.popup.accept") }}
+      </el-button>
+      <el-button class="finish-btn" @click="cancelClick">
+        {{ $translate("orderForm.content.amount.popup.cancel") }}
+      </el-button>
     </div>
   </div>
 </template>
@@ -49,7 +53,8 @@
       align-items: center;
       flex-wrap: wrap;
       justify-content: center;
-      max-width: 377px;
+      width: 390px;
+      max-width: 390px;
 
       p {
         width: 100%;

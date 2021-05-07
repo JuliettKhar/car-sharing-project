@@ -4,7 +4,7 @@
       <div class="location__selectors">
         <div class="location__selectors-city">
           <span>{{ $translate("orderForm.content.location.city") }}</span>
-          <Autocomplete
+          <autocomplete
             :item.sync="city"
             :items.sync="cities"
             @change="updateCity"
@@ -12,7 +12,7 @@
         </div>
         <div class="location__selectors-location">
           <span>{{ $translate("orderForm.content.location.location") }}</span>
-          <Autocomplete
+          <autocomplete
             :item.sync="street"
             :items.sync="streets"
             hasAddress
@@ -49,6 +49,8 @@
   import { computed, onMounted, ref } from "@vue/composition-api";
   import { getCity, getPoints, createOrder } from "@/api";
   import { useStore } from "@/store";
+  import { useOrder } from "@/components/order/composables/useOrder";
+  import { Notification } from "element-ui";
 
   export default {
     name: "Location",
@@ -83,6 +85,10 @@
       const isLoading = ref(true);
       const pointsLocations = cityId =>
         locationsOfStreets[cityId] ? locationsOfStreets[cityId] : [];
+      const { configItems } = useOrder();
+      const isDisabledButton = computed(() =>
+        Boolean(!street.value || !city.value),
+      );
 
       function updateStreet() {
         currLocation.value.push(locationsOfStreets[city.value.id].flat());
@@ -118,34 +124,61 @@
             currLocation.value.push(location),
           );
         }
-        await getPointsByLocation(item.id);
+        try {
+          await getPointsByLocation(item.id);
+        } catch (e) {
+          Notification.error({
+            message: e,
+          });
+        }
       }
 
       async function getLocationData() {
-        const { data } = await getCity();
-        const LSCity = localStorage.getItem("city");
-        const currCity = !LSCity ? "Ульяновск" : LSCity;
-        const citiesWithLocations = getCitiesWithLocation(data.data);
-        const cityWithLocation = getCityWithLocation(
-          citiesWithLocations,
-          currCity,
-        );
+        try {
+          const { data } = await getCity();
+          const LSCity = localStorage.getItem("city");
+          const currCity = !LSCity ? "Ульяновск" : LSCity;
+          const citiesWithLocations = getCitiesWithLocation(data.data);
+          const cityWithLocation = getCityWithLocation(
+            citiesWithLocations,
+            currCity,
+          );
 
-        cities.value = citiesWithLocations;
-        city.value = cityWithLocation;
+          cities.value = citiesWithLocations;
+          city.value = cityWithLocation;
 
-        await getPointsByLocation(cityWithLocation.id);
-        const streetsLocations = pointsLocations(cityWithLocation.id);
-        if (!streetsLocations.length) {
-          currLocation.value.push(cityWithLocation.coords);
+          await getPointsByLocation(cityWithLocation.id);
+          const streetsLocations = pointsLocations(cityWithLocation.id);
+          if (!streetsLocations.length) {
+            currLocation.value.push(cityWithLocation.coords);
+          }
+          streetsLocations.forEach(location =>
+            currLocation.value.push(location),
+          );
+        } catch (e) {
+          Notification.error({ message: e });
         }
-        streetsLocations.forEach(location => currLocation.value.push(location));
       }
 
-      onMounted(
-        async () =>
-          await getLocationData().then(() => (isLoading.value = false)),
-      );
+      async function createNewOrder() {
+        const order = {
+          ...configItems.value,
+          cityId: city.value.id,
+          pointId: street.value.id,
+        };
+
+        try {
+          const { data } = await createOrder(order);
+          await this.$router.push({
+            name: "Model",
+            query: { id: data.data.id },
+          });
+        } catch (e) {
+          Notification.error({ message: e });
+        }
+      }
+
+      onMounted(() => getLocationData().then(() => (isLoading.value = false)));
 
       return {
         OrderAside,
@@ -159,33 +192,9 @@
         updateStreet,
         currLocation,
         isLoading,
+        createNewOrder,
+        isDisabledButton,
       };
-    },
-    computed: {
-      isDisabledButton() {
-        return Boolean(!this.street || !this.city) || false;
-      },
-    },
-    methods: {
-      async createNewOrder() {
-        const order = {
-          orderStatusId: "607069ad2aed9a0b9b7e5530",
-          cityId: this.city.id,
-          pointId: this.street.id,
-          carId: {},
-          color: "",
-          dateFrom: 0,
-          dateTo: 0,
-          rateId: {},
-          price: 0,
-          isFullTank: false,
-          isNeedChildChair: false,
-          isRightWheel: false,
-        };
-
-        const { data } = await createOrder(order);
-        await this.$router.push({ name: "Model", query: { id: data.data.id } });
-      },
     },
   };
 </script>
@@ -207,6 +216,10 @@
       flex-direction: column;
       align-items: flex-start;
       padding-top: 32px;
+
+      @include md-and-down {
+        height: min-content;
+      }
     }
 
     &__map {
@@ -224,6 +237,10 @@
       flex-direction: column;
     }
 
+    &__selectors-city {
+      margin-bottom: 8px;
+    }
+
     &__selectors-city,
     &__selectors-location {
       display: flex;
@@ -236,6 +253,7 @@
         font-weight: 300;
         font-size: 14px;
         color: $black;
+        min-width: 50px;
 
         @include sm {
           text-align: left;
@@ -249,5 +267,10 @@
       margin-top: 50px;
       text-align: left;
     }
+  }
+
+  ::v-deep .el-input__inner {
+    width: 193px;
+    height: 30px;
   }
 </style>

@@ -29,18 +29,13 @@
         default: () => [],
       },
     },
-    setup(props) {
+    setup() {
       const settings = {
         apiKey: "9fdc1539-95c9-48be-b5fa-5a09fd7b6070",
         lang: "ru_RU",
         coordorder: "latlong",
         version: "2.1",
       };
-      // const initCoords = ref(props.coords);
-      // const mapCoords = computed({
-      //   get: () => initCoords.value,
-      //   set: val => (initCoords.value = val),
-      // });
       const markerIcon = {
         layout: "default#imageWithContent",
         imageHref: "./images/icons/map-point.svg",
@@ -52,7 +47,6 @@
         settings,
         markerIcon,
         controls,
-        // mapCoords,
       };
     },
   };
@@ -65,5 +59,10 @@
     max-width: 736px;
     min-height: 353px;
     height: 353px;
+
+    @include md-and-down {
+      width: 100%;
+      min-width: 100%;
+    }
   }
 </style>

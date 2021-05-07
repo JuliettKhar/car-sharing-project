@@ -69,15 +69,6 @@
       }
     }
 
-    //&__content {
-    //  width: 100%;
-
-    //@include sm {
-    //  width: 100%;
-    //  max-width: 100%;
-    //}
-    //}
-
     &__aside {
       display: flex;
       flex-direction: column;
@@ -108,82 +99,4 @@
       padding: 0 30px;
     }
   }
-
-  //.aside {
-  //  &__order {
-  //    display: inline-block;
-  //    margin: 0 0 26px 0;
-  //    font-weight: 500;
-  //    font-size: 18px;
-  //    color: $black;
-  //  }
-  //
-  //  &__location {
-  //    display: flex;
-  //    flex-direction: row;
-  //    justify-content: space-between;
-  //    margin-bottom: 32px;
-  //    width: 100%;
-  //
-  //    @include sm {
-  //      flex-wrap: wrap;
-  //      flex-direction: column;
-  //    }
-  //
-  //    & span {
-  //      &:first-child {
-  //        display: flex;
-  //        align-items: flex-end;
-  //        font-size: 14px;
-  //        color: $black;
-  //        text-align: left;
-  //      }
-  //      &:last-child {
-  //        font-size: 14px;
-  //        color: $gray;
-  //        text-align: right;
-  //        max-width: 120px;
-  //
-  //        @include sm {
-  //          text-align: left;
-  //        }
-  //      }
-  //      &:nth-child(2) {
-  //        display: inline-block;
-  //        border-bottom: 2px dotted $gray-light;
-  //        width: 74px;
-  //
-  //        @include sm {
-  //          display: none;
-  //        }
-  //      }
-  //    }
-  //  }
-  //
-  //  &__total {
-  //    width: 100%;
-  //    text-align: left;
-  //    margin-bottom: 32px;
-  //
-  //    & span:first-child {
-  //      margin-right: 4px;
-  //    }
-  //
-  //    & span {
-  //      &:first-child,
-  //      &:last-child {
-  //        font-size: 16px;
-  //        color: $black;
-  //
-  //        @include md-and-down {
-  //          font-size: 14px;
-  //        }
-  //      }
-  //
-  //      &:first-child {
-  //        font-weight: 500;
-  //      }
-  //    }
-  //  }
-  //}
 </style>

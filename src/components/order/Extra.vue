@@ -74,6 +74,10 @@
   import OrderAside from "@/components/order/OrderAside";
   import { useI18n } from "@/lang";
   import { getOrderById, updateOrder, getRate } from "@/api";
+  import { Notification } from "element-ui";
+  import { useOrder } from "@/components/order/composables/useOrder";
+
+  const { configItems, updateConfigFields } = useOrder();
 
   export default {
     name: "Extra",
@@ -150,57 +154,64 @@
       }
 
       async function getOrderFromPreviousStep() {
-        const { data } = await getOrderById(orderId);
-        const {
-          cityId,
-          pointId,
-          carId,
-          dateFrom,
-          dateTo,
-          color,
-          isFullTank,
-          isNeedChildChair,
-          isRightWheel,
-          rateId,
-        } = data.data;
-        currentOrder.value = data.data;
-        extraState.priceMin = carId.priceMin;
-        extraState.priceMax = carId.priceMax;
-        extraState.to = dateTo ? dateTo : new Date();
-        extraState.from = dateFrom ? dateFrom : new Date();
-        extraState.colorFilter = color ? color : "Любой";
-        extraState.tariffFilter = rateId?.id || "";
-        extraState.extraOptions.push(
-          ...getExtraOptions([
-            { isFullTank },
-            { isNeedChildChair },
-            { isRightWheel },
-          ]),
-        );
+        try {
+          const { data } = await getOrderById(orderId);
+          updateConfigFields(data.data);
 
-        orderItems.value.city = `${cityId.name}, ${pointId.address}`;
-        orderItems.value.model = carId.name;
-        orderItems.value.color = color ? color : "Любой";
-        orderItems.value.tariff = rateId?.rateTypeId.name || "";
-        carId.colors.length
-          ? extraState.colorModel.push(...carId.colors)
-          : extraState.colorModel.push("Любой");
-        priceRange.value = carId.priceMin;
+          currentOrder.value = data.data;
+          extraState.priceMin = configItems.value.carId.priceMin;
+          extraState.priceMax = configItems.value.carId.priceMax;
+          extraState.to = configItems.value.dateTo
+            ? configItems.value.dateTo
+            : new Date();
+          extraState.from = configItems.value.dateFrom
+            ? configItems.value.dateFrom
+            : new Date();
+          extraState.colorFilter = configItems.value.color
+            ? configItems.value.color
+            : "Любой";
+          extraState.tariffFilter = configItems.value.rateId?.id || "";
+          extraState.extraOptions.push(
+            ...getExtraOptions([
+              { isFullTank: configItems.value.isFullTank },
+              { isNeedChildChair: configItems.value.isNeedChildChair },
+              { isRightWheel: configItems.value.isRightWheel },
+            ]),
+          );
+
+          orderItems.value.city = `${configItems.value.cityId.name}, ${configItems.value.pointId.address}`;
+          orderItems.value.model = configItems.value.carId.name;
+          orderItems.value.color = configItems.value.color
+            ? configItems.value.color
+            : "Любой";
+          orderItems.value.tariff =
+            configItems.value.rateId?.rateTypeId?.name || "";
+          configItems.value.carId.colors.length
+            ? extraState.colorModel.push(...configItems.value.carId.colors)
+            : extraState.colorModel.push("Любой");
+          priceRange.value = configItems.value.carId.priceMin;
+        } catch (e) {
+          Notification.error({ message: e });
+        }
       }
 
       async function getRateList() {
-        const { data } = await getRate();
-        extraState.tariffModel = data.data.map(item => {
-          const { rateTypeId } = item;
-          const { id, unit, name } = rateTypeId;
+        try {
+          const { data } = await getRate();
+          extraState.tariffModel = data.data.map(item => {
+            const { rateTypeId } = item;
+            const { id, unit, name } = rateTypeId;
 
-          return {
-            ...item,
-            rateTypeId: id,
-            name,
-            unit,
-          };
-        });
+            return {
+              ...item,
+              rateTypeId: id,
+              name,
+              unit,
+            };
+          });
+        } catch (e) {
+          Notification.error({ message: e });
+        }
       }
 
       onMounted(() =>
@@ -218,6 +229,7 @@
         priceRange,
         currentOrder,
         orderId,
+        configItems,
       };
     },
     computed: {
@@ -241,12 +253,10 @@
         );
       },
       isDisabledButton() {
-        return (
-          Boolean(
-            !this.orderItems.color ||
-              this.isRentAccepted ||
-              !this.orderItems.tariff,
-          ) || false
+        return Boolean(
+          !this.orderItems.color ||
+            this.isRentAccepted ||
+            !this.orderItems.tariff,
         );
       },
     },
@@ -293,21 +303,9 @@
       },
       updateCurrentOrder() {
         // TODO: отрефакторить
-        const {
-          orderStatusId,
-          cityId,
-          pointId,
-          id,
-          createdAt,
-          carId,
-        } = this.currentOrder;
+        const { id } = this.$route.query;
         const order = {
-          orderStatusId,
-          cityId,
-          pointId,
-          id,
-          carId,
-          createdAt,
+          ...configItems.value,
           color: this.extraState.colorFilter,
           dateFrom: +this.extraState.from,
           dateTo: +this.extraState.to,
@@ -320,8 +318,12 @@
           isRightWheel: this.extraState.extraOptions.includes("rightDrive"),
         };
 
-        updateOrder(this.orderId, order);
-        this.$router.push({ name: "Amount", query: { id } });
+        try {
+          updateOrder(id, order);
+          this.$router.push({ name: "Amount", query: { id } });
+        } catch (e) {
+          Notification.error({ message: e });
+        }
       },
     },
   };

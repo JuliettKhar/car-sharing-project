@@ -14,7 +14,7 @@
       </template>
     </el-breadcrumb>
     <div v-else class="breadcrumbs-order">
-      <p>Заказ номер {{ orderId }}</p>
+      <p>{{ $translate("breadcrumbs.order") }} {{ orderId }}</p>
     </div>
   </div>
 </template>
