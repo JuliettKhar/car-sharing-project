@@ -1,4 +1,7 @@
 import { ref } from "@vue/composition-api";
+import { createOrder } from "@/api";
+import { useRouter } from "@/router";
+import { Notification } from "element-ui";
 
 const configItems = ref({
   orderStatusId: "607069ad2aed9a0b9b7e5530",
@@ -14,6 +17,7 @@ const configItems = ref({
   isNeedChildChair: false,
   isRightWheel: false,
 });
+const { router } = useRouter();
 
 export function updateConfigFields(fields) {
   for (const fieldsKey in fields) {
@@ -23,9 +27,27 @@ export function updateConfigFields(fields) {
   }
 }
 
+async function creationNewOrder(userData) {
+  const order = {
+    ...configItems.value,
+    ...userData,
+  };
+
+  try {
+    const { data } = await createOrder(order);
+    await router.push({
+      name: "Model",
+      query: { id: data.data.id },
+    });
+  } catch (e) {
+    Notification.error({ message: e });
+  }
+}
+
 export function useOrder() {
   return {
     configItems,
     updateConfigFields,
+    creationNewOrder,
   };
 }
