@@ -19,6 +19,9 @@
   import { useRouter } from "@/router";
   import { getOrderById, updateOrder } from "@/api";
   import AmountPopup from "@/components/order/common/AmountPopup";
+  import { Notification } from "element-ui";
+  import { useOrder } from "@/components/order/composables/useOrder";
+  const { configItems, updateConfigFields } = useOrder();
 
   export default {
     name: "Amount",
@@ -47,13 +50,12 @@
       const { router } = useRouter();
       const orderId = root.$route.query.id;
       const popupIsActive = ref(false);
-      const currentOrder = ref({});
       const isLoading = ref(true);
       const finalPrice = ref(0);
 
       function finishOrder() {
         updateOrder(orderId, {
-          ...currentOrder.value,
+          ...configItems.value,
           orderStatusId: {
             name: "confirmed",
             id: "5e26a1f0099b810b946c5d8b",
@@ -64,42 +66,38 @@
 
       async function getOrderFromPreviousStep() {
         // TODO: отрефакторить
-        const { data } = await getOrderById(orderId);
-        const {
-          cityId,
-          pointId,
-          carId,
-          color,
-          dateFrom,
-          dateTo,
-          isFullTank,
-          isNeedChildChair,
-          isRightWheel,
-          price,
-        } = data.data;
-        currentOrder.value = data.data;
+        try {
+          const { data } = await getOrderById(orderId);
+          updateConfigFields(data.data);
 
-        orderItems.city = `${cityId.name}, ${pointId.address}`;
-        orderItems.model = carId.name;
-        orderItems.color = color;
-        orderItems.rent = dateTo - dateFrom;
-        orderItems.tank = isFullTank ? "Да" : "";
-        orderItems.child = isNeedChildChair ? "Да" : "";
-        orderItems.rightDrive = isRightWheel ? "Да" : "";
-        orderItems.rent = {
-          to: dateTo,
-          from: dateFrom,
-        };
-        finalPrice.value = price;
-        orderOptions.value.number = carId.number;
-        orderOptions.value.tank = isFullTank ? "100%" : "";
-        orderOptions.value.model = carId.name;
-        orderOptions.value.image = { ...carId.thumbnail, name: carId.name };
-        orderOptions.value.available = `${new Date(
-          dateFrom,
-        ).toLocaleDateString()} ${new Date(dateFrom).getHours()}:${new Date(
-          dateFrom,
-        ).getMinutes()}`;
+          orderItems.city = `${configItems.value.cityId.name}, ${configItems.value.pointId.address}`;
+          orderItems.model = configItems.value.carId.name;
+          orderItems.color = configItems.value.color;
+          orderItems.rent =
+            configItems.value.dateTo - configItems.value.dateFrom;
+          orderItems.tank = configItems.value.isFullTank ? "Да" : "";
+          orderItems.child = configItems.value.isNeedChildChair ? "Да" : "";
+          orderItems.rightDrive = configItems.value.isRightWheel ? "Да" : "";
+          orderItems.rent = {
+            to: configItems.value.dateTo,
+            from: configItems.value.dateFrom,
+          };
+          finalPrice.value = configItems.value.price;
+          orderOptions.value.number = configItems.value.carId.number;
+          orderOptions.value.tank = configItems.value.isFullTank ? "100%" : "";
+          orderOptions.value.model = configItems.value.carId.name;
+          orderOptions.value.image = {
+            ...configItems.value.carId.thumbnail,
+            name: configItems.value.carId.name,
+          };
+          orderOptions.value.available = `${new Date(
+            configItems.value.dateFrom,
+          ).toLocaleDateString()} ${new Date(
+            configItems.value.dateFrom,
+          ).getHours()}:${new Date(configItems.value.dateFrom).getMinutes()}`;
+        } catch (e) {
+          Notification.error({ message: e });
+        }
       }
 
       onMounted(() =>

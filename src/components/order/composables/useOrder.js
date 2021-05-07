@@ -15,8 +15,17 @@ const configItems = ref({
   isRightWheel: false,
 });
 
+export function updateConfigFields(fields) {
+  for (const fieldsKey in fields) {
+    if (fields.hasOwnProperty(fieldsKey)) {
+      configItems.value[fieldsKey] = fields[fieldsKey];
+    }
+  }
+}
+
 export function useOrder() {
   return {
     configItems,
+    updateConfigFields,
   };
 }

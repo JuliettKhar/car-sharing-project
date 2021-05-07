@@ -24,15 +24,12 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => response,
   error => {
-    if (error.response.status !== 404 && error.response.status !== 403) {
-      Notification.error({
-        message: error,
-      });
-    } else {
-      throw new Error(error);
+    if (error.response.status === 404 || error.response.status === 403) {
+      return Promise.reject(error);
+    } else if (error.response.status === 500) {
+      Notification.error("Something went wrong. Try again later");
+      return Promise.reject(error);
     }
-
-    throw new Error(error);
   },
 );
 

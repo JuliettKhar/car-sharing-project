@@ -50,6 +50,7 @@
   import { getCity, getPoints, createOrder } from "@/api";
   import { useStore } from "@/store";
   import { useOrder } from "@/components/order/composables/useOrder";
+  import { Notification } from "element-ui";
 
   export default {
     name: "Location",
@@ -85,8 +86,8 @@
       const pointsLocations = cityId =>
         locationsOfStreets[cityId] ? locationsOfStreets[cityId] : [];
       const { configItems } = useOrder();
-      const isDisabledButton = computed(
-        () => Boolean(!street.value || !city.value) || false,
+      const isDisabledButton = computed(() =>
+        Boolean(!street.value || !city.value),
       );
 
       function updateStreet() {
@@ -123,28 +124,40 @@
             currLocation.value.push(location),
           );
         }
-        await getPointsByLocation(item.id);
+        try {
+          await getPointsByLocation(item.id);
+        } catch (e) {
+          Notification.error({
+            message: e,
+          });
+        }
       }
 
       async function getLocationData() {
-        const { data } = await getCity();
-        const LSCity = localStorage.getItem("city");
-        const currCity = !LSCity ? "Ульяновск" : LSCity;
-        const citiesWithLocations = getCitiesWithLocation(data.data);
-        const cityWithLocation = getCityWithLocation(
-          citiesWithLocations,
-          currCity,
-        );
+        try {
+          const { data } = await getCity();
+          const LSCity = localStorage.getItem("city");
+          const currCity = !LSCity ? "Ульяновск" : LSCity;
+          const citiesWithLocations = getCitiesWithLocation(data.data);
+          const cityWithLocation = getCityWithLocation(
+            citiesWithLocations,
+            currCity,
+          );
 
-        cities.value = citiesWithLocations;
-        city.value = cityWithLocation;
+          cities.value = citiesWithLocations;
+          city.value = cityWithLocation;
 
-        await getPointsByLocation(cityWithLocation.id);
-        const streetsLocations = pointsLocations(cityWithLocation.id);
-        if (!streetsLocations.length) {
-          currLocation.value.push(cityWithLocation.coords);
+          await getPointsByLocation(cityWithLocation.id);
+          const streetsLocations = pointsLocations(cityWithLocation.id);
+          if (!streetsLocations.length) {
+            currLocation.value.push(cityWithLocation.coords);
+          }
+          streetsLocations.forEach(location =>
+            currLocation.value.push(location),
+          );
+        } catch (e) {
+          Notification.error({ message: e });
         }
-        streetsLocations.forEach(location => currLocation.value.push(location));
       }
 
       async function createNewOrder() {
@@ -154,14 +167,18 @@
           pointId: street.value.id,
         };
 
-        const { data } = await createOrder(order);
-        await this.$router.push({ name: "Model", query: { id: data.data.id } });
+        try {
+          const { data } = await createOrder(order);
+          await this.$router.push({
+            name: "Model",
+            query: { id: data.data.id },
+          });
+        } catch (e) {
+          Notification.error({ message: e });
+        }
       }
 
-      onMounted(
-        async () =>
-          await getLocationData().then(() => (isLoading.value = false)),
-      );
+      onMounted(() => getLocationData().then(() => (isLoading.value = false)));
 
       return {
         OrderAside,
