@@ -9,26 +9,28 @@
         />
       </div>
       <div class="model__cars">
-        <template v-if="!modelState.isLoading">
-          <div
-            v-for="(car, index) in carImages"
-            :key="index"
-            :class="[
-              'model__cars-item',
-              modelState.isActiveCar === car.id ? 'selected' : '',
-            ]"
-            @click="modelState.isActiveCar = car.id"
-          >
-            <p>{{ car.name }}</p>
-            <p>{{ car.priceMin }} - {{ car.priceMax }}</p>
-            <img
-              :src="car.thumbnail.path"
-              :alt="car.name"
-              @error="e => (e.target.src = 'images/car-stub.png')"
-            />
-          </div>
-        </template>
-        <i v-else class="el-icon-loading"></i>
+        <div>
+          <template v-if="!modelState.isLoading">
+            <div
+              v-for="(car, index) in carImages"
+              :key="index"
+              :class="[
+                'model__cars-item',
+                modelState.isActiveCar === car.id ? 'selected' : '',
+              ]"
+              @click="modelState.isActiveCar = car.id"
+            >
+              <p>{{ car.name }}</p>
+              <p>{{ car.priceMin }} - {{ car.priceMax }}</p>
+              <img
+                :src="car.thumbnail.path"
+                :alt="car.name"
+                @error="e => (e.target.src = 'images/car-stub.png')"
+              />
+            </div>
+          </template>
+          <i v-else class="el-icon-loading"></i>
+        </div>
       </div>
     </div>
     <order-aside
@@ -46,6 +48,9 @@
   import RadioGroup from "@/components/order/common/RadioGroup";
   import OrderAside from "@/components/order/OrderAside";
   import { getCars, getCategories, updateOrder, getOrderById } from "@/api";
+  import { useOrder } from "@/components/order/composables/useOrder";
+  const { configItems, updateConfigFields } = useOrder();
+  import { Notification } from "element-ui";
 
   export default {
     name: "Model",
@@ -85,7 +90,6 @@
           : 0;
       });
       const orderId = root.$route.query.id;
-      const currentOrder = ref({});
 
       function changeModel(item) {
         if (item === "Все модели") {
@@ -98,26 +102,54 @@
       }
 
       async function getModelCategories() {
-        const { data } = await getCategories();
-        modelState.filterModel.push(...data.data);
+        try {
+          const { data } = await getCategories();
+          modelState.filterModel.push(...data.data);
+        } catch (e) {
+          Notification.error({ message: e });
+        }
       }
 
       async function getModelCars() {
-        const { data } = await getCars();
-        images.value = data.data;
-        await changeModel(modelState.currentCarItem);
+        try {
+          const { data } = await getCars();
+          images.value = data.data;
+          await changeModel(modelState.currentCarItem);
+        } catch (e) {
+          Notification.error({ message: e });
+        }
       }
 
       async function getOrderFromPreviousStep() {
-        const { data } = await getOrderById(orderId);
-        const { carId } = data.data;
+        try {
+          const { data } = await getOrderById(orderId);
+          const { carId } = data.data;
+          updateConfigFields(data.data);
 
-        currentOrder.value = data.data;
-        modelState.carFilter = carId?.categoryId.id || "Все модели";
-        modelState.currentCarItem = carId?.categoryId || "Все модели";
-        modelState.isActiveCar = carId?.id || "";
-        orderItems.value.city = `${data.data?.cityId.name || ""}, ${data.data
-          ?.pointId.address || ""}`;
+          modelState.carFilter = carId?.categoryId.id || "Все модели";
+          modelState.currentCarItem = carId?.categoryId || "Все модели";
+          modelState.isActiveCar = carId?.id || "";
+          orderItems.value.city = `${data.data?.cityId.name || ""}, ${data.data
+            ?.pointId.address || ""}`;
+        } catch (e) {
+          Notification.error({ message: e });
+        }
+      }
+
+      function updateCurrentOrder() {
+        const order = {
+          ...configItems.value,
+          carId: selectedModel.value.id,
+          priceMin: selectedModel.value.priceMin,
+          priceMax: selectedModel.value.priceMax,
+        };
+
+        try {
+          updateOrder(orderId, order);
+          this.$router.push({ name: "Extra", query: { id: orderId } });
+        } catch (e) {
+          Notification.error({ message: e });
+        }
       }
 
       onBeforeMount(() =>
@@ -125,7 +157,9 @@
           getOrderFromPreviousStep(),
           getModelCars(),
           getModelCategories(),
-        ]).then(() => (modelState.isLoading = false)),
+        ])
+          .then(() => (modelState.isLoading = false))
+          .catch(e => Notification.error({ message: e })),
       );
 
       return {
@@ -137,44 +171,12 @@
         selectedModel,
         priceRange,
         orderId,
-        currentOrder,
+        updateCurrentOrder,
       };
     },
     computed: {
       isDisabledButton() {
-        return (
-          Boolean(!this.orderItems.model || !this.orderItems.city) || false
-        );
-      },
-    },
-    methods: {
-      updateCurrentOrder() {
-        const {
-          orderStatusId,
-          cityId,
-          pointId,
-          id,
-          createdAt,
-        } = this.currentOrder;
-        const order = {
-          orderStatusId,
-          cityId,
-          pointId,
-          id,
-          createdAt,
-          carId: this.selectedModel.id,
-          color: "",
-          dateFrom: 0,
-          dateTo: 0,
-          rateId: {},
-          price: this.priceRange,
-          isFullTank: false,
-          isNeedChildChair: false,
-          isRightWheel: false,
-        };
-
-        updateOrder(this.orderId, order);
-        this.$router.push({ name: "Extra", query: { id: this.orderId } });
+        return Boolean(!this.orderItems.model || !this.orderItems.city);
       },
     },
   };
@@ -185,7 +187,6 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: nowrap;
-    height: 100vh;
 
     @include sm {
       flex-wrap: wrap;
@@ -206,25 +207,43 @@
       justify-content: space-evenly;
       align-items: center;
       margin: 48px 0 0 0;
-      border: 1px solid $gray-light;
+      border-right: 1px solid $gray-light;
+      border-top: 1px solid $gray-light;
       max-width: 80%;
       box-sizing: border-box;
       min-height: 40px;
 
       @include lg-and-down {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        margin: 30px 0 0 0;
-        border: none;
+        border-top: none;
+        max-width: 100%;
       }
 
       @include md-and-down {
-        grid-template-columns: 1fr;
+        max-width: 100%;
+        border: none;
       }
 
-      @include sm {
-        max-width: 100%;
-        grid-template-columns: 1fr;
+      & > div {
+        display: inherit;
+        flex-wrap: inherit;
+        overflow-y: auto;
+        max-height: 760px;
+
+        @include lg-and-down {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          border: none;
+        }
+
+        @include md-and-down {
+          grid-template-columns: 1fr 1fr;
+          max-width: 100%;
+        }
+
+        @include sm {
+          max-width: 100%;
+          grid-template-columns: 1fr;
+        }
       }
 
       &-item {
@@ -249,7 +268,7 @@
 
           @include lg-and-down {
             width: 100%;
-            border: 1px solid #eee;
+            border: 1px solid $gray-light;
           }
         }
 
@@ -259,7 +278,7 @@
 
           @include lg-and-down {
             width: 100%;
-            border: 1px solid #eee;
+            border: 1px solid $gray-light;
           }
         }
 

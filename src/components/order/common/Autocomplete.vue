@@ -116,7 +116,7 @@
   .el-select {
     display: flex;
     align-items: flex-end;
-    border-bottom: 1px solid #999999;
+    border-bottom: 1px solid $gray;
     box-sizing: border-box;
   }
 

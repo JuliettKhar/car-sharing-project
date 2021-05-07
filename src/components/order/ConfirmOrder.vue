@@ -20,6 +20,9 @@
   import AmountListOptions from "@/components/order/common/AmountListOptions";
   import { onMounted, reactive, ref } from "@vue/composition-api";
   import { getOrderById, cancelOrderById } from "@/api";
+  import { Notification } from "element-ui";
+  import { useOrder } from "@/components/order/composables/useOrder";
+  const { configItems, updateConfigFields } = useOrder();
 
   export default {
     name: "ConfirmOrder",
@@ -48,41 +51,38 @@
 
       async function getOrderFromPreviousStep() {
         // TODO: отрефакторить
-        const { data } = await getOrderById(orderId);
-        const {
-          cityId,
-          pointId,
-          carId,
-          color,
-          dateFrom,
-          dateTo,
-          isFullTank,
-          isNeedChildChair,
-          isRightWheel,
-          price,
-        } = data.data;
+        try {
+          const { data } = await getOrderById(orderId);
+          updateConfigFields(data.data);
 
-        orderItems.city = `${cityId.name}, ${pointId.address}`;
-        orderItems.model = carId.name;
-        orderItems.color = color;
-        orderItems.rent = dateTo - dateFrom;
-        orderItems.tank = isFullTank ? "Да" : "";
-        orderItems.child = isNeedChildChair ? "Да" : "";
-        orderItems.rightDrive = isRightWheel ? "Да" : "";
-        orderItems.rent = {
-          to: dateTo,
-          from: dateFrom,
-        };
-        orderOptions.value.number = carId.number;
-        orderOptions.value.tank = isFullTank ? "100%" : "";
-        orderOptions.value.model = carId.name;
-        orderOptions.value.available = `${new Date(
-          dateFrom,
-        ).toLocaleDateString()} ${new Date(dateFrom).getHours()}:${new Date(
-          dateFrom,
-        ).getMinutes()}`;
-        orderOptions.value.image = { ...carId.thumbnail, name: carId.name };
-        finalPrice.value = price;
+          orderItems.city = `${configItems.value.cityId.name}, ${configItems.value.pointId.address}`;
+          orderItems.model = configItems.value.carId.name;
+          orderItems.color = configItems.value.color;
+          orderItems.rent =
+            configItems.value.dateTo - configItems.value.dateFrom;
+          orderItems.tank = configItems.value.isFullTank ? "Да" : "";
+          orderItems.child = configItems.value.isNeedChildChair ? "Да" : "";
+          orderItems.rightDrive = configItems.value.isRightWheel ? "Да" : "";
+          orderItems.rent = {
+            to: configItems.value.dateTo,
+            from: configItems.value.dateFrom,
+          };
+          orderOptions.value.number = configItems.value.carId.number;
+          orderOptions.value.tank = configItems.value.isFullTank ? "100%" : "";
+          orderOptions.value.model = configItems.value.carId.name;
+          orderOptions.value.available = `${new Date(
+            configItems.value.dateFrom,
+          ).toLocaleDateString()} ${new Date(
+            configItems.value.dateFrom,
+          ).getHours()}:${new Date(configItems.value.dateFrom).getMinutes()}`;
+          orderOptions.value.image = {
+            ...configItems.value.carId.thumbnail,
+            name: configItems.value.carId.name,
+          };
+          finalPrice.value = configItems.value.price;
+        } catch (e) {
+          Notification.error({ message: e });
+        }
       }
 
       onMounted(() =>
@@ -100,10 +100,11 @@
     methods: {
       async cancelOrder() {
         try {
-          await cancelOrderById(this.orderId);
+          await cancelOrderById(this.orderId, configItems);
+          await Notification.success("Order cancelled");
           await this.$router.push({ name: "Home" });
         } catch (e) {
-          console.log(e);
+          Notification.error({ message: e });
         }
       },
     },
