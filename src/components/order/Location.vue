@@ -65,10 +65,11 @@
         updateCity,
         updateStreet,
       } = useLocation();
-      const { creationNewOrder } = useOrder();
+      const { creationNewOrder, configItems } = useOrder();
 
       function createNewOrder() {
         creationNewOrder({
+          ...configItems.value,
           cityId: city.value.id,
           pointId: street.value.id,
         });

@@ -10,7 +10,7 @@ import { useRouter } from "@/router";
 import { useOrder } from "@/components/order/composables/useOrder";
 
 export default function useConfirmOrder(orderId) {
-  const { configItems, getOrderFromPreviousStep } = useOrder();
+  const { configItems, getOrderFromPreviousStep, resetOrderItems } = useOrder();
   let orderItems = reactive({
     city: "",
     model: "",
@@ -66,7 +66,6 @@ export default function useConfirmOrder(orderId) {
         ...configItems.value.carId.thumbnail,
         name: configItems.value.carId.name,
       };
-      console.log(configItems.value, configItems.value.price);
       finalPrice.value = configItems.value.price;
     } catch (e) {
       Notification.error({ message: e });
@@ -88,6 +87,7 @@ export default function useConfirmOrder(orderId) {
     orderOptions = {};
     isLoading = true;
     finalPrice = 0;
+    resetOrderItems();
   });
 
   return {
