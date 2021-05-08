@@ -242,7 +242,7 @@ export default function useExtra(orderId) {
         rateId: extraState.tariffModel.filter(
           model => model.id === extraState.tariffFilter,
         )[0],
-        price: priceRange,
+        price: priceRange.value,
         isFullTank: extraState.extraOptions.includes("full"),
         isNeedChildChair: extraState.extraOptions.includes("child"),
         isRightWheel: extraState.extraOptions.includes("rightDrive"),
