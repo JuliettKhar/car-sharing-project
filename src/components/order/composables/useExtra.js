@@ -8,6 +8,9 @@ import {
 import { Notification } from "element-ui";
 import { getRate } from "@/api";
 import { useOrder } from "@/components/order/composables/useOrder";
+import isSameDay from "date-fns/isSameDay";
+import isSameHour from "date-fns/isSameHour";
+import isSameMinute from "date-fns/isSameMinute";
 
 export default function useExtra(orderId) {
   const {
@@ -22,7 +25,7 @@ export default function useExtra(orderId) {
     tariffModel: [],
     extraOptions: [],
     extraOptionsData: [],
-    from: new Date(),
+    from: new Date(new Date().setDate(+new Date().getDate() - 1)),
     to: new Date(),
     priceMin: "",
     priceMax: "",
@@ -66,24 +69,11 @@ export default function useExtra(orderId) {
   ];
   const priceRange = ref(0);
   const isRentAccepted = computed(() => {
-    {
-      const toDay = new Date(extraState.to).getDate();
-      const toMonth = new Date(extraState.to).getMonth();
-      const toHours = new Date(extraState.to).getHours();
-      const toMinutes = new Date(extraState.to).getMinutes();
-
-      const fromDay = new Date(extraState.from).getDate();
-      const fromMonth = new Date(extraState.from).getMonth();
-      const fromHours = new Date(extraState.from).getHours();
-      const fromMinutes = new Date(extraState.from).getMinutes();
-
-      return (
-        toDay === fromDay &&
-        toMonth === fromMonth &&
-        toHours === fromHours &&
-        toMinutes === fromMinutes
-      );
-    }
+    return (
+      isSameDay(extraState.to, extraState.from) &&
+      isSameHour(extraState.to, extraState.from) &&
+      isSameMinute(extraState.to, extraState.from)
+    );
   });
   const isDisabledButton = computed(
     () =>
@@ -191,7 +181,7 @@ export default function useExtra(orderId) {
         : new Date();
       extraState.from = configItems.value.dateFrom
         ? configItems.value.dateFrom
-        : new Date();
+        : new Date().setTime(new Date().getTime() - 1000 * 60 * 60);
       extraState.colorFilter = configItems.value.color.length
         ? configItems.value.color
         : "Любой";

@@ -88,6 +88,7 @@
         selectColor,
         addExtraOptions,
         addTariff,
+        isRentAccepted,
         isDisabledButton,
         updateCurrentOrder,
       } = useExtra(orderId);
@@ -104,6 +105,7 @@
         addTariff,
         updateCurrentOrder,
         isDisabledButton,
+        isRentAccepted,
         translate,
       };
     },
