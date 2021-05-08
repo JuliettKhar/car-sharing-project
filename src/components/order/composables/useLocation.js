@@ -28,9 +28,7 @@ export default function useLocation() {
   let street = ref(null);
   let currLocation = ref([]);
   let isLoading = ref(true);
-  const isDisabledButton = computed(() =>
-    Boolean(!street.value || !city.value),
-  );
+  const isDisabledButton = computed(() => !street.value || !city.value);
   const pointsLocations = cityId =>
     locationsOfStreets[cityId] ? locationsOfStreets[cityId] : [];
 

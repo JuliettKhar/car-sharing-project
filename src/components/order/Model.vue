@@ -44,22 +44,15 @@
 </template>
 
 <script>
-  import { onBeforeMount, onBeforeUnmount } from "@vue/composition-api";
   import RadioGroup from "@/components/order/common/RadioGroup";
   import OrderAside from "@/components/order/OrderAside";
-  import { useOrder } from "@/components/order/composables/useOrder";
-  import { Notification } from "element-ui";
-  import { useModel } from "@/components/order/composables/useModel";
+  import useModel from "@/components/order/composables/useModel";
 
   export default {
     name: "Model",
     components: { RadioGroup, OrderAside },
     setup(props, { root }) {
-      const {
-        configItems,
-        getOrderFromPreviousStep,
-        updatingCurrentOrder,
-      } = useOrder();
+      const orderId = root.$route.query.id;
       const {
         modelState,
         images,
@@ -67,66 +60,23 @@
         selectedModel,
         orderItems,
         priceRange,
+        updateCurrentOrder,
+        isDisabledButton,
         changeModel,
-        getModelCategories,
-        getModelCars,
-      } = useModel();
-      const orderId = root.$route.query.id;
-
-      async function getPreviousOrder() {
-        try {
-          await getOrderFromPreviousStep(orderId);
-          modelState.carFilter =
-            configItems.value.carId?.categoryId?.id || "Все модели";
-          modelState.currentCarItem =
-            configItems.value.carId?.categoryId || "Все модели";
-          modelState.isActiveCar = configItems.value.carId?.id || "";
-          orderItems.value.city = `${configItems.value.cityId?.name ||
-            ""}, ${configItems.value.pointId?.address || ""}`;
-        } catch (e) {
-          Notification.error({ message: e });
-        }
-      }
-
-      function updateCurrentOrder() {
-        updatingCurrentOrder(
-          {
-            carId: selectedModel.value.id,
-            priceMin: selectedModel.value.priceMin,
-            priceMax: selectedModel.value.priceMax,
-          },
-          orderId,
-          "Extra",
-        );
-      }
-
-      onBeforeMount(() =>
-        Promise.all([getPreviousOrder(), getModelCars(), getModelCategories()])
-          .then(() => (modelState.isLoading = false))
-          .catch(e => Notification.error({ message: e }))
-          .finally(() => (modelState.isLoading = false)),
-      );
-      onBeforeUnmount(() => {
-        modelState.carFilter = "";
-        modelState.filterModel = [];
-      });
+      } = useModel(orderId);
 
       return {
         carImages,
         modelState,
         images,
-        changeModel,
+        isDisabledButton,
         orderItems,
         selectedModel,
         priceRange,
         orderId,
         updateCurrentOrder,
+        changeModel,
       };
-    },
-    computed: {
-      isDisabledButton() {
-        return Boolean(!this.orderItems.model || !this.orderItems.city);
-      },
     },
   };
 </script>
