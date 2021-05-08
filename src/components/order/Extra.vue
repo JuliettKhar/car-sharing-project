@@ -68,124 +68,35 @@
 </template>
 
 <script>
-  import { onBeforeUnmount, onMounted } from "@vue/composition-api";
   import RadioGroup from "@/components/order/common/RadioGroup";
   import CheckboxGroup from "@/components/order/common/CheckboxGroup";
   import OrderAside from "@/components/order/OrderAside";
   import { useI18n } from "@/lang";
-  import { Notification } from "element-ui";
-  import { useOrder } from "@/components/order/composables/useOrder";
-  import { useExtra } from "@/components/order/composables/useExtra";
+  import useExtra from "@/components/order/composables/useExtra";
 
   export default {
     name: "Extra",
     components: { RadioGroup, CheckboxGroup, OrderAside },
     setup(props, { root }) {
-      const {
-        configItems,
-        getOrderFromPreviousStep,
-        updatingCurrentOrder,
-      } = useOrder();
+      const orderId = root.$route.query.id;
       const {
         extraState,
         orderItems,
         tariffModel,
         extraOptionsData,
         priceRange,
-        getExtraOptions,
-        getRateList,
         selectColor,
         addExtraOptions,
         addTariff,
         isDisabledButton,
-      } = useExtra();
+        updateCurrentOrder,
+      } = useExtra(orderId);
       const { translate } = useI18n();
-      const orderId = root.$route.query.id;
-
-      async function getPreviousOrder() {
-        try {
-          await getOrderFromPreviousStep(orderId);
-
-          extraState.priceMin = configItems.value.carId.priceMin;
-          extraState.priceMax = configItems.value.carId.priceMax;
-          extraState.to = configItems.value.dateTo
-            ? configItems.value.dateTo
-            : new Date();
-          extraState.from = configItems.value.dateFrom
-            ? configItems.value.dateFrom
-            : new Date();
-          extraState.colorFilter = configItems.value.color
-            ? configItems.value.color
-            : "Любой";
-          extraState.tariffFilter = configItems.value.rateId.id || "";
-          extraState.extraOptions.push(
-            ...getExtraOptions([
-              { isFullTank: configItems.value.isFullTank },
-              { isNeedChildChair: configItems.value.isNeedChildChair },
-              { isRightWheel: configItems.value.isRightWheel },
-            ]),
-          );
-
-          orderItems.value.city = `${configItems.value.cityId.name}, ${configItems.value.pointId.address}`;
-          orderItems.value.model = configItems.value.carId.name;
-          orderItems.value.color = configItems.value.color
-            ? configItems.value.color
-            : "Любой";
-          orderItems.value.tariff =
-            configItems.value.rateId?.rateTypeId.name || "";
-          configItems.value.carId.colors.length
-            ? extraState.colorModel.push(...configItems.value.carId.colors)
-            : extraState.colorModel.push("Любой");
-          priceRange.value = configItems.value.carId.priceMin;
-          orderItems.value.tank = configItems.value.isFullTank ? "Да" : "";
-          orderItems.value.child = configItems.value.isNeedChildChair
-            ? "Да"
-            : "";
-          orderItems.value.rightDrive = configItems.value.isRightWheel
-            ? "Да"
-            : "";
-        } catch (e) {
-          Notification.error({ message: e });
-        }
-      }
-
-      function updateCurrentOrder() {
-        updatingCurrentOrder(
-          {
-            color: extraState.colorFilter,
-            dateFrom: +extraState.from,
-            dateTo: +extraState.to,
-            rateId: extraState.tariffModel.filter(
-              model => model.id === extraState.tariffFilter,
-            )[0],
-            price: priceRange,
-            isFullTank: extraState.extraOptions.includes("full"),
-            isNeedChildChair: extraState.extraOptions.includes("child"),
-            isRightWheel: extraState.extraOptions.includes("rightDrive"),
-          },
-          orderId,
-          "Amount",
-        );
-      }
-
-      onMounted(() =>
-        Promise.all([getRateList(), getPreviousOrder()])
-          .then(() => (extraState.isLoading = false))
-          .catch(e => Notification.error({ message: e }))
-          .finally(() => (extraState.isLoading = false)),
-      );
-      onBeforeUnmount(() => {
-        extraState.colorModel = [];
-        extraState.tariffModel = [];
-        extraState.extraOptions = [];
-        extraState.extraOptionsData = [];
-      });
 
       return {
         extraState,
         tariffModel,
         extraOptionsData,
-        translate,
         orderItems,
         priceRange,
         selectColor,
@@ -193,6 +104,7 @@
         addTariff,
         updateCurrentOrder,
         isDisabledButton,
+        translate,
       };
     },
   };

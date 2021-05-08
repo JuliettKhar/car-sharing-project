@@ -47,7 +47,6 @@ async function creationNewOrder(userData) {
 async function getOrderFromPreviousStep(orderId) {
   try {
     const { data } = await getOrderById(orderId);
-    console.log(data.data);
     updateConfigFields(data.data);
   } catch (e) {
     Notification.error({ message: e });
