@@ -15,15 +15,14 @@
       const isToggleLang = ref(currentLang.value === "Eng" || false);
       const language = computed(() => (isToggleLang.value ? "Eng" : "Ru"));
       const displayedLang = computed(() => currentLang.value || "Ru");
-
-      function toggleLang() {
+      const toggleLang = () => {
         isToggleLang.value = !isToggleLang.value;
 
         localStorage.setItem("lang", language.value);
         i18n.locale = language.value.toLowerCase().slice(0, 2);
         currentLang.value = language.value;
         localStorage.removeItem("city");
-      }
+      };
 
       return { toggleLang, displayedLang };
     },

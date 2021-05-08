@@ -31,22 +31,17 @@
         required: true,
       },
     },
-    setup(props) {
+    setup(props, { emit }) {
       const { modelData } = toRefs(props);
       const model = ref("");
+      const changeValue = val => emit("change", val);
+      const updateFilters = val => emit("update:modelData", val);
 
       watch(modelData, val => (model.value = val), { immediate: true });
 
-      return { model };
+      return { model, changeValue, updateFilters };
     },
-    methods: {
-      changeValue(val) {
-        this.$emit("change", val);
-      },
-      updateFilters(val) {
-        this.$emit("update:modelData", val);
-      },
-    },
+    methods: {},
   };
 </script>
 

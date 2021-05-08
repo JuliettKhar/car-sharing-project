@@ -72,6 +72,7 @@ export default function useAmount(orderId) {
       ).toLocaleDateString()} ${new Date(
         configItems.value.dateFrom,
       ).getHours()}:${new Date(configItems.value.dateFrom).getMinutes()}`;
+      finalPrice.value = configItems.value.price;
     } catch (e) {
       Notification.error({ message: e });
     }

@@ -5,13 +5,15 @@
     </p>
     <template v-if="!loading">
       <div class="amount-options__info">
-        <p>{{ items.model }}</p>
-        <p>{{ items.number }}</p>
-        <p>
+        <p class="amount-options__info-model">{{ items.model }}</p>
+        <p v-if="items.number" class="amount-options__info-number">
+          {{ items.number }}
+        </p>
+        <p class="amount-options__info-tank">
           {{ $translate("orderForm.content.amount.fuel") }}
           <span>{{ items.tank }}</span>
         </p>
-        <p>
+        <p class="amount-options__info-available">
           {{ $translate("orderForm.content.amount.available") }}
           <span>{{ items.available }}</span>
         </p>
@@ -87,42 +89,30 @@
     }
 
     &__info {
+      &-model {
+        font-size: 18px;
+        color: $black;
+      }
+
+      &-available,
+      &-tank {
+        font-weight: bold;
+        font-size: 14px;
+        color: $black;
+
+        & span {
+          display: inline-block;
+          font-weight: 300;
+
+          @include md-and-down {
+            display: block;
+            line-height: 20px;
+          }
+        }
+      }
       & p {
         text-align: left;
         margin: 0 0 8px 0;
-
-        &:first-child {
-          font-size: 18px;
-          color: $black;
-        }
-
-        &:nth-child(2) {
-          font-size: 14px;
-          color: $black;
-          border: 1px solid $gray;
-          border-radius: 3px;
-          padding: 4px;
-          display: flex;
-          max-width: 94px;
-          justify-content: center;
-        }
-
-        &:nth-child(3),
-        &:nth-child(4) {
-          font-weight: bold;
-          font-size: 14px;
-          color: $black;
-
-          & span {
-            display: inline-block;
-            font-weight: 300;
-
-            @include md-and-down {
-              display: block;
-              line-height: 20px;
-            }
-          }
-        }
       }
 
       & img {
@@ -132,6 +122,17 @@
           max-width: 90%;
         }
       }
+    }
+
+    &__info-number {
+      font-size: 14px;
+      color: $black;
+      border: 1px solid $gray;
+      border-radius: 3px;
+      padding: 4px;
+      display: flex;
+      max-width: 94px;
+      justify-content: center;
     }
 
     &__title {

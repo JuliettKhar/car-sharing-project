@@ -35,10 +35,8 @@
     },
     setup() {
       const { router } = useRouter();
+      const makeOrder = () => router.push({ name: "Order" });
 
-      function makeOrder() {
-        router.push({ name: "Order" });
-      }
       return { makeOrder };
     },
   };

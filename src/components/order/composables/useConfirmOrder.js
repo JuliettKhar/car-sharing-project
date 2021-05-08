@@ -66,6 +66,7 @@ export default function useConfirmOrder(orderId) {
         ...configItems.value.carId.thumbnail,
         name: configItems.value.carId.name,
       };
+      console.log(configItems.value, configItems.value.price);
       finalPrice.value = configItems.value.price;
     } catch (e) {
       Notification.error({ message: e });
