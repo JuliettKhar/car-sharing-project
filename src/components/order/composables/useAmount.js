@@ -81,21 +81,8 @@ export default function useAmount(orderId) {
     getOrderFromPreviousStep().then(() => (isLoading.value = false)),
   );
   onBeforeUnmount(() => {
-    orderItems = {
-      city: "",
-      model: "",
-      color: "",
-      rent: {},
-      tariff: "",
-      tank: "",
-    };
-    orderOptions = {
-      model: "",
-      number: "",
-      tank: "",
-      available: "",
-      image: {},
-    };
+    orderItems = {};
+    orderOptions = {};
     popupIsActive = false;
     isLoading = true;
     finalPrice = 0;
