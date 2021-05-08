@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import { onBeforeMount } from "@vue/composition-api";
+  import { onBeforeMount, onBeforeUnmount } from "@vue/composition-api";
   import RadioGroup from "@/components/order/common/RadioGroup";
   import OrderAside from "@/components/order/OrderAside";
   import { useOrder } from "@/components/order/composables/useOrder";
@@ -106,6 +106,10 @@
           .catch(e => Notification.error({ message: e }))
           .finally(() => (modelState.isLoading = false)),
       );
+      onBeforeUnmount(() => {
+        modelState.carFilter = "";
+        modelState.filterModel = [];
+      });
 
       return {
         carImages,

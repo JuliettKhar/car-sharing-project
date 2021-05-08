@@ -41,9 +41,8 @@
   import Autocomplete from "@/components/order/common/Autocomplete";
   import OrderAside from "@/components/order/OrderAside";
   import OrderMap from "@/components/order/map/OrderMap";
-  import { computed, onMounted } from "@vue/composition-api";
   import { useOrder } from "@/components/order/composables/useOrder";
-  import { useLocation } from "@/components/order/composables/useLocation";
+  import useLocation from "@/components/order/composables/useLocation";
 
   export default {
     name: "Location",
@@ -61,29 +60,19 @@
         currLocation,
         isDisabledButton,
         isLoading,
-        getLocationData,
+        fullAddress,
+        mapCoords,
         updateCity,
         updateStreet,
       } = useLocation();
       const { creationNewOrder } = useOrder();
-      const fullAddress = computed(
-        () => `${city.value?.name || ""}, ${street.value?.address || ""}`,
-      );
-      const mapCoords = computed({
-        get: () => currLocation.value,
-        set: val => (currLocation.value = val),
-      });
 
       function createNewOrder() {
-        creationNewOrder({ cityId: city.value.id, pointId: street.value.id });
+        creationNewOrder({
+          cityId: city.value.id,
+          pointId: street.value.id,
+        });
       }
-
-      onMounted(() =>
-        getLocationData()
-          .then(() => (isLoading.value = false))
-          .catch(e => Notification.error({ message: e }))
-          .finally(() => (isLoading.value = false)),
-      );
 
       return {
         cities,
@@ -93,10 +82,10 @@
         updateCity,
         fullAddress,
         mapCoords,
-        updateStreet,
         currLocation,
         isLoading,
         isDisabledButton,
+        updateStreet,
         createNewOrder,
       };
     },

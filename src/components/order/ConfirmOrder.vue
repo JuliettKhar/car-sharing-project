@@ -10,7 +10,7 @@
       :is-disabled="false"
       :loading="isLoading"
       :price="finalPrice"
-      @cancel="cancelOrder"
+      @cancel="cancelUserOrder"
     />
   </div>
 </template>
@@ -18,11 +18,10 @@
 <script>
   import OrderAside from "@/components/order/OrderAside";
   import AmountListOptions from "@/components/order/common/AmountListOptions";
-  import { onMounted, reactive, ref } from "@vue/composition-api";
-  import { getOrderById, cancelOrderById } from "@/api";
+  import { onMounted } from "@vue/composition-api";
   import { Notification } from "element-ui";
   import { useOrder } from "@/components/order/composables/useOrder";
-  const { configItems, updateConfigFields } = useOrder();
+  import { useConfirmOrder } from "@/components/order/composables/useConfirmOrder";
 
   export default {
     name: "ConfirmOrder",
@@ -31,29 +30,20 @@
       AmountListOptions,
     },
     setup(props, { root }) {
-      const orderItems = reactive({
-        city: "",
-        model: "",
-        color: "",
-        rent: {},
-        tariff: "",
-        tank: "",
-      });
-      const orderOptions = ref({
-        model: "",
-        number: "",
-        tank: "",
-        available: "",
-      });
+      const { configItems, getOrderFromPreviousStep } = useOrder();
+      const {
+        orderItems,
+        orderOptions,
+        isLoading,
+        finalPrice,
+        cancelOrder,
+      } = useConfirmOrder();
       const orderId = root.$route.query.id;
-      const isLoading = ref(true);
-      const finalPrice = ref(0);
 
-      async function getOrderFromPreviousStep() {
+      async function getPreviousOrder() {
         // TODO: отрефакторить
         try {
-          const { data } = await getOrderById(orderId);
-          updateConfigFields(data.data);
+          await getOrderFromPreviousStep(orderId);
 
           orderItems.city = `${configItems.value.cityId.name}, ${configItems.value.pointId.address}`;
           orderItems.model = configItems.value.carId.name;
@@ -85,8 +75,15 @@
         }
       }
 
+      function cancelUserOrder() {
+        cancelOrder(orderId, configItems.value);
+      }
+
       onMounted(() =>
-        getOrderFromPreviousStep().then(() => (isLoading.value = false)),
+        getPreviousOrder()
+          .then(() => (isLoading.value = false))
+          .catch(e => Notification.error({ message: e }))
+          .finally(() => (isLoading.value = false)),
       );
 
       return {
@@ -95,18 +92,8 @@
         orderId,
         isLoading,
         finalPrice,
+        cancelUserOrder,
       };
-    },
-    methods: {
-      async cancelOrder() {
-        try {
-          await cancelOrderById(this.orderId, configItems);
-          await Notification.success("Order cancelled");
-          await this.$router.push({ name: "Home" });
-        } catch (e) {
-          Notification.error({ message: e });
-        }
-      },
     },
   };
 </script>
