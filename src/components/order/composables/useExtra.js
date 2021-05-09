@@ -131,7 +131,11 @@ export default function useExtra(orderId) {
         Math.floor(+difference / 1000 / 60 / 60) * tariff.price * 60 + rate
       );
     } else if (tariff.unit === "7 дней") {
-      return rate + tariff.price;
+      const extraDaysInMinutes = difference
+        ? Math.floor((+difference / 1000 / 60 / 60 - 24 * 7) * 60 * 7)
+        : 0;
+
+      return rate + tariff.price + extraDaysInMinutes;
     }
   }
 
