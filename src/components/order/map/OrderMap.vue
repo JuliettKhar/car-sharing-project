@@ -31,7 +31,7 @@
     },
     setup() {
       const settings = {
-        apiKey: "9fdc1539-95c9-48be-b5fa-5a09fd7b6070",
+        apiKey: process.env.VUE_APP_API_MAP_KEY,
         lang: "ru_RU",
         coordorder: "latlong",
         version: "2.1",

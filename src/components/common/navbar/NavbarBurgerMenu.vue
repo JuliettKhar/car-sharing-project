@@ -41,9 +41,7 @@
         "navbarBurgerMenu.service",
       ];
 
-      function closeMenu() {
-        emit("update:isMenuOpen", false);
-      }
+      const closeMenu = () => emit("update:isMenuOpen", false);
 
       return { pages, closeMenu };
     },

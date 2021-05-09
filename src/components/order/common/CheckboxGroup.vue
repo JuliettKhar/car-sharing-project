@@ -36,21 +36,15 @@
         required: true,
       },
     },
-    setup(props) {
+    setup(props, { emit }) {
       const { checkboxModelData } = toRefs(props);
       const model = ref([]);
+      const changeValue = (item, index) => emit("change", { item, index });
+      const updateFilters = val => emit("update:checkboxModelData", val);
 
-      watch(checkboxModelData, val => (model.value = val));
+      watch(checkboxModelData, val => (model.value = val), { immediate: true });
 
-      return { model };
-    },
-    methods: {
-      changeValue(item, index) {
-        this.$emit("change", { item, index });
-      },
-      updateFilters(val) {
-        this.$emit("update:checkboxModelData", val);
-      },
+      return { model, changeValue, updateFilters };
     },
   };
 </script>

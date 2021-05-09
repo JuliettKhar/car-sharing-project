@@ -20,13 +20,18 @@
         default: false,
       },
     },
-    methods: {
-      cancelClick() {
-        this.$emit("update:isActive", false);
-      },
-      acceptClick() {
-        this.$emit("accept", true);
-      },
+    setup(props, { emit }) {
+      const cancelClick = () => {
+        emit("update:isActive", false);
+      };
+      const acceptClick = () => {
+        emit("accept", true);
+      };
+
+      return {
+        cancelClick,
+        acceptClick,
+      };
     },
   };
 </script>

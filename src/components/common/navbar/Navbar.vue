@@ -23,9 +23,7 @@
     name: "Navbar",
     components: { NavbarLangToggle },
     setup(props, { emit }) {
-      function openBurger() {
-        emit("open");
-      }
+      const openBurger = () => emit("open");
 
       return {
         openBurger,
