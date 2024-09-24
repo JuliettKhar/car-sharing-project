@@ -7,16 +7,3 @@ Features
 - Interactive UI: Book a car, view locations (non-functional backend).
 
 You can view the live version [here](https://juliettkhar.github.io/car-sharing-project/).
-
-## Project setup
-```
-npm install
-```
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-### Compiles and minifies for production
-```
-npm run build
-```
